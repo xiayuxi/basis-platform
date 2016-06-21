@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderSearchMapperManual" >
+ <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.bo.OrderSearch" >  
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+    <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL" />
+    <result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+    <result column="actual_amount" property="actualAmount" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="order_source" property="orderSource" jdbcType="INTEGER" />
+    <result column="pay_status" property="payStatus" jdbcType="INTEGER" />
+    <result column="has_sub" property="hasSub" jdbcType="INTEGER" />
+    <result column="pay_type" property="payType" jdbcType="INTEGER" />
+    <result column="pay_way" property="payWay" jdbcType="INTEGER" />
+    <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="signin_time" property="signinTime" jdbcType="TIMESTAMP" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="del_time" property="delTime" jdbcType="TIMESTAMP" />
+    <result column="is_rec_del" property="isRecDel" jdbcType="INTEGER" />
+    <result column="rec_del_time" property="recDelTime" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+  	<!-- 以下是订单联系人表字段 -->     
+    <result column="lc_num" property="lcNum" jdbcType="CHAR" />
+    <result column="vs_num" property="vsNum" jdbcType="CHAR" />
+    <result column="us_num" property="usNum" jdbcType="CHAR" />    
+  </resultMap>
+ <sql id="Base_Column_List" >
+    id, order_no, total_amount, coupon_amount, save_amount, actual_amount, create_time, 
+    order_status, order_source, pay_status, has_sub, pay_type, pay_way, pay_time, signin_time, 
+    is_del, del_time, is_rec_del, rec_del_time, version  
+    <!-- 以下是订单联系人表字段 -->
+    lc_num, vs_num, us_num, engineer_num  
+ </sql>
+<!-- 多条件组合、分页查询订单列表 -->
+<select id="getListByMulti" resultMap="BaseResultMap"
+	parameterType="com.ync365.seed.bussiness.modules.order.bo.OrderSearch" >		
+	SELECT 
+  temp.id AS id,
+  temp.order_no AS order_no,
+  temp.user_num AS user_num,
+  temp.actual_amount AS actual_amount,
+  temp.total_amount AS total_amount,
+  temp.create_time AS create_time,
+  temp.order_status AS order_status,
+  temp.order_source AS order_source,
+  temp.order_type AS order_type,
+  temp.pay_type AS pay_type,
+  temp.pay_way AS pay_way,
+  temp.pay_time AS pay_time,
+  ou.username AS username,
+  ou.user_tel AS user_tel,
+  temp.lc_num AS lc_num,
+  temp.vs_num AS vs_num ,
+  temp.store_id AS stroe_id 
+  
+FROM
+  (
+    (SELECT tempinfo.*,
+    CASE WHEN tempstore.order_id IS NULL THEN 3  
+    WHEN  tempstore.order_id IS NOT NULL THEN -1 END store_id 
+    FROM 
+(SELECT 
+      oi.id AS id,
+      oi.order_no AS order_no,
+      oi.user_num AS user_num,
+      oi.actual_amount AS actual_amount,
+      oi.total_amount AS total_amount,
+      oi.create_time AS create_time,
+      oi.order_status AS order_status,
+      oi.order_source AS order_source,
+      oi.order_no AS morder_no,
+      oi.pay_time AS pay_time,
+      oi.pay_way AS pay_way,
+      oi.pay_type AS pay_type,
+      0 AS order_type,
+      oc.lc_num AS lc_num,
+      oc.vs_num AS vs_num 
+    FROM
+      (SELECT 
+        * 
+      FROM
+         order_info  WHERE has_sub = 0) oi  
+      LEFT JOIN order_contact oc 
+        ON oc.order_no = oi.order_no)tempinfo
+      LEFT JOIN (SELECT order_id  FROM order_store os WHERE os.store_id = -1  )tempstore
+        ON  tempinfo.id = tempstore.order_id ) 
+    UNION
+    (SELECT 
+      osi.id AS id,
+      osi.order_sub_no AS order_no,
+      oi.user_num AS user_num,
+      osi.actual_amount AS actual_amount,
+      osi.total_amount AS total_amount,
+      osi.create_time AS create_time,
+      osi.order_status AS order_status,
+      osi.order_source AS order_source,
+      oi.order_no AS morder_no,
+      oi.pay_time AS pay_time,
+      oi.pay_way AS pay_way,
+      oi.pay_type AS pay_type,
+      1 AS order_type,
+      oc.lc_num AS lc_num,
+      oc.vs_num AS vs_num ,
+      os.store_id AS store_id 
+    FROM
+      order_sub_info osi 
+      LEFT JOIN order_store os 
+      ON os.order_sub_no = osi.order_sub_no
+      LEFT JOIN order_info oi 
+        ON oi.id = osi.order_info_id 
+      LEFT JOIN order_contact oc 
+        ON oc.order_no = oi.order_no)
+  ) temp 
+  LEFT JOIN order_user ou 
+    ON temp.morder_no = ou.order_no  
+	<where>	
+	<!-- 订单信息主表的一些查询条件 -->						
+	<if test="createTime != null">
+		temp.create_time = #{createTime,jdbcType=TIMESTAMP}
+	</if>				
+	<if test="orderNo != null and orderNo !='' ">
+	 	and temp.order_no= #{orderNo,jdbcType=CHAR}
+	</if>
+	<if test="payType != null">
+		and temp.pay_type = #{payType,jdbcType=INTEGER}
+	</if>
+	<if test="payWay != null">
+		and temp.pay_way = #{payWay,jdbcType=INTEGER}
+	</if>		
+	<if test="orderSource != null">
+	 	and temp.order_source= #{orderSource,jdbcType=INTEGER}
+	</if>		
+	<if test="orderStatus != null">
+		and temp.order_status = #{orderStatus,jdbcType=INTEGER}
+	</if>   
+	and temp.store_id =-1
+	<!-- 以下是订单联系人的一些查询条件 -->
+	<!-- <if test="usNum !=null and usNum !=''">
+		and t2.us_num = #{usNum,jdbcType=CHAR}
+	</if>
+	<if test="vsNum !=null and vsNum !=''">
+		and t2.vs_num = #{vsNum,jdbcType=CHAR}
+	</if>
+	<if test="lcNum !=null and lcNum !=''">
+		and t2.lc_num = #{lcNum,jdbcType=CHAR}
+	</if> -->
+
+	<!-- 如果是模糊查询则需要使用以下sql语句 (传递的参数是list集合) -->	
+		<if test="usNumList !=null and usNumList.size() >0 " >	
+			and temp.user_num in
+			<foreach collection="usNumList" item="usNum" index="index" open="(" close=")" separator=",">
+				#{usNum}
+			</foreach>
+		</if>
+		<if test="vsNumList !=null and vsNumList.size() >0 " >
+			and temp.vs_num in	
+			<foreach collection="vsNumList" item="vsNum" index="index" open="(" close=")" separator=",">
+				#{vsNum}
+			</foreach>
+		</if>
+		<if test="lcNumList !=null and lcNumList.size() >0 " >
+			and temp.lc_num in	
+			<foreach collection="lcNumList" item="lcNum" index="index" open="(" close=")" separator=",">
+				#{lcNum}
+			</foreach>
+		</if>	
+				
+	</where> 
+		ORDER BY temp.create_time DESC		
+		limit  #{startIndex,jdbcType=INTEGER} , #{pageSize,jdbcType=INTEGER}
+</select> 
+	
+<!-- 多条件组合查询订单总记录数-->
+<select id="getCountByMulti" resultType="Integer"
+	parameterType="com.ync365.seed.bussiness.modules.order.bo.OrderSearch">
+	SELECT count(1) 
+FROM
+  (
+    (SELECT tempinfo.*,
+    CASE WHEN tempstore.order_id IS NULL THEN 3  
+    WHEN  tempstore.order_id IS NOT NULL THEN -1 END store_id 
+    FROM 
+(SELECT 
+      oi.id AS id,
+      oi.order_no AS order_no,
+      oi.user_num AS user_num,
+      oi.actual_amount AS actual_amount,
+      oi.total_amount AS total_amount,
+      oi.create_time AS create_time,
+      oi.order_status AS order_status,
+      oi.order_source AS order_source,
+      oi.order_no AS morder_no,
+      oi.pay_time AS pay_time,
+      oi.pay_way AS pay_way,
+      oi.pay_type AS pay_type,
+      0 AS order_type,
+      oc.lc_num AS lc_num,
+      oc.vs_num AS vs_num 
+    FROM
+      (SELECT 
+        * 
+      FROM
+         order_info  WHERE has_sub = 0) oi  
+      LEFT JOIN order_contact oc 
+        ON oc.order_no = oi.order_no)tempinfo
+      LEFT JOIN (SELECT order_id  FROM order_store os WHERE os.store_id = -1  )tempstore
+        ON  tempinfo.id = tempstore.order_id ) 
+    UNION
+    (SELECT 
+      osi.id AS id,
+      osi.order_sub_no AS order_no,
+      oi.user_num AS user_num,
+      osi.actual_amount AS actual_amount,
+      osi.total_amount AS total_amount,
+      osi.create_time AS create_time,
+      osi.order_status AS order_status,
+      osi.order_source AS order_source,
+      oi.order_no AS morder_no,
+      oi.pay_time AS pay_time,
+      oi.pay_way AS pay_way,
+      oi.pay_type AS pay_type,
+      1 AS order_type,
+      oc.lc_num AS lc_num,
+      oc.vs_num AS vs_num ,
+      os.store_id AS store_id 
+    FROM
+      order_sub_info osi 
+      LEFT JOIN order_store os 
+      ON os.order_sub_no = osi.order_sub_no
+      LEFT JOIN order_info oi 
+        ON oi.id = osi.order_info_id 
+      LEFT JOIN order_contact oc 
+        ON oc.order_no = oi.order_no)
+  ) temp 
+  LEFT JOIN order_user ou 
+    ON temp.morder_no = ou.order_no 
+	<where>	
+		<!-- 订单信息主表的一些查询条件 -->		 			
+		<if test="createTime != null">
+			temp.create_time = #{createTime,jdbcType=TIMESTAMP}
+		</if>				
+		<if test="orderNo != null and orderNo !='' ">
+		 	and temp.order_no= #{orderNo,jdbcType=CHAR}
+		</if>
+		<if test="payType != null">
+			and temp.pay_type = #{payType,jdbcType=INTEGER}
+		</if>
+		<if test="payWay != null">
+			and temp.pay_way = #{payWay,jdbcType=INTEGER}
+		</if>		
+		<if test="orderSource != null">
+		 	and temp.order_source= #{orderSource,jdbcType=INTEGER}
+		</if>		
+		<if test="orderStatus != null">
+			and temp.order_status = #{orderStatus,jdbcType=INTEGER}
+		</if>	
+		and temp.store_id =-1		
+		<!-- 以下是订单联系人的一些查询条件 -->
+		<!-- <if test="usNum !=null and usNum !=''">
+			and t2.us_num = #{usNum,jdbcType=CHAR}
+		</if>
+		<if test="vsNum !=null and vsNum !=''">
+			and t2.vs_num = #{vsNum,jdbcType=CHAR}
+		</if>
+		<if test="lcNum !=null and lcNum !=''">
+			and t2.lc_num = #{lcNum,jdbcType=CHAR}
+		</if> -->
+					
+	<!-- 如果是模糊查询则需要使用以下sql语句 (传递的参数是list集合)-->
+		<if test="usNumList !=null and usNumList.size() >0 " >	
+			and temp.user_num in
+			<foreach collection="usNumList" item="usNum" index="index" open="(" close=")" separator=",">
+				#{usNum}
+			</foreach>
+		</if>
+		<if test="vsNumList !=null and vsNumList.size() >0 " >
+			and temp.vs_num in	
+			<foreach collection="vsNumList" item="vsNum" index="index" open="(" close=")" separator=",">
+				#{vsNum}
+			</foreach>
+		</if>
+		<if test="lcNumList !=null and lcNumList.size() >0 " >
+			and temp.lc_num in	
+			<foreach collection="lcNumList" item="lcNum" index="index" open="(" close=")" separator=",">
+				#{lcNum}
+			</foreach>
+		</if>		
+	</where> 			
+</select> 
+<!-- 根据订单id查询订单及订单联系人信息 -->
+<select id="getOrderInfoByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT t1.*,t2.*,t3.* FROM order_info AS t1 
+	LEFT JOIN order_contact AS t2 ON t1.id = t2.id 
+	LEFT JOIN order_engineer AS t3 ON t1.id = t3.id  
+	where t1.id = #{Id,jdbcType=INTEGER} 
+</select>
+<!-- 根据子订单id查询订单及订单联系人信息 -->
+<select id="getSubOrderInfoByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT t1.*,t2.*,t3.* FROM order_sub_info AS t1 
+	LEFT JOIN order_contact AS t2 ON t1.order_info_id=t2.id
+	LEFT JOIN order_engineer AS t3 ON t1.order_info_id=t3.id
+	WHERE t1.id = #{subOrderId,jdbcType=INTEGER} 
+</select>
+
+<!-- *********************根据订单状态多条件组合查询订单列表******************* -->
+<select id="searchOrderByOrderStatus" resultMap="BaseResultMap"
+	parameterType="com.ync365.seed.bussiness.modules.order.bo.OrderSearch">		
+SELECT 
+	temp.id AS id,
+	temp.order_no AS order_no,
+	temp.user_num AS user_num,
+	temp.actual_amount AS actual_amount,
+	temp.total_amount AS total_amount,
+	temp.create_time AS create_time,
+	temp.order_status AS order_status,
+	temp.order_type AS order_type,
+	temp.pay_type AS pay_type,
+	temp.pay_way AS pay_way,
+	temp.pay_time AS pay_time,
+	temp.store_id AS store_id,
+	ou.username AS username,
+	ou.user_tel AS user_tel,
+	temp.lc_num AS lc_num,
+	temp.vs_num AS vs_num
+ FROM 
+	((SELECT 
+		oi.id AS id,
+		oi.order_no AS order_no,
+		oi.user_num AS user_num,
+		oi.actual_amount AS actual_amount,
+		oi.total_amount AS total_amount,
+		oi.create_time AS create_time,
+		oi.order_status AS order_status,
+		oi.order_no AS morder_no,	
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,	
+		0 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+		FROM 
+			(SELECT * FROM order_store os WHERE order_sub_no IS  NULL ) os 
+			LEFT JOIN  order_info oi ON oi.id = os.order_id 
+			LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+			WHERE os.store_id = -1
+			) 
+UNION	
+		(SELECT 
+		osi.id AS id,
+		osi.order_sub_no AS order_no,
+		oi.user_num AS user_num,
+		osi.actual_amount AS actual_amount,
+		osi.total_amount AS total_amount,
+		osi.create_time AS create_time,
+		osi.order_status AS order_status,
+		oi.order_no AS morder_no,
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,
+		1 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+		FROM  order_sub_info osi
+		LEFT JOIN order_store os ON os.order_sub_no = osi.order_sub_no
+		LEFT JOIN order_info oi  ON oi.id = osi.order_info_id 
+		LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+		WHERE os.store_id = -1
+		)
+	) AS temp
+	 LEFT JOIN order_user ou ON temp.morder_no=ou.order_no
+<where>	
+	<!-- 订单信息主表的一些查询条件 -->		 			
+	<if test="createTime != null">
+		temp.create_time = #{createTime,jdbcType=TIMESTAMP}
+	</if>				
+	<if test="orderNo != null and orderNo !='' ">
+	 	and temp.order_no= #{orderNo,jdbcType=CHAR}
+	</if>		
+	<if test="payWay != null">
+		and temp.pay_way = #{payWay,jdbcType=INTEGER}
+	</if>		
+	<if test="payTime != null">
+		and temp.pay_time = #{payTime,jdbcType=INTEGER}
+	</if>	
+	<if test="orderStatus !=null" >
+		and temp.order_status = #{orderStatus,jdbcType=INTEGER}	
+	</if> 		
+	<!-- 以下是订单联系人的一些查询条件 -->
+	<!-- <if test="usNum !=null and usNum !=''">
+		and t2.us_num = #{usNum,jdbcType=CHAR}
+	</if>
+	<if test="vsNum !=null and vsNum !=''">
+		and t2.vs_num = #{vsNum,jdbcType=CHAR}
+	</if>
+	-->	
+	<!-- 如果是模糊查询则需要使用以下sql语句 (传递的参数是list集合) -->	
+	<if test="usNumList !=null and usNumList.size() >0 " >	
+		and temp.user_num in
+		<foreach collection="usNumList" item="usNum" index="index" open="(" close=")" separator=",">
+			#{usNum}
+		</foreach>
+	</if>
+	<if test="vsNumList !=null and vsNumList.size() >0 " >
+		and temp.vs_num in	
+		<foreach collection="vsNumList" item="vsNum" index="index" open="(" close=")" separator=",">
+			#{vsNum}
+		</foreach>
+	</if>
+	<if test="lcNumList !=null and lcNumList.size() >0 " >
+		and temp.lc_num in	
+		<foreach collection="lcNumList" item="lcNum" index="index" open="(" close=")" separator=",">
+			#{lcNum}
+		</foreach>
+	</if>
+	
+</where> 		
+	ORDER BY temp.create_time DESC		
+		limit  #{startIndex,jdbcType=INTEGER} , #{pageSize,jdbcType=INTEGER}
+</select> 
+	
+<!-- *********************根据订单状态多条件组合查询订单记录总数******************* -->
+<select id="searchCountOrderByOrderStatus" resultType="Integer"
+	parameterType="com.ync365.seed.bussiness.modules.order.bo.OrderSearch">
+SELECT count(1)	
+ FROM 
+	((SELECT 
+		oi.id AS id,
+		oi.order_no AS order_no,
+		oi.user_num AS user_num,
+		oi.actual_amount AS actual_amount,
+		oi.total_amount AS total_amount,
+		oi.create_time AS create_time,
+		oi.order_status AS order_status,
+		oi.order_no AS morder_no,	
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,	
+		0 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+		FROM 
+			(SELECT * FROM order_store os WHERE order_sub_no IS  NULL ) os 
+			LEFT JOIN  order_info oi ON oi.id = os.order_id 
+			LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+			WHERE os.store_id = -1
+			) 
+UNION	
+		(SELECT 
+		osi.id AS id,
+		osi.order_sub_no AS order_no,
+		oi.user_num AS user_num,
+		osi.actual_amount AS actual_amount,
+		osi.total_amount AS total_amount,
+		osi.create_time AS create_time,
+		osi.order_status AS order_status,
+		oi.order_no AS morder_no,
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,
+		1 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+		FROM  order_sub_info osi
+		LEFT JOIN order_store os ON os.order_sub_no = osi.order_sub_no
+		LEFT JOIN order_info oi  ON oi.id = osi.order_info_id 
+		LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+		WHERE os.store_id = -1
+		)
+	) AS temp
+	 LEFT JOIN order_user ou ON temp.morder_no=ou.order_no
+	<where>	
+	<!-- 订单信息主表的一些查询条件 -->		 			
+		<if test="createTime != null">
+			temp.create_time = #{createTime,jdbcType=TIMESTAMP}
+		</if>				
+		<if test="orderNo != null and orderNo !='' ">
+		 	and temp.order_no= #{orderNo,jdbcType=CHAR}
+		</if>		
+		<if test="payWay != null">
+			and temp.pay_way = #{payWay,jdbcType=INTEGER}
+		</if>		
+		<if test="payTime != null">
+			and temp.pay_time = #{payTime,jdbcType=INTEGER}
+		</if>	
+		<if test="orderStatus !=null" >
+			and temp.order_status = #{orderStatus,jdbcType=INTEGER}	
+		</if>		
+		<!-- 以下是订单联系人的一些查询条件 -->
+		<!-- <if test="usNum !=null and usNum !=''">
+			and t2.us_num = #{usNum,jdbcType=CHAR}
+		</if>
+		<if test="vsNum !=null and vsNum !=''">
+			and t2.vs_num = #{vsNum,jdbcType=CHAR}
+		</if>
+		 -->		
+	<!-- 如果是模糊查询则需要使用以下sql语句 (传递的参数是list集合) -->	
+		<if test="usNumList !=null and usNumList.size() >0 " >	
+			and temp.user_num in
+			<foreach collection="usNumList" item="usNum" index="index" open="(" close=")" separator=",">
+				#{usNum}
+			</foreach>
+		</if>
+		<if test="vsNumList !=null and vsNumList.size() >0 " >
+			and temp.vs_num in	
+			<foreach collection="vsNumList" item="vsNum" index="index" open="(" close=")" separator=",">
+				#{vsNum}
+			</foreach>
+		</if>
+		<if test="lcNumList !=null and lcNumList.size() >0 " >
+			and temp.lc_num in	
+			<foreach collection="lcNumList" item="lcNum" index="index" open="(" close=")" separator=",">
+				#{lcNum}
+			</foreach>
+		</if>
+	</where>
+</select>	
+	<!-- 多条件组合查询入驻商订单 -->
+	<select id="searchPopOrder" parameterType="com.ync365.seed.bussiness.modules.order.bo.OrderSearch" resultMap="BaseResultMap">
+SELECT 
+	temp.id AS id,
+	temp.order_no AS order_no,
+	temp.user_num AS user_num,
+	temp.actual_amount AS actual_amount,
+	temp.total_amount AS total_amount,
+	temp.create_time AS create_time,
+	temp.order_status AS order_status,
+	temp.order_type AS order_type,
+	temp.pay_type AS pay_type,
+	temp.pay_way AS pay_way,
+	temp.pay_time AS pay_time,
+	temp.order_source AS order_source,
+	ou.username AS username,
+	ou.user_tel AS user_tel,
+	temp.store_id AS store_id,
+	temp.lc_num AS lc_num,
+	temp.vs_num AS vs_num
+FROM 
+	((SELECT 
+		oi.id AS id,
+		oi.order_no AS order_no,
+		oi.user_num AS user_num,
+		oi.actual_amount AS actual_amount,
+		oi.total_amount AS total_amount,
+		oi.create_time AS create_time,
+		oi.order_status AS order_status,
+		oi.order_no AS morder_no,
+		oi.order_source AS order_source,
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,
+		0 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+	 FROM 
+		(SELECT * FROM order_store os WHERE order_sub_no IS  NULL AND store_id !=-1) os LEFT JOIN 
+		 order_info oi ON oi.id = os.order_id 
+		LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+		) 
+UNION	
+	(SELECT 
+		osi.id AS id,
+		osi.order_sub_no AS order_no,
+		oi.user_num AS user_num,
+		osi.actual_amount AS actual_amount,
+		osi.total_amount AS total_amount,
+		osi.create_time AS create_time,
+		osi.order_status AS order_status,
+		oi.order_no AS morder_no,
+		oi.order_source AS order_source,
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,
+		1 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+		 FROM
+		  order_sub_info osi
+		LEFT JOIN order_store os ON os.order_sub_no = osi.order_sub_no
+		 LEFT JOIN order_info oi  ON oi.id = osi.order_info_id 
+		LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+		WHERE os.store_id != -1)
+	  )AS temp
+	 LEFT JOIN order_user ou ON temp.morder_no=ou.order_no
+ 		<where>	
+			<!-- 订单信息主表的一些查询条件 -->		 			
+			<if test="createTime != null">
+				temp.create_time = #{createTime,jdbcType=TIMESTAMP}
+			</if>				
+			<if test="orderNo != null and orderNo !='' ">
+			 	and temp.order_no= #{orderNo,jdbcType=CHAR}
+			</if>
+			<if test="payType != null">
+				and temp.pay_type = #{payType,jdbcType=INTEGER}
+			</if>
+			<if test="payWay != null">
+				and temp.pay_way = #{payWay,jdbcType=INTEGER}
+			</if>		
+			<if test="orderSource != null">
+		 		and temp.order_source= #{orderSource,jdbcType=INTEGER}
+			</if>		
+			<if test="orderStatus != null">
+				and temp.order_status = #{orderStatus,jdbcType=INTEGER}
+			</if>	  
+			<if test="payTime != null">
+				and temp.pay_time = #{payTime,jdbcType=TIMESTAMP}
+			</if>	  
+			<!-- 以下是订单联系人的一些查询条件 -->
+			<if test="usNumList !=null and usNumList.size() >0 " >	
+			and temp.user_num in
+			<foreach collection="usNumList" item="usNum" index="index" open="(" close=")" separator=",">
+				#{usNum}
+			</foreach>
+			</if>
+			<if test="vsNumList !=null and vsNumList.size() >0 " >
+				and temp.vs_num in	
+				<foreach collection="vsNumList" item="vsNum" index="index" open="(" close=")" separator=",">
+					#{vsNum}
+				</foreach>
+			</if>
+			<if test="lcNumList !=null and lcNumList.size() >0 " >
+				and temp.lc_num in	
+				<foreach collection="lcNumList" item="lcNum" index="index" open="(" close=")" separator=",">
+					#{lcNum}
+				</foreach>
+			</if>
+			 
+		</where>
+		ORDER BY temp.create_time DESC		
+		limit  #{startIndex,jdbcType=INTEGER} , #{pageSize,jdbcType=INTEGER}	   
+		
+	</select>
+<!-- 多条件组合查询入驻商订单记录数 -->
+<select id="searchPopOrderCount" parameterType="com.ync365.seed.bussiness.modules.order.bo.OrderSearch" resultType="Integer">	
+SELECT count(1)	
+FROM 
+	((SELECT 
+		oi.id AS id,
+		oi.order_no AS order_no,
+		oi.user_num AS user_num,
+		oi.actual_amount AS actual_amount,
+		oi.total_amount AS total_amount,
+		oi.create_time AS create_time,
+		oi.order_status AS order_status,
+		oi.order_no AS morder_no,
+		oi.order_source AS order_source,
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,
+		0 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+	 FROM 
+		(SELECT * FROM order_store os WHERE order_sub_no IS  NULL AND store_id !=-1) os LEFT JOIN 
+		 order_info oi ON oi.id = os.order_id 
+		LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+		) 
+UNION	
+	(SELECT 
+		osi.id AS id,
+		osi.order_sub_no AS order_no,
+		oi.user_num AS user_num,
+		osi.actual_amount AS actual_amount,
+		osi.total_amount AS total_amount,
+		osi.create_time AS create_time,
+		osi.order_status AS order_status,
+		oi.order_no AS morder_no,
+		oi.order_source AS order_source,
+		oi.pay_type AS pay_type,
+		oi.pay_way AS pay_way,
+		oi.pay_time AS pay_time,
+		os.store_id AS store_id,
+		1 AS order_type,
+		oc.lc_num AS lc_num,
+		oc.vs_num AS vs_num
+		 FROM
+		  order_sub_info osi
+		LEFT JOIN order_store os ON os.order_sub_no = osi.order_sub_no
+		 LEFT JOIN order_info oi  ON oi.id = osi.order_info_id 
+		LEFT JOIN order_contact oc ON oc.order_no = oi.order_no
+		WHERE os.store_id != -1)
+	  )AS temp
+	 LEFT JOIN order_user ou ON temp.morder_no=ou.order_no
+	 <where>	
+		<!-- 订单信息主表的一些查询条件 -->		 			
+		<if test="createTime != null">
+			temp.create_time = #{createTime,jdbcType=TIMESTAMP}
+		</if>				
+		<if test="orderNo != null and orderNo !='' ">
+		 	and temp.order_no= #{orderNo,jdbcType=CHAR}
+		</if>
+		<if test="payType != null">
+			and temp.pay_type = #{payType,jdbcType=INTEGER}
+		</if>
+		<if test="payWay != null">
+			and temp.pay_way = #{payWay,jdbcType=INTEGER}
+		</if>	
+		<if test="orderSource != null">
+		 	and temp.order_source= #{orderSource,jdbcType=INTEGER}
+		</if>		
+		<if test="orderStatus != null">
+			and temp.order_status = #{orderStatus,jdbcType=INTEGER}
+		</if>	
+		<!-- 以下是订单联系人的一些查询条件 -->
+		<if test="usNumList !=null and usNumList.size() >0 " >	
+			and temp.user_num in
+			<foreach collection="usNumList" item="usNum" index="index" open="(" close=")" separator=",">
+				#{usNum}
+			</foreach>
+		</if>
+		<if test="vsNumList !=null and vsNumList.size() >0 " >
+			and temp.vs_num in	
+			<foreach collection="vsNumList" item="vsNum" index="index" open="(" close=")" separator=",">
+				#{vsNum}
+			</foreach>
+		</if>
+		<if test="lcNumList !=null and lcNumList.size() >0 " >
+			and temp.lc_num in	
+			<foreach collection="lcNumList" item="lcNum" index="index" open="(" close=")" separator=",">
+				#{lcNum}
+			</foreach>
+		</if>		
+	</where>	 
+</select>		
+</mapper>

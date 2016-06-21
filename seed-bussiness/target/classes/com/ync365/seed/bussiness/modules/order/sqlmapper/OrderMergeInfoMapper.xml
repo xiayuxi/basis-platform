@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderMergeInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderMergeInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_merge_no" property="orderMergeNo" jdbcType="CHAR" />
+    <result column="user_num" property="userNum" jdbcType="CHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="goods_amount" property="goodsAmount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_merge_no, user_num, username, create_time, order_status, goods_amount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_merge_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_merge_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeInfo" useGeneratedKeys="true" keyProperty="id">
+    insert into order_merge_info (id, order_merge_no, user_num, 
+      username, create_time, order_status, 
+      goods_amount)
+    values (#{id,jdbcType=INTEGER}, #{orderMergeNo,jdbcType=CHAR}, #{userNum,jdbcType=CHAR}, 
+      #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=INTEGER}, 
+      #{goodsAmount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeInfo" useGeneratedKeys="true" keyProperty="id" >
+    insert into order_merge_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderMergeNo != null" >
+        order_merge_no,
+      </if>
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="orderStatus != null" >
+        order_status,
+      </if>
+      <if test="goodsAmount != null" >
+        goods_amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderMergeNo != null" >
+        #{orderMergeNo,jdbcType=CHAR},
+      </if>
+      <if test="userNum != null" >
+        #{userNum,jdbcType=CHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null" >
+        #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="goodsAmount != null" >
+        #{goodsAmount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeInfo" >
+    update order_merge_info
+    <set >
+      <if test="orderMergeNo != null" >
+        order_merge_no = #{orderMergeNo,jdbcType=CHAR},
+      </if>
+      <if test="userNum != null" >
+        user_num = #{userNum,jdbcType=CHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null" >
+        order_status = #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="goodsAmount != null" >
+        goods_amount = #{goodsAmount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeInfo" >
+    update order_merge_info
+    set order_merge_no = #{orderMergeNo,jdbcType=CHAR},
+      user_num = #{userNum,jdbcType=CHAR},
+      username = #{username,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      order_status = #{orderStatus,jdbcType=INTEGER},
+      goods_amount = #{goodsAmount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

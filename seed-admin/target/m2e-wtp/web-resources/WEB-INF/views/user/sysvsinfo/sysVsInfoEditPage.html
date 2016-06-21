@@ -1,0 +1,226 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	
+	<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+	
+	<!--验证js-->
+	<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+	<script type="text/javascript" src="${staticCtx}/validate/page/user/sysVsInfoEditPage.js"></script>
+	
+	<script type="text/javascript">
+		var regionNum_ = null;
+		$(function () {
+			regionPlugin.init("${ctx}");
+    		regionPlugin.regionInitParam({
+    			provinceId:'address_provinceId',
+    			cityId:'address_cityId',
+    			countyId:'address_countyId',
+    			townId:'address_townId',
+    			villageId:'address_villageId',
+    			defaultVillageId:'${vsInfoBO.address!''}'
+			});
+			<#if vsInfoBO.serviceDistincts??>
+	    		<#list vsInfoBO.serviceDistincts as serviceDistinct>
+		    		regionPlugin.regionInitParam({
+		    			provinceId:'provinceRegion_${serviceDistinct_index}',
+		    			cityId:'cityId_${serviceDistinct_index}',
+		    			countyId:'countyId_${serviceDistinct_index}',
+		    			townId:'townId_${serviceDistinct_index}',
+		    			villageId:'villageId_${serviceDistinct_index}',
+		    			defaultVillageId:'${serviceDistinct}'
+					});
+		    		$('#formId').validator("setField", "serviceDistincts[${serviceDistinct_index}]", "区域:required;uniquenessRegion;");
+	    		</#list>
+	    		regionNum_ = ${vsInfoBO.serviceDistincts?size};
+	    	</#if>
+			$('#backid').click(function(){
+					history.back();
+			 });
+			$('#submitForm').click(function(){
+				$("#formId").submit();
+			 });
+		});
+		function addServiceDistinct(){
+			if(!regionNum_){
+				regionNum_ = $("#serviceDistinctDiv").find("select").length;
+			}
+			$("#serviceDistinctDiv").append('<div><select id="provinceRegion_'+regionNum_+'"></select>'+
+					'<select id="cityId_'+regionNum_+'"></select>'+
+					'<select id="countyId_'+regionNum_+'"></select>'+
+					'<select id="townId_'+regionNum_+'"></select>'+
+					'<select id="villageId_'+regionNum_+'" name="serviceDistincts['+regionNum_+']"></select><br/><a onclick="$(this).parent().remove()">删除</a></div>');
+			regionPlugin.regionInitParam({
+    			provinceId:'provinceRegion_'+regionNum_,
+    			cityId:'cityId_'+regionNum_,
+    			countyId:'countyId_'+regionNum_,
+    			townId:'townId_'+regionNum_,
+    			villageId:'villageId_'+regionNum_
+			});
+			$('#formId').validator("setField", "serviceDistincts["+regionNum_+"]", "区域:required;uniquenessRegion;");
+			regionNum_++;
+		}
+		function validateMobileRepeat(mobile){
+			var boolMobile = false;
+			$.ajax({
+				type:"get",
+				url:"${ctx}/user/validateMobileRepeat?mobile="+mobile+"&userNum=${vsInfoBO.userNum!''}",
+				async:false,
+				success : function(data){
+					if(data=="true"){
+						boolMobile=true;
+					}
+				}
+			});
+			return boolMobile;
+		}
+	</script>
+ </HEAD>
+
+<body>
+	<div style="margin-left: 2px">
+	<form action="${ctx}/sysvsinfo/edit" method="post" id="formId">
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td >名称</td>
+			        <td><input name="name" value="${vsInfoBO.name!''}"/></td>
+			        <td >手机号</td>
+			        <td><input name="userMobile" value="${vsInfoBO.userMobile!''}"/></td>
+			    </tr> 
+			    <tr>
+			        <td>家庭住址</td>
+			        <td colspan="3">
+			        	<select id="address_provinceId"></select>
+			        	<select id="address_cityId"></select>
+			        	<select id="address_countyId"></select>
+			        	<select id="address_townId"></select>
+			        	<select id="address_villageId" name="address"></select>
+			        	<input name="addressDetail" value="${vsInfoBO.addressDetail!''}"/>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td>座机</td>
+			        <td><input name="telephone" value="${vsInfoBO.telephone!''}"/></td>
+			        <td >LC编号</td>
+			        <td><input name="userNum" value="${vsInfoBO.userNum!''}" type="hidden"/>${vsInfoBO.userNum!''}</td>
+			    </tr>
+			    <tr>
+			    	<td>用户名</td>
+			        <td>${vsInfoBO.userLoginName!''}</td>
+			        <td >从业年限</td>
+			        <td><input name="workYear" value="${vsInfoBO.workYear!''}"/></td>
+			    </tr>
+			    <tr>
+			        <td >身份证号</td>
+			        <td><input name="idCard" value="${vsInfoBO.idCard!''}"/></td>
+			   
+			        <td >本村农地</td>
+			        <td><input name="localCroplandArea" value="${vsInfoBO.localCroplandArea!''}"/>亩</td>
+			    </tr>
+			    <tr>
+			        <td >本村农户</td>
+			        <td>${vsInfoBO.localFarmerCount!''}</td>
+			    	<td >注册时间</td>
+			        <td>
+			        	<#if vsInfoBO.createTime??>
+			        		${vsInfoBO.createTime?string("yyyy-MM-dd HH:mm:ss")!''}
+			        	</#if>
+			        </td>
+			    </tr>
+			    <tr>
+			    	<td>生日</td>
+			    	<td>
+			    		<#if vsInfoBO.birthday??>
+			        		<input name="birthday" value="${vsInfoBO.birthday?string("yyyy-MM-dd")}" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})" readonly="readonly"/>
+			        	</#if>
+			    	</td>
+			    </tr>
+			    <tr>
+			    	<td >从事工作</td>
+			        <td colspan="3">
+			        <#if sysDoWorkList??>
+			        <#if vsInfoBO.doworks??>
+						<#list sysDoWorkList as sysDoWork>
+							<input id="sysUserGrowKinds_${sysDoWork_index}" name="doworks[${sysDoWork_index}]" type="checkbox" value="${sysDoWork.workName}"
+					        <#list vsInfoBO.doworks as dowork>
+					        	<#if dowork==sysDoWork.workName>
+					        	checked="checked"
+					        	</#if>
+					        </#list>
+					        />${sysDoWork.workName}&nbsp;&nbsp;
+					    </#list>
+			        </#if>
+			        </#if>
+			        </td>
+			    </tr>
+			    <tr>
+			    	<td >服务区域</td>
+			    	<td colspan="3">
+			    		<div id="serviceDistinctDiv">
+			    		<#if vsInfoBO.serviceDistincts??>
+			        		<#list vsInfoBO.serviceDistincts as serviceDistinct>
+			        			<div>
+			        			<select id="provinceRegion_${serviceDistinct_index}"></select>
+			        			<select id="cityId_${serviceDistinct_index}"></select>
+			        			<select id="countyId_${serviceDistinct_index}"></select>
+			        			<select id="townId_${serviceDistinct_index}"></select>
+			        			<select id="villageId_${serviceDistinct_index}" name="serviceDistincts[${serviceDistinct_index}]"></select>
+			        			<br/>
+			        			<a onclick="$(this).parent().remove()">删除</a>
+			        			</div>
+			        		</#list>
+			        	</#if>
+			        	</div>
+			        	<button type="button" onclick="addServiceDistinct()">新增服务区域</button>
+			    	</td>
+			    </tr>
+			</table>
+		</form>
+	</div>
+		<div style="margin-left: 2px">
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>LC编号：</td>
+				<td>${vsInfoBO.lcNum!''}</td>
+				<td>联系人：</td>
+				<td>${vsInfoBO.lcInfoName!''}</td>
+				<td>手机号：</td>
+				<td>${vsInfoBO.lcMobile!''}</td>
+			</tr>
+			<tr>
+				<td>SE编号：</td>
+				<td>${vsInfoBO.seNum!''}</td>
+				<td>联系人：</td>
+				<td>${vsInfoBO.seInfoName!''}</td>
+				<td>手机号：</td>
+				<td>${vsInfoBO.seMobile!''}</td>
+			</tr>
+			<tr>
+				<td>A+编号：</td>
+				<td>${vsInfoBO.aNum!''}</td>
+				<td>联系人：</td>
+				<td>${vsInfoBO.aInfoName!''}</td>
+				<td>手机号：</td>
+				<td>${vsInfoBO.aMobile!''}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div style="margin-left: 20px">
+	<@shiro.hasPermission name="vs_user_edit_save">
+		<input type="submit" class="btn btn-success" value="保存" name="submitForm" id="submitForm"/>
+	</@shiro.hasPermission>
+		<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+	</div>
+</body>
+</html>

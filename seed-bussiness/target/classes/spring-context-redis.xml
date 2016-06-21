@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<description>Jedis Configuration</description>
+
+	<bean id="userNumGeneratorTemplate" class="com.ync365.seed.commons.redis.JedisTemplate">
+		<constructor-arg ref="yncJedisPool"></constructor-arg>
+	</bean>
+	<bean id="yncJedisPool" class="com.ync365.seed.commons.redis.pool.JedisDirectPool">
+		<constructor-arg index="0" value="yncRedis1" />
+		<constructor-arg index="1" ref="yncHostAndPort" />
+		<constructor-arg index="2" ref="jedisPoolConfig"></constructor-arg>
+	</bean>
+	<bean id="yncHostAndPort" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg index="0" value="192.168.98.65" />
+		<constructor-arg index="1" value="6379" type="int" />
+	</bean>
+		<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="300" /> <!-- 最大能够保持idel状态的对象数 -->
+		<property name="maxTotal" value="60000" /> <!-- 最大分配的对象数 -->
+		<!-- 获得一个jedis实例的时候是否检查连接可用性（ping()） -->
+		<property name="testOnBorrow" value="true" />
+		<!-- return 一个jedis实例给pool时，是否检查连接可用性（ping()） -->
+		<property name="testOnReturn" value="true" />
+		<!-- idle状态监测用异步线程evict进行检查， -->
+		<property name="testWhileIdle" value="true" />
+		<!-- 一次最多evict的pool里的jedis实例个数 -->
+		<property name="numTestsPerEvictionRun" value="10" />
+	</bean>
+</beans>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.ad.dao.NavigationDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.ad.entity.Navigation" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="link" property="link" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="INTEGER" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+     <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+     <result column="is_del" property="isDel" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, link, type, enable, sort,parent_id,is_del
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from navigation
+    where id = #{id,jdbcType=INTEGER} and is_del = 0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from navigation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <update id="deleteById" parameterType="java.lang.Integer" >
+    update  navigation
+    set is_del = 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Navigation" >
+    insert into navigation (id, name, link, 
+      type, enable, sort,parent_id,is_del)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{link,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{enable,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER},#{parentId,jdbcType=INTEGER},#{isDel,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Navigation" >
+    insert into navigation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="link != null" >
+        link,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="link != null" >
+        #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+       <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+       <if test="isDel != null" >
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Navigation" >
+    update navigation
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="link != null" >
+        link = #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+       <if test="parentId != null" >
+        parentId = #{parentId,jdbcType=INTEGER},
+      </if>
+       <if test="isDel != null" >
+        isDel = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Navigation" >
+    update navigation
+    set name = #{name,jdbcType=VARCHAR},
+      link = #{link,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=INTEGER},
+      sort = #{sort,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectNavigationList" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from navigation
+    where enable = 1 and is_del=0
+  </select>
+   <select id="selectNavigationCategoryList" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from navigation
+    where enable = 1 and type = 0 and is_del = 0
+  </select>
+     <!-- 分页查询 -->
+   <select id="selectPage" resultMap="BaseResultMap" parameterType="map">
+		select 
+			<include refid="Base_Column_List" />
+		from navigation
+		where is_del = 0
+		limit #{startIndex}  ,   #{pageSize}
+		
+  </select>
+
+  <!-- 按条件查询记录数 -->
+  <select id="selectPageCount" resultType="Integer" parameterType="map">
+	select count(1) cnt from navigation where is_del = 0
+  </select>
+  
+  
+</mapper>

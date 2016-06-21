@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.promotion.dao.PromotionGoodsSkuMapperManual">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGoodsSku">
+		<id column="promotion_goods_sku_id" property="promotionGoodsSkuId"
+			jdbcType="INTEGER" />
+		<result column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+		<result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+		<result column="sku_id" property="skuId" jdbcType="INTEGER" />
+		<result column="promotion_price" property="promotionPrice"
+			jdbcType="DECIMAL" />
+		<result column="discount" property="discount" jdbcType="DECIMAL" />
+		<result column="village_expense" property="villageExpense"
+			jdbcType="DECIMAL" />
+		<result column="platform_expense" property="platformExpense"
+			jdbcType="DECIMAL" />
+		<result column="a_expense" property="aExpense" jdbcType="DECIMAL" />
+		<result column="manpowerCosts" property="manpowercosts"
+			jdbcType="DECIMAL" />
+		<result column="lc_expense" property="lcExpense" jdbcType="DECIMAL" />
+		<result column="integral_expense" property="integralExpense"
+			jdbcType="DECIMAL" />
+		<result column="engineer_expense" property="engineerExpense"
+			jdbcType="DECIMAL" />
+		<result column="promotion_amount" property="promotionAmount"
+			jdbcType="DECIMAL" />
+		<result column="create_user_num" property="createUserNum"
+			jdbcType="CHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_num" property="updateUserNum"
+			jdbcType="CHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		promotion_goods_sku_id, promotion_id, goods_id, sku_id, promotion_price, discount,
+		village_expense, platform_expense, a_expense, manpowerCosts,
+		lc_expense, integral_expense,
+		engineer_expense, promotion_amount, create_user_num, create_time, update_user_num,
+		update_time, is_delete
+	</sql>
+	<!-- create by sunyf 根据活动类型查询活动商品 -->
+	<select id="searchByPromotionId" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from promotion_goods_sku
+		<where>
+			promotion_id =#{promotionId}
+			<if test="isDelete != null ">
+				and is_delete = #{isDelete}
+			</if>
+		</where>
+	</select>
+	<!-- create by sunyf 分页查找 根据活动类型查询活动商品 -->
+	<select id="searchPageByPromotionId" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from promotion_goods_sku
+
+		<where>
+			promotion_id =#{promotionId}
+			<if test="isDelete != null">
+				and is_delete = #{isDelete}
+			</if>
+		</where>
+		limit
+		#{pageIndex}
+		, #{pageSize}
+	</select>
+	<!-- create by sunyf 按条件查询活动商品总数 -->
+	<select id="searchPageCount" resultType="java.lang.Integer"
+		parameterType="map">
+		select count(*) from promotion_goods_sku
+		<where>
+			promotion_id =#{promotionId}
+			<if test="isDelete != null ">
+				and is_delete = #{isDelete}
+			</if>
+		</where>
+	</select>
+	<!-- create by sunyf 根据promotionid 将 活动商品表中的全部记录置为已删除 -->
+	<update id="updateIsdeleteByPromotionId" parameterType="map">
+		update promotion_goods_sku
+		<set>
+			<if test="promotionId != null">
+				is_delete = #{idDelete,jdbcType=INTEGER},
+			</if>
+		</set>
+		where promotion_id = #{promotionId,jdbcType=INTEGER}
+	</update>
+	<!-- create by sunyf 批量插入活动商品 -->
+	<insert id="insertPromotionGoodsSkuBatch" parameterType="list"
+		useGeneratedKeys="true">
+		<selectKey resultType="int" keyProperty="promotionGoodsSkuId"
+			order="AFTER">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO promotion_goods_sku
+		(promotion_id,
+		goods_id, sku_id,
+		promotion_price,
+		discount, village_expense, platform_expense,
+		lc_expense, vantages_amount, promotion_amount,
+		create_user_num,
+		create_time, update_user_num,
+		update_time, is_delete) values
+
+		<foreach collection="list" item="item" separator=",">
+			(#{item.promotionId,jdbcType=INTEGER},
+			#{item.goodsId,jdbcType=INTEGER},
+			#{item.skuId,jdbcType=INTEGER},
+			#{item.promotionPrice,jdbcType=DECIMAL},
+			#{item.discount,jdbcType=REAL},
+			#{item.villageExpense,jdbcType=DECIMAL},
+			#{item.platformExpense,jdbcType=DECIMAL},
+			#{item.lcExpense,jdbcType=DECIMAL},
+			#{item.vantagesAmount,jdbcType=DECIMAL},
+			#{item.promotionAmount,jdbcType=DECIMAL},
+			#{item.createUserNum,jdbcType=CHAR},
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.updateUserNum,jdbcType=CHAR},
+			#{item.updateTime,jdbcType=TIMESTAMP},
+			#{item.isDelete,jdbcType=INTEGER})
+		</foreach>
+	</insert>
+	<!-- create by sunyf 根据商家ID查询参加参加活动商品列表 -->
+	<select id="searchIsPromotionSku" resultType="String"
+		parameterType="map">
+		select
+		sku_id
+		from promotion_goods_sku
+		<where>
+			1=1
+			<if test="isDelete != null ">
+				and is_delete = #{isDelete}
+			</if>
+		</where>
+	</select>
+	<!-- create by sunyf 根据promotionId、skuId返回商品信息 -->
+	<select id="selectByPromotionIdAndSkuId" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from promotion_goods_sku
+		<where>
+			1=1
+			<if test="promotionId != null ">
+				and promotion_id = #{promotionId,jdbcType=INTEGER}
+			</if>
+			<if test="skuId != null ">
+				and sku_id = #{skuId,jdbcType=INTEGER}
+			</if>
+		</where>
+
+	</select>
+	<!-- create by sunyf 根据promotionGoodSkuId 将 活动商品表中的全部记录置为已删除 -->
+	<update id="updatePromotionGoodIsDel" parameterType="map">
+		update promotion_goods_sku
+		<set>
+			<if test="isDelete != null ">
+				is_delete = #{isDelete,jdbcType=INTEGER},
+			</if>
+			<if test= "discount != null">
+				discount = #{discount,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where promotion_goods_sku_id = #{promotionGoodsSkuId,jdbcType=INTEGER}
+	</update>
+	<!-- create by sunyf 根据promotionGoodSkuId 将 活动商品表中的全部记录置为已删除 -->
+	<update id="updateHoldGold" parameterType="map">
+		update promotion_goods_sku
+		<set>
+			<if test="villageExpense != null">
+				 village_expense = #{villageExpense,jdbcType=DECIMAL},
+			</if>
+			<if test="platformExpense != null">
+				 platform_expense = #{platformExpense,jdbcType=DECIMAL},
+			</if>
+			<if test="aExpense != null">
+				 a_expense = #{aExpense,jdbcType=DECIMAL},
+			</if>
+			<if test="manpowercosts != null">
+				manpowerCosts = #{manpowercosts,jdbcType=DECIMAL},
+			</if>
+			<if test="lcExpense != null">
+				 lc_expense = #{lcExpense,jdbcType=DECIMAL},
+			</if>
+			<if test="integralExpense != null">
+				  integral_expense = #{integralExpense,jdbcType=DECIMAL},
+			</if>
+			<if test="engineerExpense != null">
+				engineer_expense = #{engineerExpense,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where promotion_goods_sku_id = #{promotionGoodsSkuId,jdbcType=INTEGER}
+	</update>
+	<!-- create by sunyf 根据日期查询返回期间参加活动的商品 -->
+	<select id="searchIsPromotionSkuByDate" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from promotion_goods_sku b
+		<where>
+			b.promotion_id in
+			(select
+			a.promotion_id
+			from promotion a
+			WHERE
+			1=1 and
+			(0=1
+			<if test="startTime != null">
+				or a.end_time &gt; #{startTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="endTime != null">
+				or a.start_time &lt; #{endTime,jdbcType=TIMESTAMP}
+			</if>
+			)
+			and (0=1
+			<if test="status != null">
+				or a.status = #{status}
+			</if>
+			<if test="status1 != null">
+				or a.status = #{status1}
+			</if>
+			)
+			)
+			<if test="isDelete != null ">
+				and is_delete = #{isDelete}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findPromGoodsSkusBySkuIds" resultMap="BaseResultMap" parameterType="hashmap">  
+		select
+			<include refid="Base_Column_List" />
+		from promotion_goods_sku
+		<where>
+			<if test="promotionId != null ">
+				promotion_id = #{promotionId}
+			</if>
+			<if test="isDelete != null ">
+				and is_delete = #{isDelete}
+			</if>
+			<if test="skuIds != null and skuIds != ''  ">
+				and sku_id in 
+				<foreach collection="skuIds" item="skuId"  open="(" separator="," close=")">  
+					#{skuId}  
+				</foreach>  
+			</if>
+		</where>
+	</select>  
+</mapper>

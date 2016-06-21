@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.promotion.dao.PromotionCouponDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.promotion.entity.PromotionCoupon" >
+    <id column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+    <result column="coupon_channel" property="couponChannel" jdbcType="INTEGER" />
+    <result column="coupon_type" property="couponType" jdbcType="INTEGER" />
+    <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL" />
+    <result column="coupon_count" property="couponCount" jdbcType="INTEGER" />
+    <result column="coupon_used_count" property="couponUsedCount" jdbcType="INTEGER" />
+    <result column="grant_start_time" property="grantStartTime" jdbcType="TIMESTAMP" />
+    <result column="grant_end_time" property="grantEndTime" jdbcType="TIMESTAMP" />
+    <result column="limited_amount" property="limitedAmount" jdbcType="DECIMAL" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+    <result column="coupon_all_amount" property="couponAllAmount" jdbcType="DECIMAL" />
+    <result column="coupon_used_amount" property="couponUsedAmount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    promotion_id, coupon_channel, coupon_type, coupon_amount, coupon_count, coupon_used_count, 
+    grant_start_time, grant_end_time, limited_amount, is_delete, coupon_all_amount, coupon_used_amount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from promotion_coupon
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from promotion_coupon
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionCoupon" >
+    insert into promotion_coupon (promotion_id, coupon_channel, coupon_type, 
+      coupon_amount, coupon_count, coupon_used_count, 
+      grant_start_time, grant_end_time, limited_amount, 
+      is_delete, coupon_all_amount, coupon_used_amount
+      )
+    values (#{promotionId,jdbcType=INTEGER}, #{couponChannel,jdbcType=INTEGER}, #{couponType,jdbcType=INTEGER}, 
+      #{couponAmount,jdbcType=DECIMAL}, #{couponCount,jdbcType=INTEGER}, #{couponUsedCount,jdbcType=INTEGER}, 
+      #{grantStartTime,jdbcType=TIMESTAMP}, #{grantEndTime,jdbcType=TIMESTAMP}, #{limitedAmount,jdbcType=DECIMAL}, 
+      #{isDelete,jdbcType=INTEGER}, #{couponAllAmount,jdbcType=DECIMAL}, #{couponUsedAmount,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionCoupon" >
+    insert into promotion_coupon
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="promotionId != null" >
+        promotion_id,
+      </if>
+      <if test="couponChannel != null" >
+        coupon_channel,
+      </if>
+      <if test="couponType != null" >
+        coupon_type,
+      </if>
+      <if test="couponAmount != null" >
+        coupon_amount,
+      </if>
+      <if test="couponCount != null" >
+        coupon_count,
+      </if>
+      <if test="couponUsedCount != null" >
+        coupon_used_count,
+      </if>
+      <if test="grantStartTime != null" >
+        grant_start_time,
+      </if>
+      <if test="grantEndTime != null" >
+        grant_end_time,
+      </if>
+      <if test="limitedAmount != null" >
+        limited_amount,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+      <if test="couponAllAmount != null" >
+        coupon_all_amount,
+      </if>
+      <if test="couponUsedAmount != null" >
+        coupon_used_amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="promotionId != null" >
+        #{promotionId,jdbcType=INTEGER},
+      </if>
+      <if test="couponChannel != null" >
+        #{couponChannel,jdbcType=INTEGER},
+      </if>
+      <if test="couponType != null" >
+        #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="couponAmount != null" >
+        #{couponAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="couponCount != null" >
+        #{couponCount,jdbcType=INTEGER},
+      </if>
+      <if test="couponUsedCount != null" >
+        #{couponUsedCount,jdbcType=INTEGER},
+      </if>
+      <if test="grantStartTime != null" >
+        #{grantStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="grantEndTime != null" >
+        #{grantEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="limitedAmount != null" >
+        #{limitedAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="couponAllAmount != null" >
+        #{couponAllAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="couponUsedAmount != null" >
+        #{couponUsedAmount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionCoupon" >
+    update promotion_coupon
+    <set >
+      <if test="couponChannel != null" >
+        coupon_channel = #{couponChannel,jdbcType=INTEGER},
+      </if>
+      <if test="couponType != null" >
+        coupon_type = #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="couponAmount != null" >
+        coupon_amount = #{couponAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="couponCount != null" >
+        coupon_count = #{couponCount,jdbcType=INTEGER},
+      </if>
+      <if test="couponUsedCount != null" >
+        coupon_used_count = #{couponUsedCount,jdbcType=INTEGER},
+      </if>
+      <if test="grantStartTime != null" >
+        grant_start_time = #{grantStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="grantEndTime != null" >
+        grant_end_time = #{grantEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="limitedAmount != null" >
+        limited_amount = #{limitedAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="couponAllAmount != null" >
+        coupon_all_amount = #{couponAllAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="couponUsedAmount != null" >
+        coupon_used_amount = #{couponUsedAmount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionCoupon" >
+    update promotion_coupon
+    set coupon_channel = #{couponChannel,jdbcType=INTEGER},
+      coupon_type = #{couponType,jdbcType=INTEGER},
+      coupon_amount = #{couponAmount,jdbcType=DECIMAL},
+      coupon_count = #{couponCount,jdbcType=INTEGER},
+      coupon_used_count = #{couponUsedCount,jdbcType=INTEGER},
+      grant_start_time = #{grantStartTime,jdbcType=TIMESTAMP},
+      grant_end_time = #{grantEndTime,jdbcType=TIMESTAMP},
+      limited_amount = #{limitedAmount,jdbcType=DECIMAL},
+      is_delete = #{isDelete,jdbcType=INTEGER},
+      coupon_all_amount = #{couponAllAmount,jdbcType=DECIMAL},
+      coupon_used_amount = #{couponUsedAmount,jdbcType=DECIMAL}
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </update>
+  <update id="updatePromotionStatusToDelete" parameterType="java.lang.Integer">
+  	update promotion_coupon set is_delete=1 where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </update>
+</mapper>

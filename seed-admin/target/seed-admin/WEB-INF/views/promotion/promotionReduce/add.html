@@ -1,0 +1,185 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--  css  -->
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!--  js  -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+var i = 0;//此变量为list集合的索引(定义为全局变量)
+var reduceLeixing=1;//此变量为满减类型：1为定额，2为阶梯
+$(function(){	
+	$("#reduceType").change(function(){		
+		var type = $(this).val();		
+		reduceLeixing = type;		
+		if(type == 1){
+			$('#reduceRegs1').css("display",'block');
+			$('#reduceRegs2').css("display",'none');
+		}		
+		if(type == 2){
+			$('#reduceRegs1').css("display",'none');
+			$('#reduceRegs2').css("display",'block');
+		}
+	});
+	
+	$("#addRegBtn").click(function(){
+		// id="targetAmount0" name="promotionReduceRegs[0].targetAmount"
+		// id="reduceAmount0" name="promotionReduceRegs[0].reduceAmount"
+		i = i + 1;
+		var html = "<div id='reduceRegDiv" + i + "'>";
+		html += "满 <input class='easyui-validatebox' type='text' id='targetAmount"+ i +"' name='promotionReduceRegs[" + i + "].targetAmount'/>元　减 " ;
+		html += "<input class='easyui-validatebox' type='text' id='reduceAmount" + i +"' name='promotionReduceRegs[" + i + "].reduceAmount'/>元  " ;
+		html += "<a href='javascript:void(0);' onclick='delreduceRegDiv(" + i +")'> [--] </a>";
+		html += "</div>";
+		$("#reduceRegs2").append(html);
+		
+	});
+})
+
+function delreduceRegDiv(id){
+	$("#reduceRegDiv" + id).remove();
+}
+//提交表单之前进行数据校验
+function toVaild(){		
+	var promotionName = $("#promotionName").val();
+	var storeId = $("#storeId").val();
+	var startTime = $("#startTime").val();
+	var endTime = $("#endTime").val();
+	if(promotionName==null||promotionName==""){
+		alert("请输入活动名称");
+		return false;	
+	}else if(storeId==null||storeId==""){
+		alert("请选择店铺");
+		return false;	
+	}else if(startTime.length != 19){
+		alert("请选择活动开始时间");
+		return false;	
+	}else if(endTime.length != 19){
+		alert("请选择活动结束时间");
+		return false;	
+	}else if(reduceLeixing==1){	//定额满减的校验		
+	     var targetAmount = $("#targetAmount").val();
+	     var reduceAmount = $("#reduceAmount").val();      
+	     if(parseInt(targetAmount)<=parseInt(reduceAmount)){
+	          alert("满额不能小于减额,请重新输入！");
+	          return false;
+	      }else{          
+	          return true;//提交
+	     }
+	}else if(reduceLeixing==2){//阶梯满减的校验				
+		var count=0;	     
+	     for(var j=0;j<=i;j++){
+	    	 var targetAmount = $("#targetAmount"+j).val();
+	    	 var reduceAmount = $("#reduceAmount"+j).val(); 
+	    	 if(parseInt(targetAmount)<=parseInt(reduceAmount)){
+	             alert("满额不能小于减额,请重新输入！");	             
+	             return false;
+	         }else{          
+	        	 count++;
+	        }
+	     }
+	     if(count==i+1){//说明所有的满减都符合条件
+	    	 return true;//提交
+	     }
+	}    
+}
+</script>
+<style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        th{
+        	width: 150px;
+        }      
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 500px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+</style>  
+<body>
+	<form action="${ctx}/promotionReduce/add" id="promotionReduceAdd" method="post" onsubmit="return toVaild()">
+		<table class="table table-bordered table-hover definewidth m10"> 
+			<tr>
+				<th>活动名称：</th>
+				<td><input class="" type="text" id="promotionName"	name="promotionName" />
+					店铺名称：					
+					<select	name="storeId" id="storeId">
+						<option value="">--请选择店铺--</option>
+						<option value="-1">自营</option>
+						<#list popStoreList as popStore>
+							<option value="${popStore.id}">${popStore.popStoreName}</option>
+						</#list>
+					</select> 
+				</td>
+			</tr>
+			
+			<tr>				
+				<th>参与商品：</th>
+				<td>
+					<input class="" type="radio" name="isAllSku" value="0" checked="checked"/>全部商品
+					<input class="" type="radio" name="isAllSku" value="1"/>部分商品
+				</td>
+			</tr>
+			
+		  	<tr>
+				<th>活动时间：</th>
+				<td>
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="startTime" name="startTime"  />至<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+					type="text" id="endTime" name="endTime" />
+				</td>
+			</tr>
+			
+			<tr >
+				<th>满减类型：</th>
+				<td>
+				<select id="reduceType" name="reduceType">
+					<option value="1" selected="selected" >定额满减</option>
+                	<option value="2" >阶梯满减</option>
+                </select>
+                </td>
+			</tr>
+		
+			<tr>
+				<th><label for="goodsAmount">活动规则：</label></th>
+				<td>
+				<div id="reduceRegs1">
+				满 <input class="easyui-validatebox" type="text" id="targetAmount" name="targetAmount" />元　
+				减<input	class="easyui-validatebox" type="text" id="reduceAmount" name="reduceAmount"/>元
+				</div>	
+				<div id="reduceRegs2" style="display:none">					
+					满 <input class="easyui-validatebox" type="text" id="targetAmount0" name="promotionReduceRegs[0].targetAmount" />元　
+					减<input class="easyui-validatebox" type="text" id="reduceAmount0" name="promotionReduceRegs[0].reduceAmount"/>元
+				 	<a id="addRegBtn" href="javascript:void(0);">[+]</a>				 	
+				</div>	
+				</td>	
+					
+			</tr>
+			<tr>
+				<th><label for="remark">活动备注：</label></th>
+				<td>
+					<textarea rows="3" cols="40" id="remark"
+					name="remark"></textarea>
+				</td>
+			</tr>
+			<tr>				 
+				<td colspan="2"><input style="margin-left: 260px" type="submit" name="submit" class="btn btn-primary" value="提交"></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

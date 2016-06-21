@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.OperateDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.Operate" >
+    <id column="operate_id" property="operateId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="audit_user_id" property="auditUserId" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="release_user_id" property="releaseUserId" jdbcType="VARCHAR" />
+    <result column="cancel_release_user_id" property="cancelReleaseUserId" jdbcType="VARCHAR" />
+    <result column="release_time" property="releaseTime" jdbcType="TIMESTAMP" />
+    <result column="cancel_release_time" property="cancelReleaseTime" jdbcType="TIMESTAMP" />
+    <result column="opt_user" property="optUser" jdbcType="BIGINT" />
+    <result column="opt_date" property="optDate" jdbcType="DATE" />
+    <result column="opt_term" property="optTerm" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    operate_id,sku_id,goods_id, audit_user_id, audit_time, reason, release_user_id, cancel_release_user_id, 
+    release_time, cancel_release_time, opt_user, opt_date, opt_term
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_operate
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByGoodsId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_operate
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from goods_operate
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="operate_id" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Operate" >
+    insert into goods_operate ( sku_id, goods_id, audit_user_id, audit_time, 
+      reason, release_user_id, cancel_release_user_id, 
+      release_time, cancel_release_time, opt_user, 
+      opt_date, opt_term)
+    values (#{skuId,jdbcType=INTEGER},#{goodsId,jdbcType=INTEGER}, #{auditUserId,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, 
+      #{reason,jdbcType=VARCHAR}, #{releaseUserId,jdbcType=VARCHAR}, #{cancelReleaseUserId,jdbcType=VARCHAR}, 
+      #{releaseTime,jdbcType=TIMESTAMP}, #{cancelReleaseTime,jdbcType=TIMESTAMP}, #{optUser,jdbcType=BIGINT}, 
+      #{optDate,jdbcType=DATE}, #{optTerm,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="operate_id" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Operate" >
+    insert into goods_operate
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="auditUserId != null" >
+        audit_user_id,
+      </if>
+      <if test="auditTime != null" >
+        audit_time,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="releaseUserId != null" >
+        release_user_id,
+      </if>
+      <if test="cancelReleaseUserId != null" >
+        cancel_release_user_id,
+      </if>
+      <if test="releaseTime != null" >
+        release_time,
+      </if>
+      <if test="cancelReleaseTime != null" >
+        cancel_release_time,
+      </if>
+      <if test="optUser != null" >
+        opt_user,
+      </if>
+      <if test="optDate != null" >
+        opt_date,
+      </if>
+      <if test="optTerm != null" >
+        opt_term,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="auditUserId != null" >
+        #{auditUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseUserId != null" >
+        #{releaseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelReleaseUserId != null" >
+        #{cancelReleaseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseTime != null" >
+        #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelReleaseTime != null" >
+        #{cancelReleaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optUser != null" >
+        #{optUser,jdbcType=BIGINT},
+      </if>
+      <if test="optDate != null" >
+        #{optDate,jdbcType=DATE},
+      </if>
+      <if test="optTerm != null" >
+        #{optTerm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Operate" >
+    update goods_operate
+    <set >
+      <if test="auditUserId != null" >
+        audit_user_id = #{auditUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseUserId != null" >
+        release_user_id = #{releaseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelReleaseUserId != null" >
+        cancel_release_user_id = #{cancelReleaseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseTime != null" >
+        release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelReleaseTime != null" >
+        cancel_release_time = #{cancelReleaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optUser != null" >
+        opt_user = #{optUser,jdbcType=BIGINT},
+      </if>
+      <if test="optDate != null" >
+        opt_date = #{optDate,jdbcType=DATE},
+      </if>
+      <if test="optTerm != null" >
+        opt_term = #{optTerm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByGoodsIdSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Operate" >
+    update goods_operate
+    <set >
+      <if test="auditUserId != null" >
+        audit_user_id = #{auditUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseUserId != null" >
+        release_user_id = #{releaseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelReleaseUserId != null" >
+        cancel_release_user_id = #{cancelReleaseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseTime != null" >
+        release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelReleaseTime != null" >
+        cancel_release_time = #{cancelReleaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optUser != null" >
+        opt_user = #{optUser,jdbcType=BIGINT},
+      </if>
+      <if test="optDate != null" >
+        opt_date = #{optDate,jdbcType=DATE},
+      </if>
+      <if test="optTerm != null" >
+        opt_term = #{optTerm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Operate" >
+    update goods_operate
+    set audit_user_id = #{auditUserId,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      reason = #{reason,jdbcType=VARCHAR},
+      release_user_id = #{releaseUserId,jdbcType=VARCHAR},
+      cancel_release_user_id = #{cancelReleaseUserId,jdbcType=VARCHAR},
+      release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      cancel_release_time = #{cancelReleaseTime,jdbcType=TIMESTAMP},
+      opt_user = #{optUser,jdbcType=BIGINT},
+      opt_date = #{optDate,jdbcType=DATE},
+      opt_term = #{optTerm,jdbcType=VARCHAR}
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+</mapper>

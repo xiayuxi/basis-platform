@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderGoodsMapperManual" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderGoods" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="store_id" property="storeId" jdbcType="INTEGER" />
+    <result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+    <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="market_price" property="marketPrice" jdbcType="DECIMAL" />
+    <result column="goods_price" property="goodsPrice" jdbcType="DECIMAL" />
+    <result column="actual_price" property="actualPrice" jdbcType="DECIMAL" />
+    <result column="goods_url" property="goodsUrl" jdbcType="VARCHAR" />
+    <result column="goods_count" property="goodsCount" jdbcType="INTEGER" />
+    <result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+    <result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+    <result column="actual_amount" property="actualAmount" jdbcType="DECIMAL" />
+    <result column="is_change" property="isChange" jdbcType="INTEGER" />
+    <result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, goods_id, sku_id, store_id, goods_code, goods_name, market_price, goods_price, 
+    actual_price, goods_url, goods_count, total_amount, save_amount, actual_amount, is_change, 
+    audit_status, create_time, version
+  </sql>
+  
+  <resultMap id="OrderGoodsBOMap" type="com.ync365.seed.bussiness.modules.order.bo.OrderGoodsBO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="store_id" property="storeId" jdbcType="INTEGER" />
+    <result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+    <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="market_price" property="marketPrice" jdbcType="DECIMAL" />
+    <result column="goods_price" property="goodsPrice" jdbcType="DECIMAL" />
+    <result column="actual_price" property="actualPrice" jdbcType="DECIMAL" />
+    <result column="goods_url" property="goodsUrl" jdbcType="VARCHAR" />
+    <result column="goods_count" property="goodsCount" jdbcType="INTEGER" />
+    <result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+    <result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+    <result column="actual_amount" property="actualAmount" jdbcType="DECIMAL" />
+    <result column="is_change" property="isChange" jdbcType="INTEGER" />
+    <result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="platform_expense" property="platformExpense" jdbcType="DECIMAL" />
+    <result column="lc_expense" property="lcExpense" jdbcType="DECIMAL" />
+    <result column="integral_expense" property="integralExpense" jdbcType="DECIMAL" />
+    <result column="plan_expense" property="planExpense" jdbcType="DECIMAL" />
+    <result column="se_expense" property="seExpense" jdbcType="DECIMAL" />
+    <result column="a_expense" property="aExpense" jdbcType="DECIMAL" />    
+  </resultMap>
+<!-- 根据订单id查询订单商品列表 -->
+<select id="getOrderGoodsListByOrderId" parameterType="java.lang.Integer"
+	resultMap="BaseResultMap">
+	SELECT t1.*  FROM order_goods AS t1 WHERE t1.order_id = #{orderId,jdbcType=INTEGER}
+</select> 
+<!-- 根据主订单id和skuId获取订单商品对象 -->
+<select id="getOrderGoodsByOrderIdAndSkuId" parameterType="map"
+	resultMap="BaseResultMap">
+	SELECT * FROM order_goods
+	WHERE order_id = #{orderId,jdbcType=INTEGER} AND sku_id = #{skuId,jdbcType=INTEGER}
+</select> 
+<!-- 查询被改价且审核通过的订单商品列表 -->
+<select id="getOrderGoodsCheckedListByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT t1.* FROM order_goods AS t1 WHERE t1.order_id =#{orderId,jdbcType=INTEGER}  AND is_change= 1 AND audit_status =2
+</select>
+<!-- 查询订单中所有被价的商品 -->
+<select id="getOrderGoodsChangePriceList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT t1.* FROM order_goods AS t1 WHERE t1.order_id =#{orderId,jdbcType=INTEGER}  AND is_change= 1 
+</select>
+<!-- 保存订单商品改价saveOrderGooodsChange -->
+<update id="saveOrderGooodsChange" 
+	parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoods">	
+	update order_goods
+		<set>
+			<if test="actualPrice != null">
+				actual_price = #{actualPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="actualAmount != null">
+				actual_amount = #{actualAmount,jdbcType=DECIMAL},
+			</if>			
+			<if test="auditStatus != null">
+				audit_status = #{auditStatus,jdbcType=INTEGER},
+			</if>		
+		</set>
+	where sku_id = #{skuId,jdbcType=INTEGER} AND order_id = #{orderId,jdbcType=INTEGER}
+	
+</update>
+<!-- 订单商品改价确认审核orderGooodsChangeConfirmAudit -->
+<update id="orderGooodsChangeConfirmAudit" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoods">
+	update order_goods
+		<set>
+			<if test="actualPrice != null">
+				actual_price = #{actualPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="actualAmount != null">
+				actual_amount = #{actualAmount,jdbcType=DECIMAL},
+			</if>			
+			<if test="auditStatus != null">
+				audit_status = #{auditStatus,jdbcType=INTEGER},
+			</if>		
+		</set>
+	where sku_id = #{skuId,jdbcType=INTEGER} AND order_id = #{orderId,jdbcType=INTEGER}
+	
+</update>
+<!-- 修改订单商品的审核状态为 -->
+<update id="updateAuditStatus" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoods">
+	UPDATE order_goods_change_info SET audit_status = #{auditStatus,jdbcType=INTEGER} WHERE order_goods_id=#{goodsId,jdbcType=INTEGER}
+</update>
+<!-- create by sunyifan 用于根据子订单编号查询商品列表 -->
+	<select id="getSubGoodsBySubOrderId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_goods og
+		WHERE
+		og.id IN
+		(SELECT order_goods_id FROM order_goods_sub
+		WHERE order_sub_id = #{subId,jdbcType=INTEGER})
+	</select>
+	
+	
+	<!-- create by sunyifan 根据店铺ID 获取商品列表 -->
+	<select id="getGoodsByOrderIdAndStoreId" parameterType="hashmap" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_goods t
+		WHERE t.order_id = #{orderId,jdbcType=INTEGER} and  t.store_id = #{storeId,jdbcType=INTEGER}
+	</select>
+</mapper>

@@ -1,0 +1,68 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<!-- jquery-form.js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>  
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>  
+
+<body>
+	<div>搜索配肥站</div></br>
+	<div>
+		 <input type="text" id="fs_name" /><a href="#" onclick="searchFsNum()">搜索</a> </br>
+		 <div id="ds">
+		 <#list  sysFsList as sfsl>
+         	<input type="radio" value="${sfsl.id}" id="fsId" name="fsId" />${sfsl.popStoreName}</br> 
+         </#list>
+         </div>
+	</div>
+	<div class="alone_footer tc">
+		<button class="focus_button" onclick="formatValue()">确定</button>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	function searchFsNum(){
+		
+		var fs_name= $("#fs_name").val();
+		$("#ds").empty();
+		
+	 	$.getJSON("${ctx}/goods/selectFsList?FsName="+fs_name,function(data){
+	 		var temp_html="";
+	 		$.each(data,function(i,sysPopStore){
+            	temp_html+="<input type='radio' value='"+sysPopStore.id+"' id='fsId' name='fsId' >"+sysPopStore.popStoreName+"</input></br>";
+    		});    	
+	 		$("#ds").html(temp_html);
+  		});
+	}
+</script>
+<script type="text/javascript">
+    var fsName="";
+    var fsId="";
+    
+    function formatValue(e){
+   	    var radios = $("input[name='fsId']");
+   	    for(var i=0;i<radios.size();i++){
+   	    	if(radios[i].checked == true ){
+   	    		fsId =$("input[name='fsId']:checked").val();
+   	    		fsName =radios[i].nextSibling.nodeValue;
+   	    	}
+   	    }
+    	
+    	if(fsId == ""){
+    		alert("请选择一个店铺");
+    		return;
+    	}
+    		
+    	var attr_values =new Array();
+    	attr_values[0]=fsId;
+    	attr_values[1]=fsName;
+         
+    	if(e == null)
+    		parent.updateFsValue(attr_values);
+    	return false;
+    }
+</script>

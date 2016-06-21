@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderGoodsSubMapperManual" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsSub" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_sub_id" property="orderSubId" jdbcType="INTEGER" />
+    <result column="order_goods_id" property="orderGoodsId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_sub_id, order_goods_id, create_time
+  </sql>
+  
+  <!-- 根据子订单id查询子订单商品 -->
+  <select id="getOrderGoodsSubListByOrderSubId" parameterType="Integer" resultMap="BaseResultMap">
+  	SELECT * FROM order_goods_sub WHERE order_sub_id = #{orderSubId,jdbcType=INTEGER} 
+  </select>
+  
+</mapper>

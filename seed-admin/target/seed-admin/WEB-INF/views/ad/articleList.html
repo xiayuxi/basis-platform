@@ -1,0 +1,118 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+</head>
+<body>
+	<div style="margin-left:20px">
+	    <table id="list"></table>
+	    <div id="pager"></div>
+	</div>
+</body>
+<script type="text/javascript">
+ $(function(){
+     $("#list").jqGrid({
+           url:'${ctx}/article/grid',// 获取数据的url,action
+           datatype: "json",//后台返回的数据格式
+           mtype:"post",//提交的方式,默认是get
+           //width:1024,//这个宽度不能为百分比,
+           autowidth:true,//自动宽
+           colNames:['id','文章标题','是否置顶','关键字'],
+           colModel:[
+                      {name:"articleId",index:'articleId',hidden:true,align:"center",sortable:false},
+                      {name:'title',index:'title', editable:true,sortable:true},
+                      {name:'articleType',index:'articleType', editable:true,sortable:true,formatter:formatStatus},
+                      {name:'keywords',index:'keywords', align:"center",editable:true}
+                  ],
+           postData:{page:1,haha:1},//此参数用来向后台提交数据*****可以自己添加需要的参数
+           //styleUI : 'Bootstrap',
+           //caption:"类别列表",//表名称
+           //multiselect: true,//开启多选
+           rowNum:10,//每页显示的条数,此参数会被传递到后台
+           rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+           viewrecords: true,//定义是否显示总的数据条数
+           pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+           height : "auto",
+           rownumbers:true//添加左侧行号
+       });
+      $("#list").jqGrid("navGrid","#pager",{edit:false,add:false,del:false,search:false,refresh:true})
+      	//新增
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"新增", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){addFun();},
+			position:"last"
+			})
+			
+		//修改
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"修改", 
+	    	 buttonicon:"ui-icon-edit",
+	    	 onClickButton: function(){ editFun();},
+			position:"last"
+			})
+		//删除 
+		.navButtonAdd('#pager',{ 
+	    	 caption:"删除", 
+	    	 buttonicon:"ui-icon-edit",
+	    	 onClickButton: function(){ delFun();},
+			position:"last"
+			}); 
+      
+ });
+ 
+ //显示文章是否置顶
+ function formatStatus(cellvalue){
+	 if(cellvalue == 1 ){
+		 return "不置顶";
+	 }else if(cellvalue == 2 ){
+		 return "置顶";
+	 }
+ }
+ 
+//新增
+function addFun(){
+	 window.location.href = "${ctx}/article/addPage";
+}
+
+//修改
+function editFun(){
+	var id=jQuery("#list").jqGrid('getGridParam','selrow');
+	var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+	
+	if(null == rowData || '' == rowData || rowData.length > 0){
+		alert("请选择需要编辑的行！")
+	}else{
+		var val= rowData.articleId;//获取每一行制定的列的数据
+		//alert(val);
+	  	window.location.href="${ctx}/article/editPage?articleId="+val;
+	}
+}
+
+//删除 
+function delFun(){
+	var id=jQuery("#list").jqGrid('getGridParam','selrow');
+	var rowData = $("#list").jqGrid('getRowData',id);//获得所选中数据信息
+	
+	if(null==rowData || ''==rowData || rowData.length>0){
+		alert("请选择要删除的行");
+		return ;
+	}else{
+		var val= rowData.articleId;//获取每一行制定的列的数据
+		window.location.href = "${ctx}/article/delete?articleId="+val;
+	}
+}
+
+</script>
+
+</html>

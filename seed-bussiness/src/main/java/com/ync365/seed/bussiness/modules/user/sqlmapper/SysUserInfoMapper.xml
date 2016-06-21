@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysUserInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysUserInfo" >
+    <result column="user_num" property="userNum" jdbcType="VARCHAR" />
+    <result column="sys_nickname" property="sysNickname" jdbcType="VARCHAR" />
+    <result column="sys_user_real_name" property="sysUserRealName" jdbcType="VARCHAR" />
+    <result column="sys_user_gender" property="sysUserGender" jdbcType="INTEGER" />
+    <result column="sys_user_ID_card" property="sysUserIdCard" jdbcType="VARCHAR" />
+    <result column="sys_user_birthday" property="sysUserBirthday" jdbcType="TIMESTAMP" />
+    <result column="sys_user_farm_area" property="sysUserFarmArea" jdbcType="INTEGER" />
+    <result column="sys_user_address" property="sysUserAddress" jdbcType="INTEGER" />
+    <result column="sys_user_address_detail" property="sysUserAddressDetail" jdbcType="VARCHAR" />
+    <result column="sys_user_photo_path" property="sysUserPhotoPath" jdbcType="VARCHAR" />
+	
+  </resultMap>
+  
+  <resultMap id="ResultMap"  type="com.ync365.seed.bussiness.modules.user.bo.UserInfoBO" extends="BaseResultMap"> 
+  	<result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+    <result column="is_authentication" property="isAuthentication" jdbcType="BIT" />
+    <result column="user_mobile" property="userMobile" jdbcType="VARCHAR" />
+    <result column="user_login_name" property="userLoginName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="safe_score" property="safeScore" jdbcType="INTEGER" />
+    <!--vs 名称  -->
+    <result column="vsName" property="vsName" jdbcType="VARCHAR" />
+    <!--lc 名称  -->
+    <result column="lcName" property="lcName" jdbcType="VARCHAR" />
+    <!--se 名称  -->
+    <result column="seName" property="seName" jdbcType="VARCHAR" />
+    <!--大客户审核状态 -->
+    <result column="state" property="state" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+  	user_num, sys_nickname, sys_user_real_name, sys_user_gender,
+	sys_user_ID_card,
+	sys_user_birthday,
+	sys_user_farm_area,
+	sys_user_address,
+	sys_user_address_detail,
+	sys_user_photo_path
+  </sql>
+  
+  
+  <!-- 删除信息 -->
+  	<delete id="deleteByPrimaryKeyUserNum" parameterType="java.lang.String">
+		delete from
+		sys_user_info
+		where  user_num = #{userNum,jdbcType=VARCHAR}
+	</delete>
+	
+  <!-- 添加信息 -->
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserInfo" >
+    insert into sys_user_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="sysNickname != null" >
+        sys_nickname,
+      </if>
+      <if test="sysUserRealName != null" >
+        sys_user_real_name,
+      </if>
+      <if test="sysUserGender != null" >
+        sys_user_gender,
+      </if>
+      <if test="sysUserIdCard != null" >
+        sys_user_ID_card,
+      </if>
+      <if test="sysUserBirthday != null" >
+        sys_user_birthday,
+      </if>
+      <if test="sysUserFarmArea != null" >
+        sys_user_farm_area,
+      </if>
+      <if test="sysUserAddress != null" >
+        sys_user_address,
+      </if>
+      <if test="sysUserAddressDetail != null" >
+        sys_user_address_detail,
+      </if>
+      <if test="sysUserPhotoPath != null" >
+        sys_user_photo_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        #{userNum,jdbcType=VARCHAR},
+      </if>
+      <if test="sysNickname != null" >
+        #{sysNickname,jdbcType=VARCHAR},
+      </if>
+      <if test="sysUserRealName != null" >
+        #{sysUserRealName,jdbcType=VARCHAR},
+      </if>
+      <if test="sysUserGender != null" >
+        #{sysUserGender,jdbcType=INTEGER},
+      </if>
+      <if test="sysUserIdCard != null" >
+        #{sysUserIdCard,jdbcType=VARCHAR},
+      </if>
+      <if test="sysUserBirthday != null" >
+        #{sysUserBirthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sysUserFarmArea != null" >
+        #{sysUserFarmArea,jdbcType=INTEGER},
+      </if>
+      <if test="sysUserAddress != null" >
+        #{sysUserAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="sysUserAddressDetail != null" >
+        #{sysUserAddressDetail,jdbcType=VARCHAR},
+      </if>
+       <if test="sysUserPhotoPath != null" >
+         #{sysUserPhotoPath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+ 
+  <update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserInfo">
+		update sys_user_info
+		<set>
+			<if test="userNum != null">
+				user_num = #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="sysNickname != null">
+				sys_nickname = #{sysNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserRealName != null">
+				sys_user_real_name = #{sysUserRealName,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserGender != null">
+				sys_user_gender = #{sysUserGender,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserIdCard != null">
+				sys_user_ID_card = #{sysUserIdCard,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserBirthday != null">
+				sys_user_birthday = #{sysUserBirthday,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserFarmArea != null">
+				sys_user_farm_area = #{sysUserFarmArea,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserAddress != null">
+				sys_user_address = #{sysUserAddress,jdbcType=INTEGER},
+			</if>	
+			<if test="sysUserAddressDetail != null">
+				sys_user_address_detail = #{sysUserAddressDetail,jdbcType=VARCHAR},
+			</if>						
+			<if test="sysUserPhotoPath != null">
+				sys_user_photo_path = #{sysUserPhotoPath,jdbcType=VARCHAR},
+			</if>						
+		</set>
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysNickname != null">
+				and sys_nickname = #{sysNickname,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserRealName != null">
+				and sys_user_real_name = #{sysUserRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserGender != null">
+				and sys_user_gender = #{sysUserGender,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserIdCard != null">
+				and sys_user_ID_card = #{sysUserIdCard,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserBirthday != null">
+				and sys_user_birthday = #{sysUserBirthday,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserFarmArea != null">
+				and sys_user_farm_area = #{sysUserFarmArea,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserAddress != null">
+				and sys_user_address = #{sysUserAddress,jdbcType=INTEGER}
+			</if>	
+			<if test="sysUserAddressDetail != null">
+				and sys_user_address_detail = #{sysUserAddressDetail,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserPhotoPath != null">
+				and sys_user_photo_path = #{sysUserPhotoPath,jdbcType=VARCHAR}
+			</if>
+		</where>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	
+	 <select id="selectByPrimaryKeyUserNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select
+		<include refid="Base_Column_List" />
+		from sys_user_info
+		where user_num = #{userNum,jdbcType=VARCHAR}
+  	</select>
+	
+	<select id="selectPageCount" parameterType="map" resultType="int">
+		select
+		count(1)
+		from sys_user_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysNickname != null">
+				and sys_nickname = #{sysNickname,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserRealName != null">
+				and sys_user_real_name = #{sysUserRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserGender != null">
+				and sys_user_gender = #{sysUserGender,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserIdCard != null">
+				and sys_user_ID_card = #{sysUserIdCard,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserBirthday != null">
+				and sys_user_birthday = #{sysUserBirthday,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserFarmArea != null">
+				and sys_user_farm_area = #{sysUserFarmArea,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserAddress != null">
+				and sys_user_address = #{sysUserAddress,jdbcType=INTEGER}
+			</if>	
+			<if test="sysUserAddressDetail != null">
+				and sys_user_address_detail = #{sysUserAddressDetail,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserPhotoPath != null">
+				and sys_user_photo_path = #{sysUserPhotoPath,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 通过vs编号查询us列表信息  查询 电话 名称  注册时间  查询列表  -->
+	<select id="selectSysUsListByVsNum" parameterType="map" resultMap="BaseResultMap">
+		select a.user_mobile,a.user_login_name,a.create_time,b.* from sys_user a ,
+							sys_user_info b ,
+							sys_us_vs_relationship c,
+							sys_vs_info d
+					where a.user_num = b.user_num	
+							and a.user_num = c.us_num 
+							and c.vs_num = d.user_num
+			<if test="vsNum != null">
+				and d.user_num = #{vsNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysNickname != null">
+				and b.sys_nickname = #{sysNickname,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserRealName != null">
+				and b.sys_user_real_name = #{sysUserRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null" >
+		          and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+		     </if>
+		     <if test="userMobile != null" >
+		          and a.user_mobile = #{userMobile,jdbcType=VARCHAR}
+		     </if>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	
+	<!-- 通过vs编号  查询此vs下us数量 -->
+	<select id="selectCouontSysUsByVsNum" parameterType="map" resultType="int">
+		select count(1) from sys_user a ,
+							sys_user_info b ,
+							sys_us_vs_relationship c,
+							sys_vs_info d
+					where a.user_num = b.user_num	
+							and a.user_num = c.us_num 
+							and c.vs_num = d.user_num
+			<if test="vsNum != null">
+				and d.user_num = #{vsNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysNickname != null">
+				and b.sys_nickname = #{sysNickname,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserRealName != null">
+				and b.sys_user_real_name = #{sysUserRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null" >
+		          and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+		     </if>
+		     <if test="userMobile != null" >
+		          and a.user_mobile = #{userMobile,jdbcType=VARCHAR}
+		     </if>
+	</select>
+	
+	
+	<!-- 通过 lc编号  查询us列表信息  查询 电话 名称  注册时间  查询列表  -->
+	<select id="selectSysUsInfoListByLcNum" parameterType="map" resultMap="BaseResultMap">
+		
+			select b.* from sys_user a, 
+						sys_user_info b,
+						sys_us_vs_relationship c ,
+						sys_vs_lc_relationship d ,
+						sys_lc_info e
+						where  c.vs_num = d.vs_num 
+							and a.user_num  = b.user_num 
+							and a.user_num = c.us_num
+							and d.lc_num = e.user_num
+			<if test="lcNum != null ">
+				and e.user_num =#{lcNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysNickname != null">
+				and b.sys_nickname = #{sysNickname,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserRealName != null">
+				and b.sys_user_real_name = #{sysUserRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null" >
+		          and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+		     </if>
+		     <if test="userMobile != null" >
+		          and a.user_mobile = #{userMobile,jdbcType=VARCHAR}
+		     </if>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	
+	
+	<!-- 通过lc编号  查询此lc下us数量 -->
+	<select id="selectCouontSysUsByLcNum" parameterType="map" resultType="int">
+		select count(1) from sys_user a, 
+						sys_user_info b,
+						sys_us_vs_relationship c ,
+						sys_vs_lc_relationship d ,
+						sys_lc_info e
+						where  c.vs_num = d.vs_num 
+							and a.user_num  = b.user_num 
+							and a.user_num = c.us_num
+							and d.lc_num = e.user_num
+			<if test="lcNum != null ">
+				and e.user_num =#{lcNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysNickname != null">
+				and b.sys_nickname = #{sysNickname,jdbcType=VARCHAR}
+			</if>
+			<if test="sysUserRealName != null">
+				and b.sys_user_real_name = #{sysUserRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null" >
+		          and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+		     </if>
+		     <if test="userMobile != null" >
+		          and a.user_mobile = #{userMobile,jdbcType=VARCHAR}
+		     </if>
+	</select>
+	
+	<select id="selectUserInfoByUserNum" parameterType="java.lang.String" resultMap="ResultMap">
+  		select b.* , a.create_time , a.user_mobile,a.user_login_name from sys_user a
+			INNER JOIN sys_user_info b on a.user_num = b.user_num
+		where a.user_num = #{userNum,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 
+  	获取us下的绑定关系
+   -->
+  <select id="getUserInfoByUserNum" resultMap="ResultMap" parameterType="string">
+	SELECT
+		su.user_num 'userNum',
+		us.sys_user_real_name 'sysUserRealName',
+		us.sys_user_address 'sysUserAddress',
+		us.sys_user_address_detail 'sysUserAddressDetail',
+		us.sys_user_birthday 'sysUserBirthday',
+		us.sys_user_farm_area 'sysUserFarmArea',
+		us.sys_user_gender 'sysUserGender',
+		us.sys_user_ID_card 'sysUserIdCard',
+		us.sys_nickname 'sysNickname',
+		us.sys_user_photo_path 'sysUserPhotoPath',
+		su.register_location 'registerLocation',
+		su.user_mobile 'userMobile',
+		su.user_login_name 'userLoginName',
+		su.safe_score 'safeScore',
+		su.is_frozen,
+		su.create_time 'createTime',
+		vsi.`sys_user_real_name` 'vsName',
+		vs.user_mobile 'vsMobile',
+		vs.user_num 'vsNum',
+		vsi.sys_user_address 'vsAddress',
+		vsi.sys_user_address_detail 'vsAddressDetail',
+		lci.`sys_user_real_name` 'lcName',
+		lc.user_mobile 'lcMobile',
+		lc.user_num 'lcNum',
+		lci.sys_user_address 'lcAddress',
+		lci.sys_user_address_detail 'lcAddressDetail',
+		sei.`name` 'seName',
+		se.admin_mobile 'seMobile',
+		se.admin_num 'seNum',
+		ai.`name` 'aName',
+		a.admin_mobile 'aMobile',
+		a.admin_num 'aNum',
+		<!-- 增加关联查询 ssinfo  信息  手机号 姓名  编号  -->
+		mtt.user_mobile 'tjUserMobile' ,
+		mtt.user_num 'tjUserNum' ,
+		mtt.user_real_name 'tjUserRealName',
+		<!--大客户审核状态  -->
+		lain.state 'state'
+	FROM
+	(select * from sys_user where user_num = #{userNum}) su
+	LEFT JOIN (
+			SELECT
+				sui.user_num,
+				sui.sys_user_real_name,
+				sui.sys_user_address,
+				sui.sys_user_address_detail,
+				sui.sys_user_photo_path,
+				sui.sys_user_birthday,
+				sui.sys_user_farm_area,
+				sui.sys_user_gender,
+				sui.sys_user_ID_card,
+				sui.sys_nickname
+			FROM
+				sys_user_info sui
+			WHERE
+				sui.user_num = #{userNum}
+		) us ON us.user_num = su.user_num
+	LEFT JOIN sys_user_info usi ON su.user_num = usi.user_num
+	LEFT JOIN sys_us_vs_relationship suvr ON su.user_num = suvr.us_num
+	LEFT JOIN sys_vs_lc_relationship svlr ON suvr.vs_num = svlr.vs_num
+	LEFT JOIN sys_lc_se_relationship slsr ON slsr.lc_num = svlr.lc_num
+	LEFT JOIN sys_se_a_relationship ssar ON ssar.se_num = slsr.se_num
+	LEFT JOIN sys_user vs ON vs.user_num = suvr.vs_num
+	LEFT JOIN sys_user lc ON lc.user_num = svlr.lc_num
+	LEFT JOIN sys_user_info vsi ON vsi.user_num = vs.user_num
+	LEFT JOIN sys_user_info lci ON lci.user_num = lc.user_num
+	LEFT JOIN sys_admin se ON se.admin_num = slsr.se_num
+	LEFT JOIN sys_admin a ON a.admin_num = ssar.a_num
+	LEFT JOIN sys_admin_info sei ON sei.admin_num = slsr.se_num
+	LEFT JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+	<!--添加ssinfo 推荐人 手机号 姓名 编号   -->
+	LEFT JOIN sys_user_recommended ww on su.user_num = ww.user_num
+	LEFT JOIN sys_ss_info mtt on ww.recommended_num = mtt.user_mobile
+	<!--大客户关联  -->
+	LEFT JOIN sys_large_customer_info lain on lain.user_num = su.user_num
+  </select>
+  <!-- 
+  	此为用户管理模块中us查询列表的sql，其中包括了需求里面的所有查询
+  	注意：地址查询暂时只支持最后一级别的查询；
+   -->
+  <select id="selectUserInfoByParam" resultMap="ResultMap" parameterType="com.ync365.seed.bussiness.modules.user.bo.UserUsInfoSearchBo">
+	SELECT
+		su.user_num 'userNum',
+		us.sys_user_real_name 'sysUserRealName',
+		us.sys_user_address 'sysUserAddress',
+		us.sys_user_address_detail 'sysUserAddressDetail',
+		us.sys_user_birthday 'sysUserBirthday',
+		us.sys_user_farm_area 'sysUserFarmArea',
+		us.sys_user_gender 'sysUserGender',
+		us.sys_user_ID_card 'sysUserIdCard',
+		us.sys_nickname 'sysNickname',
+		us.sys_user_photo_path 'sysUserPhotoPath',
+		su.register_location 'registerLocation',
+		su.user_mobile 'userMobile',
+		su.user_login_name 'userLoginName',
+		su.safe_score 'safeScore',
+		su.is_frozen ,
+		su.create_time 'createTime',
+		vsi.`sys_user_real_name` 'vsName',
+		vs.user_mobile 'vsMobile',
+		vs.user_num 'vsNum',
+		vsi.sys_user_address 'vsAddress',
+		vsi.sys_user_address_detail 'vsAddressDetail',
+		lci.`sys_user_real_name` 'lcName',
+		lc.user_mobile 'lcMobile',
+		lc.user_num 'lcNum',
+		lci.sys_user_address 'lcAddress',
+		lci.sys_user_address_detail 'lcAddressDetail',
+		sei.`name` 'seName',
+		se.admin_mobile 'seMobile',
+		se.admin_num 'seNum',
+		ai.`name` 'aName',
+		a.admin_mobile 'aMobile',
+		a.admin_num 'aNum'
+	FROM
+		sys_user su
+	LEFT JOIN sys_user_info us ON us.user_num = su.user_num
+	LEFT JOIN sys_us_vs_relationship suvr ON su.user_num = suvr.us_num
+	LEFT JOIN sys_vs_lc_relationship svlr ON suvr.vs_num = svlr.vs_num
+	LEFT JOIN sys_lc_se_relationship slsr ON slsr.lc_num = svlr.lc_num
+	LEFT JOIN sys_se_a_relationship ssar ON ssar.se_num = slsr.se_num
+	LEFT JOIN sys_user vs ON vs.user_num = suvr.vs_num
+	LEFT JOIN sys_user lc ON lc.user_num = svlr.lc_num
+	LEFT JOIN sys_user_info vsi ON vsi.user_num = vs.user_num
+	LEFT JOIN sys_user_info lci ON lci.user_num = lc.user_num
+	LEFT JOIN sys_admin se ON se.admin_num = slsr.se_num
+	LEFT JOIN sys_admin a ON a.admin_num = ssar.a_num
+	LEFT JOIN sys_admin_info sei ON sei.admin_num = slsr.se_num
+	LEFT JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+	<where>
+	<if test="userNum != null and userNum != ''">
+		AND su.user_num = #{userNum}
+	</if>
+	<if test="userMobile != null and userMobile != ''">
+		AND su.user_mobile = #{userMobile}
+	</if>
+	<if test="userRealName != null and userRealName !=''">
+		AND us.sys_user_real_name = #{userRealName}
+	</if>
+	<if test="userAddress != null">
+		AND us.sys_user_address = #{userAddress}
+	</if>
+	<if test="isFrozen != null">
+		AND su.is_frozen = #{isFrozen}
+	</if>
+	<if test="createTimeStart != null">
+		<![CDATA[AND su.create_time > #{createTimeStart}]]>
+	</if>
+	<if test="createTimeEnd != null">
+		<![CDATA[AND su.create_time < #{createTimeEnd}]]>
+	</if>
+	<if test="aNum != null and aNum != ''">
+		AND a.admin_num = #{aNum}
+	</if>
+	<if test="seNum != null and seNum != ''">
+		AND se.admin_num = #{seNum}
+	</if>
+	<if test="vsNum != null and vsNum != ''">
+		AND vs.user_num = #{vsNum}
+	</if>
+	<if test="lcNum != null and lcNum != ''">
+		AND lc.user_num = #{lcNum}
+	</if>
+	<if test="vsName != null and vsName != ''">
+		AND (
+			vs.user_mobile = #{vsName} 
+			OR vsi.sys_user_real_name = #{vsName}
+		)
+	</if>
+	<if test="lcName != null and lcName != ''">
+		AND (
+			lc.user_mobile = #{lcName}
+			OR lci.sys_user_real_name = #{lcName}
+		)
+	</if>
+	<if test="seName != null and seName != ''">
+		AND (
+			se.admin_mobile = #{seName}
+			OR sei.`name` = #{seName}
+		)
+	</if>
+	<if test="aName != null and aName != ''">
+		AND (
+			a.admin_mobile = #{aName}
+			OR ai.`name` = #{aName}
+		)
+	</if>
+	</where>
+	order by su.create_time desc
+	<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+	</if>
+  </select>
+  <select id="selectUserInfoByParamCount" resultType="int" parameterType="com.ync365.seed.bussiness.modules.user.bo.UserUsInfoSearchBo">
+	SELECT
+		count(1)
+	FROM
+		sys_user su
+	LEFT JOIN sys_user_info us ON us.user_num = su.user_num
+	LEFT JOIN sys_us_vs_relationship suvr ON su.user_num = suvr.us_num
+	LEFT JOIN sys_vs_lc_relationship svlr ON suvr.vs_num = svlr.vs_num
+	LEFT JOIN sys_lc_se_relationship slsr ON slsr.lc_num = svlr.lc_num
+	LEFT JOIN sys_se_a_relationship ssar ON ssar.se_num = slsr.se_num
+	LEFT JOIN sys_user vs ON vs.user_num = suvr.vs_num
+	LEFT JOIN sys_user lc ON lc.user_num = svlr.lc_num
+	LEFT JOIN sys_user_info vsi ON vsi.user_num = vs.user_num
+	LEFT JOIN sys_user_info lci ON lci.user_num = lc.user_num
+	LEFT JOIN sys_admin se ON se.admin_num = slsr.se_num
+	LEFT JOIN sys_admin a ON a.admin_num = ssar.a_num
+	LEFT JOIN sys_admin_info sei ON sei.admin_num = slsr.se_num
+	LEFT JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+	<where>
+	<if test="userNum != null and userNum != ''">
+		AND su.user_num = #{userNum}
+	</if>
+	<if test="userMobile != null and userMobile != ''">
+		AND su.user_mobile = #{userMobile}
+	</if>
+	<if test="userRealName != null and userRealName !=''">
+		AND us.sys_user_real_name = #{userRealName}
+	</if>
+	<if test="userAddress != null">
+		AND us.sys_user_address = #{userAddress}
+	</if>
+	<if test="isFrozen != null">
+		AND su.is_frozen = #{isFrozen}
+	</if>
+	<if test="createTimeStart != null">
+		<![CDATA[AND su.create_time > #{createTimeStart}]]>
+	</if>
+	<if test="createTimeEnd != null">
+		<![CDATA[AND su.create_time < #{createTimeEnd}]]>
+	</if>
+	<if test="aNum != null and aNum != ''">
+		AND a.admin_num = #{aNum}
+	</if>
+	<if test="seNum != null and seNum != ''">
+		AND se.admin_num = #{seNum}
+	</if>
+	<if test="vsNum != null and vsNum != ''">
+		AND vs.user_num = #{vsNum}
+	</if>
+	<if test="lcNum != null and lcNum != ''">
+		AND lc.user_num = #{lcNum}
+	</if>
+	<if test="vsName != null and vsName != ''">
+		AND (
+			vs.user_mobile = #{vsName} 
+			OR vsi.sys_user_real_name = #{vsName}
+		)
+	</if>
+	<if test="lcName != null and lcName != ''">
+		AND (
+			lc.user_mobile = #{lcName}
+			OR lci.sys_user_real_name = #{lcName}
+		)
+	</if>
+	<if test="seName != null and seName != ''">
+		AND (
+			se.admin_mobile = #{seName}
+			OR sei.`name` = #{seName}
+		)
+	</if>
+	<if test="aName != null and aName != ''">
+		AND (
+			a.admin_mobile = #{aName}
+			OR ai.`name` = #{aName}
+		)
+	</if>
+	</where>
+  </select>
+  
+  
+  <!-- 
+  	此为查询测土配肥的us用户信息列表
+   -->
+  <select id="selectUserInfoCtpfByParamy" resultMap="ResultMap" parameterType="com.ync365.seed.bussiness.modules.user.bo.UserUsInfoSearchBo">
+	select 
+		a.* ,b.user_mobile,b.user_login_name,b.safe_score,b.is_frozen ,b.create_time ,
+		d.user_num as tjUserNum ,d.user_mobile as tjUserMobile ,
+		d.user_real_name as tjUserRealName
+	from 
+		 sys_user_recommended c
+	LEFT JOIN sys_user b on c.user_num = b.user_num
+	LEFT JOIN sys_user_info a on c.user_num = a.user_num
+	LEFT JOIN sys_ss_info d on c.recommended_num = d.user_mobile
+	<where>
+	     d.user_mobile is not null
+	<if test="userNum != null and userNum != ''">
+		AND a.user_num = #{userNum}
+	</if>
+	<if test="userMobile != null and userMobile != ''">
+		AND b.user_mobile = #{userMobile}
+	</if>
+	<if test="userRealName != null and userRealName !=''">
+		AND a.sys_user_real_name = #{userRealName}
+	</if>
+	<if test="createTimeStart != null">
+		<![CDATA[AND b.create_time > #{createTimeStart}]]>
+	</if>
+	<if test="createTimeEnd != null">
+		<![CDATA[AND b.create_time < #{createTimeEnd}]]>
+	</if>
+	<!-- 推荐人 手机号 -->
+	<if test="tjUserMobileSearch != null and tjUserMobileSearch !=''">
+		AND d.user_mobile = #{tjUserMobileSearch}
+	</if>
+	<!-- 推荐人 编号 -->
+	<if test="tjUserNumSearch != null and tjUserNumSearch !=''">
+		AND d.user_num = #{tjUserNumSearch}
+	</if>
+	<!-- 推荐人 姓名 -->
+	<if test="tjUserRealNameSearch != null and tjUserRealNameSearch !=''">
+		AND d.user_real_name = #{tjUserRealNameSearch}
+	</if>
+	<!--  地址查询-->
+	<if test="userAddress != null">
+		AND a.sys_user_address = #{userAddress}
+	</if>
+	</where>
+	order by b.create_time desc
+	<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+	</if>
+  </select>
+  
+  <!-- 
+  	此为查询测土配肥的us用户信息列表
+   -->
+  <select id="selectUserInfoCtpfByParamyCount" resultType="int" parameterType="com.ync365.seed.bussiness.modules.user.bo.UserUsInfoSearchBo">
+	select 
+		count(1)
+	from 
+		 sys_user_recommended c
+	LEFT JOIN sys_user b on c.user_num = b.user_num
+	LEFT JOIN sys_user_info a on c.user_num = a.user_num
+	LEFT JOIN sys_ss_info d on c.recommended_num = d.user_mobile
+	<where>
+	d.user_mobile is not null
+	<if test="userNum != null and userNum != ''">
+		AND a.user_num = #{userNum}
+	</if>
+	<if test="userMobile != null and userMobile != ''">
+		AND b.user_mobile = #{userMobile}
+	</if>
+	<if test="userRealName != null and userRealName !=''">
+		AND a.sys_user_real_name = #{userRealName}
+	</if>
+	<if test="createTimeStart != null">
+		<![CDATA[AND b.create_time > #{createTimeStart}]]>
+	</if>
+	<if test="createTimeEnd != null">
+		<![CDATA[AND b.create_time < #{createTimeEnd}]]>
+	</if>
+	<!-- 推荐人 手机号 -->
+	<if test="tjUserMobileSearch != null and tjUserMobileSearch !=''">
+		AND d.user_mobile = #{tjUserMobileSearch}
+	</if>
+	<!-- 推荐人 编号 -->
+	<if test="tjUserNumSearch != null and tjUserNumSearch !=''">
+		AND d.user_num = #{tjUserNumSearch}
+	</if>
+	<!-- 推荐人 姓名 -->
+	<if test="tjUserRealNameSearch != null and tjUserRealNameSearch !=''">
+		AND d.user_real_name = #{tjUserRealNameSearch}
+	</if>
+	<!--  地址查询-->
+	<if test="userAddress != null">
+		AND a.sys_user_address = #{userAddress}
+	</if>
+	</where>
+	
+  </select>
+  
+  
+  
+</mapper>

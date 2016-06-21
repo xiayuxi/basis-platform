@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysUserBrowseMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysUserBrowse">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_num" property="userNum" jdbcType="VARCHAR" />
+		<result column="sku_id" property="skuId" jdbcType="VARCHAR" />
+		<result column="browse_date" property="browseDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_num, sku_id, browse_date
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_browse
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_user_browse
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteAllBrowses" parameterType="java.lang.String">
+		delete from
+		sys_user_browse
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserBrowse">
+		insert into sys_user_browse
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userNum != null">
+				user_num,
+			</if>
+			<if test="skuId != null">
+				sku_id,
+			</if>
+			<if test="browseDate != null">
+				browse_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="userNum != null">
+				#{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="skuId != null">
+				#{skuId,jdbcType=VARCHAR},
+			</if>
+			<if test="browseDate != null">
+				#{browseDate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserBrowse">
+		update sys_user_browse
+		<set>
+			<if test="userNum != null">
+				user_num = #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="skuId != null">
+				sku_id = #{skuId,jdbcType=VARCHAR},
+			</if>
+			<if test="browseDate != null">
+				browse_date = #{browseDate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_browse
+		<where>
+			<if test="userNum != null">
+			and	user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="skuId != null">
+			and	sku_id = #{skuId,jdbcType=VARCHAR}
+			</if>
+			<if test="browseDate != null">
+			and	browse_date = #{browseDate,jdbcType=TIMESTAMP}
+			</if>
+		</where>
+		group by sku_id
+		   order by browse_date desc
+		<if test="pageIndex !=null and pageSize != null">
+			
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+</mapper>

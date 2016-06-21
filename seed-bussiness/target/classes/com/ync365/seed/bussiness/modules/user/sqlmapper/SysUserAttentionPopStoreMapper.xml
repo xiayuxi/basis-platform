@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.user.dao.SysUserAttentionPopStoreMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysUserAttentionPopStore">
+		<result column="user_num" property="userNum" jdbcType="VARCHAR" />
+		<result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		user_num,pop_store_num
+	</sql>
+
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserAttentionPopStore">
+		insert into sys_user_attention_pop_store
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userNum != null">
+				user_num,
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userNum != null">
+				#{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreNum != null">
+				#{popStoreNum,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+
+	<delete id="deleteByUserNumm" parameterType="java.lang.String">
+		delete from
+		sys_user_attention_pop_store
+		where user_num =
+		#{userNum,jdbcType=VARCHAR}
+	</delete>
+
+	<update id="update"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserAttentionPopStore">
+		update sys_user_attention_pop_store
+		<set>
+			<if test="userNum != null">
+				user_num= #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num= #{popStoreNum,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</update>
+
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_attention_pop_store
+		<where>
+			<if test="userNum != null">
+				and user_num= #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null">
+				and pop_store_num= #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByBean"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserAttentionPopStore">
+		delete
+		from sys_user_attention_pop_store
+		<where>
+			user_num= #{userNum,jdbcType=VARCHAR}
+
+			<if test="popStoreNum != null">
+				and pop_store_num= #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</delete>
+</mapper>

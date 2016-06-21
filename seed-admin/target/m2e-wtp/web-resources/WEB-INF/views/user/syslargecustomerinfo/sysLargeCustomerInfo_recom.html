@@ -1,0 +1,123 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js -->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+	<!-- 弹框 js -->
+	<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+	<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+	
+		<script type="text/javascript">
+			  function bindingFun(){
+				  art.dialog({
+					  title:"认证设置",
+					  width:800,
+					  height:300,
+					  padding:0,
+					  lock:true,
+					  content:$("#binding_t").html(),
+					  ok:function(){
+						  $("#span_id").hide();
+						  $("#span_two").hide();
+						  $("#span_thr").hide();
+						  var content = $(this.DOM.content[0]);
+						  var t = $("#propertyName").val();
+						  var m = $("#propertyType").val();
+						  var n = $("#propertyHint").val();
+						  if(t == ""){
+						  	$("#span_id").show();
+							return false;
+						  }else if(m == ""){
+							 $("#span_two").show();
+								return false;
+						  }else if(n == ""){
+							  $("#span_thr").show();
+								return false;
+						  }else{
+							  content.find("#binding_r_Form_t").submit();//提交
+						  }
+					  },
+					  cancel:true
+				  }).show();
+			 }
+	</script>
+</head>
+<body>
+	<div style="margin-left: 2px">
+        	<div style="margin-left: 2px">
+        		认证资料:
+        		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+        		<#if listLarge??>
+					 <#list listLarge as value>
+					 <tr>
+					 	<td>
+				           ${value.propertyName!''} 
+				        </td>
+				        <td>
+				        	${value.propertyType!''}
+				        </td>
+				        <td>
+				           ${value.propertyHint!''} 
+				        </td>
+				        
+				        <td>
+				        	<@shiro.hasPermission name="lager_user_recom_delete">
+				        	<a href="${ctx}/syslargecust/deleteInfoById?id=${value.id!''}">删除</a>
+				        	</@shiro.hasPermission>
+				        </td>
+				     </tr> 
+				     </#list>
+				 </#if>
+				 <@shiro.hasPermission name="lager_user_recom_create">
+				 <a href=" javascript:void(0)" onclick="bindingFun();">添加</a>
+				 </@shiro.hasPermission>
+				</table>
+        	</div>
+        	
+	</div>
+	
+	<div style="display:none;" id="binding_t">
+			
+		<form action="${ctx}/syslargecust/addPage" method="post" id="binding_r_Form_t">
+			<table >
+				<tr>
+			    	<td>属性名称：</td>
+			    	<td>
+			    		<input type="text" name="propertyName" id ="propertyName"/>
+			    		<span style="display:none;" id ="span_id"><font color="red">*属性名称不能为空</font></span>
+			    	</td>
+			    </tr>
+				<tr>
+			    	<td>认证资料属性：</td>
+			    	<td>
+			    		<select name="propertyType" id ="propertyType">
+							<option value="" >--请选择--</option>
+							<option value="text" >普通文本(限制100字以内)</option>
+							<option value="time" >时间段</option>
+							<option value="pic">照片(限制2M以内)</option>
+			   			</select>
+			   			<span style="display:none;" id ="span_two"><font color="red">*认证资料属性不能为空</font></span>
+			   		</td>
+			    </tr>
+			    <tr>
+			    	<td>提示：</td>
+			    	<td>
+			    		<input type="text" name="propertyHint" id ="propertyHint"/>
+			    		<span style="display:none;" id ="span_thr"><font color="red">*提示不能为空</font></span>
+			    	</td>
+			    </tr>
+			</table>
+		</form>
+	</div>
+</body>
+
+</html>

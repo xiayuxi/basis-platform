@@ -1,0 +1,234 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--  css  -->
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!--  js  -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        th{
+        	width: 150px;
+        }      
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 500px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+</style>  
+<body>
+	<form action="${ctx}/promotionReturn/add" method="post"
+		novalidate="novalidate"  onsubmit="return toVaild()">
+		<table class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<th>活动名称：</th>
+				<td><input class="" type="text" id="promotionName"	name="promotionName" />
+					店铺名称：					
+					<select	name="storeId" id="storeId">
+						<option value="">--请选择店铺--</option>
+						<option value="-1">自营</option>
+						<#list popStoreList as popStore>
+							<option value="${popStore.id}">${popStore.popStoreName}</option>
+						</#list>
+					</select>
+				</td>
+			</tr>			
+		  	<tr>
+				<th>活动时间：</th>
+				<td>
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="startTime" name="startTime"  />至<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+					type="text" id="endTime" name="endTime" />
+				</td>
+			</tr>
+			
+			<tr>				
+				<th>优惠方式：</th>
+				<td>
+					<input class="" type="radio" id="returnType"	name="returnType" value="1" onclick="returnTypeFn()" checked="checked"/>普通优惠&nbsp;&nbsp;&nbsp;
+					<input class="" type="radio" id="returnType"	name="returnType" value="2" onclick="returnTypeFn()"/>多重优惠
+				</td>
+			</tr>		
+		
+			<tr>
+				<th><label for="goodsAmount">活动规则：</label></th>
+				<td>
+				<div id="returnRegs1">
+					优惠条件：买家消费满<input class="easyui-validatebox" type="text" id="nomarlCostAmount" name="nomarlReturnVo.costAmount" />元<br/>
+					优惠内容：
+					<input class="easyui-validatebox" type="checkbox" id="nomarlCouponCheckbox" name="nomarlReturnVo.couponCheckbox" checked="checked" value="c0"/>送优惠券
+					<select name="nomarlReturnVo.couponAmount" id="s1">
+						<option value="0">--请选择--</option>
+						<option value="5">5元</option>
+						<option value="10">10元</option>
+						<option value="20">20元</option>
+						<option value="50">50元</option>
+						<option value="100">100元</option>
+						<option value="200">200元</option>
+					</select>
+					有效期至
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="nomarlValidDate" name="nomarlReturnVo.validDate"  />		
+				</div>									
+				<div id="returnRegs2" style="display:none">			
+					<div id="returnRegDiv0">
+						优惠条件：买家消费满<input class="easyui-validatebox" type="text" id="costAmount0" name="promotionReturnDetalis[0].costAmount" />元<br/>
+					优惠内容：
+					<input class="easyui-validatebox" type="checkbox" checked="checked" id="couponCheckbox1" name="promotionReturnDetalis[0].couponCheckbox"	value="1"/>送优惠券
+					<select name="promotionReturnDetalis[0].couponAmount" id="couponAmount0">
+						<option value="0">--请选择--</option>
+						<option value="5">5元</option>
+						<option value="10">10元</option>
+						<option value="20">20元</option>
+						<option value="50">50元</option>
+						<option value="100">100元</option>
+						<option value="200">200元</option>
+					</select>
+					有效期至
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="validDate0" name="promotionReturnDetalis[0].validDate"  />	
+					</div>
+					
+					
+					<div id="returnRegsBtn">
+						<input type="button" style="margin-left: 65px" id="addBtn" value="添加层级"/>
+					</div>				
+				</div>
+								
+				</td>				
+					
+			</tr>
+			<tr>
+				<th><label for="remark">活动备注：</label></th>
+				<td>
+					<textarea rows="3" cols="50" id="remark"
+					name="remark"></textarea>
+				</td>
+			</tr>
+			<tr>
+				 
+				<td colspan="2"><input type="submit" style="margin-left: 260px" name="submit" class="btn btn-primary" value="提交"></td>
+			</tr>
+		</table>
+	</form>
+</body>
+<script type="text/javascript">
+
+var i = 0;	
+//优惠方式的onclick事件
+function returnTypeFn(){	
+	var returnType=$('input:radio[name="returnType"]:checked').val();
+	//alert(returnType);	
+	if(returnType == 1){
+		$('#returnRegs1').css("display",'block');
+		$('#returnRegs2').css("display",'none');
+	}		
+	if(returnType == 2){
+		$('#returnRegs1').css("display",'none');
+		$('#returnRegs2').css("display",'block');
+	}	
+}
+
+
+function delreduceRegDiv(id){
+	$("#reduceRegDiv" + id).remove();
+}
+
+//初始化tree
+function fuzhi(data){  
+    zNodes=eval(data);  
+    tree = $.fn.zTree.init($("#treeDemo"), setting, zNodes);  
+    tree.expandAll(true);
+}  
+//添加满返规则的onclick事件
+$("#addBtn").click(function(){
+	//id='targetAmount"+ i +"' name='promotionReduceRegs[" + i + "].	
+	i = i + 1;	
+	var html = "<div id='returnRegDiv" + i + "'>";
+	html += "--------------------------------------------------------------------------------------------------------------<br/>";
+	html += "优惠条件：买家消费满<input class='easyui-validatebox' type='text' id='costAmount"+ i +"' name='promotionReturnDetalis[" + i + "].costAmount' />元<br/>";
+	html += "优惠内容：";
+	html += "<input class='easyui-validatebox' type='checkbox' checked='checked' id='couponCheckbox"+ i +"' name='promotionReturnDetalis[" + i + "].couponCheckbox' value='c"+ i +"'/>送优惠券";
+	html += "<select name='promotionReturnDetalis[" + i + "].couponAmount' id='couponAmount"+i+"'><option value='0'>--请选择--</option><option value='5'>5元</option><option value='10'>10元</option><option value='20'>20元</option><option value='50'>50元</option><option value='100'>100元</option><option value='200'>200元</option></select>";
+	html += "有效期至<input id='validDate"+ i +"' class='Wdate' onFocus=\"WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})\"	type='text'  name='promotionReturnDetalis[" + i + "].validDate'  />";
+	//$("#returnRegs2").append(html);	
+	$("#returnRegsBtn").before(html);
+	
+});
+
+</script>
+<script type="text/javascript">
+//提交表单之前进行数据校验
+function toVaild(){		
+	var promotionName = $("#promotionName").val();
+	var storeId = $("#storeId").val();
+	var startTime = $("#startTime").val();
+	var endTime = $("#endTime").val();
+
+	if(promotionName==null||promotionName==""){
+		alert("请输入活动名称");
+		return false;	
+	}else if(storeId==null||storeId==""){
+		alert("请选择店铺");
+		return false;	
+	}else if(startTime.length != 19){
+		alert("请选择活动开始时间");
+		return false;	
+	}else if(endTime.length != 19){
+		alert("请选择活动结束时间");
+		return false;	
+	} 
+	
+	var returnType=$('input:radio[name="returnType"]:checked').val();
+	 if(returnType ==1 ){
+		var nomarlCostAmount=$("#nomarlCostAmount").val();
+		var select1=$("#s1").val();
+		var nomarlValidDate=$("#nomarlValidDate").val();
+		
+		if(nomarlCostAmount == null || nomarlCostAmount ==""){
+			alert("请添加优惠条件");
+			return false;
+		}else if(select1 ==  0){
+			alert("请选择优惠券");
+			return false;
+		}else if(nomarlValidDate==""){
+			alert("请选择有效期");
+			return false;
+		}
+	}else{
+		var num=$('#returnRegs2').find('div').length-1;
+		for(var i=0;i<num;i++){
+			var costAmount=$("input[name='promotionReturnDetalis["+i+"].costAmount']").val();
+			var select2=$("#couponAmount"+i+"").val();
+			var validDate=$("input[name='promotionReturnDetalis["+i+"].validDate']").val();
+			if(costAmount == null || costAmount ==""){
+				alert("请输入全部的优惠的条件");
+				return false;
+			}else if(select2 == 0){
+				alert("请选择全部的优惠券");
+				return false;
+			}else if(validDate ==""){
+				alert("请选择全部的有效期");
+				return false;
+			}
+		}
+	} 
+	 return true;
+}
+</script>
+</html>

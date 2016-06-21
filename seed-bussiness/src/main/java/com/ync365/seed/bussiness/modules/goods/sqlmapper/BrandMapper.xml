@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.BrandDao">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.goods.entity.Brand">
+		<id column="brand_id" property="brandId" jdbcType="INTEGER" />
+		<result column="ch_name" property="chName" jdbcType="VARCHAR" />
+		<result column="en_name" property="enName" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="uuid" property="uuid" jdbcType="VARCHAR"/>
+		<result column="logo" property="logo" jdbcType="VARCHAR" />
+		<result column="seq" property="seq" jdbcType="DECIMAL" />
+		<result column="status" property="status" jdbcType="DECIMAL" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="story" property="story" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="opt_date" property="optDate" jdbcType="TIMESTAMP" />
+		<result column="opt_user" property="optUser" jdbcType="INTEGER" />
+		<result column="opt_term" property="optTerm" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDel" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		brand_id, ch_name, en_name, remark, uuid,logo, seq, status, address, story,
+		create_time,
+		opt_date, opt_user, opt_term, is_del
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_brand
+		where 
+			is_del = 0 and brand_id = #{brandId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from goods_brand
+		where brand_id = #{brandId,jdbcType=INTEGER}
+	</delete>
+	<update id="deleteByBrandId" parameterType="java.lang.Integer">
+		update goods_brand
+		set is_del = 1
+		where brand_id = #{brandId,jdbcType=INTEGER}
+	</update>
+	<insert id="insert"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Brand">
+		insert into goods_brand (brand_Id,ch_name, en_name,
+		remark,uuid, logo, seq,
+		status, address, story,
+		create_time, opt_date, opt_user,
+		opt_term,is_del)
+		values ( #{brandId,jdbcType=INTEGER}, #{chName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},  #{uuid,jdbcType=VARCHAR},#{logo,jdbcType=VARCHAR},
+		#{seq,jdbcType=DECIMAL},
+		#{status,jdbcType=DECIMAL}, #{address,jdbcType=VARCHAR}, #{story,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{optDate,jdbcType=TIMESTAMP},
+		#{optUser,jdbcType=INTEGER},#{optTerm,jdbcType=VARCHAR},#{isDel,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Brand">
+		insert into goods_brand
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="brandId != null">
+				brand_id,
+			</if>
+			<if test="chName != null">
+				ch_name,
+			</if>
+			<if test="enName != null">
+				en_name,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="uuid != null">
+				uuid,
+			</if>
+			<if test="logo != null">
+				logo,
+			</if>
+			<if test="seq != null">
+				seq,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="story != null">
+				story,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="optDate != null">
+				opt_date,
+			</if>
+			<if test="optUser != null">
+				opt_user,
+			</if>
+			<if test="optTerm != null">
+				opt_term,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="brandId != null">
+				#{brandId,jdbcType=INTEGER},
+			</if>
+			<if test="chName != null">
+				#{chName,jdbcType=VARCHAR},
+			</if>
+			<if test="enName != null">
+				#{enName,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="uuid != null">
+				#{uuid,jdbcType=VARCHAR},
+			</if>
+			<if test="logo != null">
+				#{logo,jdbcType=VARCHAR},
+			</if>
+			<if test="seq != null">
+				#{seq,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=DECIMAL},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="story != null">
+				#{story,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optDate != null">
+				#{optDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optUser != null">
+				#{optUser,jdbcType=INTEGER},
+			</if>
+			<if test="optTerm != null">
+				#{optTerm,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Brand">
+		update goods_brand
+		<set>
+			<if test="chName != null">
+				ch_name = #{chName,jdbcType=VARCHAR},
+			</if>
+			<if test="enName != null">
+				en_name = #{enName,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="uuid != null">
+				uuid = #{uuid,jdbcType=VARCHAR},
+			</if>
+			<if test="logo != null">
+				logo = #{logo,jdbcType=VARCHAR},
+			</if>
+			<if test="seq != null">
+				seq = #{seq,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=DECIMAL},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="story != null">
+				story = #{story,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optDate != null">
+				opt_date = #{optDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optUser != null">
+				opt_user = #{optUser,jdbcType=INTEGER},
+			</if>
+			<if test="optTerm != null">
+				opt_term = #{optTerm,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+		</set>
+		where brand_id = #{brandId}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Brand">
+		update goods_brand
+		set ch_name = #{chName,jdbcType=VARCHAR},
+		en_name = #{enName,jdbcType=VARCHAR},
+		remark = #{remark,jdbcType=VARCHAR},
+		uuid = #{uuid,jdbcType=VARCHAR},
+		logo = #{logo,jdbcType=VARCHAR},
+		seq = #{seq,jdbcType=DECIMAL},
+		status = #{status,jdbcType=DECIMAL},
+		address = #{address,jdbcType=VARCHAR},
+		story = #{story,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		opt_date = #{optDate,jdbcType=TIMESTAMP},
+		opt_user = #{optUser,jdbcType=INTEGER},
+		opt_term = #{optTerm,jdbcType=VARCHAR},
+		is_del = #{isDel,jdbcType=INTEGER}
+		where brand_id = #{brandId,jdbcType=INTEGER}
+	</update>
+
+
+	<select id="selectPage" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		goods_brand g
+		<where>
+			g.is_del = 0
+			<if test="chName != null and chName !='null' and chName != ''">
+				and ch_name like '%${chName}%'
+			</if>
+		</where>
+		limit #{pageIndex}  ,   #{pageSize}
+
+	</select>
+
+	<!-- 按条件查询交易记录数 -->
+	<select id="selectPageCount" resultType="Integer" parameterType="map">
+		select count(*) cnt from goods_brand
+		<where>
+			is_del = 0
+			<if test="chName != null and chName !='null' and chName != ''">
+				and ch_name like '%${chName}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="getAllbrandList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		goods_brand
+		where is_del = 0
+	</select>
+	
+	<select id="selectBrandbyCategoryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select * from goods_brand gb, (select brand_id from goods_brand_category 
+		where category_id =#{categoryId,jdbcType=INTEGER})gbc where gb.is_del = 0 and gb.brand_id=gbc.brand_id group by gb.brand_id
+	</select>
+	
+	<select id="selectByChName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * 
+			from goods_brand gb
+		where 
+			gb.is_del = 0 and gb.ch_name = #{chName,jdbcType=VARCHAR}
+	</select>
+
+	 
+	<select id="selectBrandByPopStoreNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select * from goods_brand b 
+			left join sys_pop_store_brand_relationship r on b.brand_id = r.brand_id
+			left join sys_pop_store p on r.pop_store_num = p.pop_store_num
+			<where>
+				<if test=" _parameter!=null and _parameter!='' ">
+					p.pop_store_num = #{_parameter}
+				</if>
+			</where>
+	 </select>
+
+
+	
+	<select id="selectBrandListByQuery"  resultMap="BaseResultMap" parameterType="map">
+		select f.* 
+		from goods_brand f,
+			(
+				select a.brand_id from goods a ,goods_sku b,(select c.sku_id from goods_sale_region c where     c.region_id =#{regionId} ) d
+				where a.goods_id = b.goods_id  and b.sku_id = d.sku_id and  (  ${keywords}  )   group by a.brand_id 
+			) e
+		where f.brand_id= e.brand_id  
+	</select>
+	
+	<select id="selectBrandListByIds" resultMap="BaseResultMap" parameterType="map">
+		select a.* 
+		from goods_brand a 
+		<where>
+			<if test="list != null and list.size >  0 ">
+				a.brand_id in  
+				<foreach item="item" index="index" collection="list" open="("
+						separator="," close=")">
+						#{item}
+				</foreach>   
+			</if>
+		</where>
+	</select>
+
+</mapper>

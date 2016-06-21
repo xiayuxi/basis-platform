@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopStoreDecorateInfoMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreDecorateInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+		<result column="pop_store_decorate" property="popStoreDecorate" jdbcType="INTEGER" />
+		<result column="home_page_top_big_pic" property="homePageTopBigPic" jdbcType="VARCHAR" />
+		<result column="focus_pic1" property="focusPic1" jdbcType="VARCHAR" />
+		<result column="focus_pic2" property="focusPic2" jdbcType="VARCHAR" />
+		<result column="focus_pic3" property="focusPic3" jdbcType="VARCHAR" />
+		<result column="recommend_advert_pic" property="recommendAdvertPic" jdbcType="VARCHAR" />
+		<result column="advert_goods_id" property="advertGoodsId" jdbcType="INTEGER" />
+		<result column="bottom_pic" property="bottomPic" jdbcType="VARCHAR" />
+		<result column="home_page_recommend_goods_num" property="homePageRecommendGoodsNum" jdbcType="INTEGER" />
+		<result column="recommend_goods_ids" property="recommendGoodsIds" jdbcType="VARCHAR" /> 
+		<result column="background_template" property="backgroundTemplate" jdbcType="VARCHAR" />
+		
+		
+		<result column="recommend_goods_pic1" property="recommendGoodsPic1" jdbcType="VARCHAR" />
+		<result column="recommend_goods_pic2" property="recommendGoodsPic2" jdbcType="VARCHAR" />
+		<result column="recommend_goods_pic3" property="recommendGoodsPic3" jdbcType="VARCHAR" />
+		<result column="recommend_goods_pic4" property="recommendGoodsPic4" jdbcType="VARCHAR" />
+		
+		
+		<result column="goods_input_url_one" property="goodsInputUrlOne" jdbcType="VARCHAR" />
+		<result column="goods_input_url_two" property="goodsInputUrlTwo" jdbcType="VARCHAR" />
+		<result column="goods_input_url_three" property="goodsInputUrlThree" jdbcType="VARCHAR" />
+		<result column="goods_input_url_four" property="goodsInputUrlFour" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, pop_store_num, pop_store_decorate, home_page_top_big_pic, focus_pic1,
+		focus_pic2,
+		focus_pic3, recommend_advert_pic, advert_goods_id, bottom_pic,
+		home_page_recommend_goods_num,
+		background_template,recommend_goods_pic1,
+		recommend_goods_pic2,recommend_goods_pic3,
+		recommend_goods_pic4,goods_input_url_one,
+		goods_input_url_two,goods_input_url_three,
+		goods_input_url_four,recommend_goods_ids
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store_decorate_info
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from sys_pop_store_decorate_info
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreDecorateInfo">
+		insert into sys_pop_store_decorate_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num,
+			</if>
+			<if test="popStoreDecorate != null">
+				pop_store_decorate,
+			</if>
+			<if test="homePageTopBigPic != null">
+				home_page_top_big_pic,
+			</if>
+			<if test="focusPic1 != null">
+				focus_pic1,
+			</if>
+			<if test="focusPic2 != null">
+				focus_pic2,
+			</if>
+			<if test="focusPic3 != null">
+				focus_pic3,
+			</if>
+			<if test="recommendAdvertPic != null">
+				recommend_advert_pic,
+			</if>
+			<if test="advertGoodsId != null">
+				advert_goods_id,
+			</if>
+			<if test="bottomPic != null">
+				bottom_pic,
+			</if>
+			<if test="homePageRecommendGoodsNum != null">
+				home_page_recommend_goods_num,
+			</if>
+			<if test="backgroundTemplate != null">
+				background_template,
+			</if>
+			<if test="recommendGoodsPic1 != null">
+				recommend_goods_pic1,
+			</if>
+			<if test="recommendGoodsPic2 != null">
+				recommend_goods_pic2,
+			</if>
+			<if test="recommendGoodsPic3 != null">
+				recommend_goods_pic3,
+			</if>
+			<if test="recommendGoodsPic4 != null">
+				recommend_goods_pic4,
+			</if>
+			<if test="goodsInputUrlOne != null">
+				goods_input_url_one,
+			</if>
+			<if test="goodsInputUrlTwo != null">
+				goods_input_url_two,
+			</if>
+			<if test="goodsInputUrlThree != null">
+				goods_input_url_three,
+			</if>
+			<if test="goodsInputUrlFour != null">
+				goods_input_url_four,
+			</if>
+			<if test="recommendGoodsIds != null">
+				recommend_goods_ids,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="popStoreNum != null">
+				#{popStoreNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreDecorate != null">
+				#{popStoreDecorate,jdbcType=INTEGER},
+			</if>
+			<if test="homePageTopBigPic != null">
+				#{homePageTopBigPic,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic1 != null">
+				#{focusPic1,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic2 != null">
+				#{focusPic2,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic3 != null">
+				#{focusPic3,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendAdvertPic != null">
+				#{recommendAdvertPic,jdbcType=VARCHAR},
+			</if>
+			<if test="advertGoodsId != null">
+				#{advertGoodsId,jdbcType=INTEGER},
+			</if>
+			<if test="bottomPic != null">
+				#{bottomPic,jdbcType=VARCHAR},
+			</if>
+			<if test="homePageRecommendGoodsNum != null">
+				#{homePageRecommendGoodsNum,jdbcType=INTEGER},
+			</if>
+			<if test="backgroundTemplate != null">
+				#{backgroundTemplate,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="recommendGoodsPic1 != null">
+				#{recommendGoodsPic1,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic2 != null">
+				#{recommendGoodsPic2,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic3 != null">
+				#{recommendGoodsPic3,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic4 != null">
+				#{recommendGoodsPic4,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlOne != null">
+				#{goodsInputUrlOne,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlTwo != null">
+				#{goodsInputUrlTwo,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlThree != null">
+				#{goodsInputUrlThree,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlFour != null">
+				#{goodsInputUrlFour,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="recommendGoodsIds != null">
+				#{recommendGoodsIds,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreDecorateInfo">
+		update sys_pop_store_decorate_info
+		<set>
+			<if test="popStoreNum != null">
+				pop_store_num = #{popStoreNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreDecorate != null">
+				pop_store_decorate = #{popStoreDecorate,jdbcType=INTEGER},
+			</if>
+			<if test="homePageTopBigPic != null">
+				home_page_top_big_pic = #{homePageTopBigPic,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic1 != null">
+				focus_pic1 = #{focusPic1,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic2 != null">
+				focus_pic2 = #{focusPic2,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic3 != null">
+				focus_pic3 = #{focusPic3,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendAdvertPic != null">
+				recommend_advert_pic = #{recommendAdvertPic,jdbcType=VARCHAR},
+			</if>
+			<if test="advertGoodsId != null">
+				advert_goods_id = #{advertGoodsId,jdbcType=INTEGER},
+			</if>
+			<if test="bottomPic != null">
+				bottom_pic = #{bottomPic,jdbcType=VARCHAR},
+			</if>
+			<if test="homePageRecommendGoodsNum != null">
+				home_page_recommend_goods_num =
+				#{homePageRecommendGoodsNum,jdbcType=INTEGER},
+			</if>
+			<if test="recommendGoodsIds != null">
+				recommend_goods_ids = #{recommendGoodsIds,jdbcType=VARCHAR},
+			</if>
+			<if test="backgroundTemplate != null">
+				background_template = #{backgroundTemplate,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="recommendGoodsPic1 != null">
+				recommend_goods_pic1 = #{recommendGoodsPic1,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic2 != null">
+				recommend_goods_pic2 = #{recommendGoodsPic2,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic3 != null">
+				recommend_goods_pic3 = #{recommendGoodsPic3,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic4 != null">
+				recommend_goods_pic4 = #{recommendGoodsPic4,jdbcType=VARCHAR},
+			</if>
+			
+			
+			<if test="goodsInputUrlOne != null">
+				goods_input_url_one = #{goodsInputUrlOne,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlTwo != null">
+				goods_input_url_two = #{goodsInputUrlTwo,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlThree != null">
+				goods_input_url_three = #{goodsInputUrlThree,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlFour != null">
+				goods_input_url_four = #{goodsInputUrlFour,jdbcType=VARCHAR},
+			</if>
+			
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store_decorate_info
+		<where>
+			<if test="popStoreNum != null">
+			and	pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreDecorate != null">
+			and	pop_store_decorate = #{popStoreDecorate,jdbcType=INTEGER}
+			</if>
+			<if test="homePageTopBigPic != null">
+			and	home_page_top_big_pic = #{homePageTopBigPic,jdbcType=VARCHAR}
+			</if>
+			<if test="focusPic1 != null">
+			and	focus_pic1 = #{focusPic1,jdbcType=VARCHAR}
+			</if>
+			<if test="focusPic2 != null">
+			and	focus_pic2 = #{focusPic2,jdbcType=VARCHAR}
+			</if>
+			<if test="focusPic3 != null">
+			and	focus_pic3 = #{focusPic3,jdbcType=VARCHAR}
+			</if>
+			<if test="recommendAdvertPic != null">
+			and	recommend_advert_pic = #{recommendAdvertPic,jdbcType=VARCHAR}
+			</if>
+			<if test="advertGoodsId != null">
+			and	advert_goods_id = #{advertGoodsId,jdbcType=INTEGER}
+			</if>
+			<if test="bottomPic != null ">
+			and	bottom_pic = #{bottomPic,jdbcType=VARCHAR}
+			</if>
+			<if test="homePageRecommendGoodsNum != null">
+			and	home_page_recommend_goods_num =
+				#{homePageRecommendGoodsNum,jdbcType=INTEGER}
+			</if>
+			<if test="recommendGoodsIds != null">
+			and	recommend_goods_ids = #{recommendGoodsIds,jdbcType=VARCHAR}
+			</if>
+			<if test="backgroundTemplate != null">
+			and	background_template = #{backgroundTemplate,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="recommendGoodsPic1 != null and recommendGoodsPic1 != '' ">
+				and recommend_goods_pic1 = #{recommendGoodsPic1,jdbcType=VARCHAR}
+			</if>
+			<if test="recommendGoodsPic2 != null and recommendGoodsPic2 != ''">
+				and recommend_goods_pic2 = #{recommendGoodsPic2,jdbcType=VARCHAR}
+			</if>
+			<if test="recommendGoodsPic3 != null and  recommendGoodsPic3 != ''">
+				and recommend_goods_pic3 = #{recommendGoodsPic3,jdbcType=VARCHAR}
+			</if>
+			<if test="recommendGoodsPic4 != null and  recommendGoodsPic4 != ''">
+				and recommend_goods_pic4 = #{recommendGoodsPic4,jdbcType=VARCHAR}
+			</if>
+			
+			
+			<if test="goodsInputUrlOne != null and goodsInputUrlOne != ''">
+				and goods_input_url_one = #{goodsInputUrlOne,jdbcType=VARCHAR}
+			</if>
+			<if test="goodsInputUrlTwo != null and goodsInputUrlTwo != ''">
+				and goods_input_url_two = #{goodsInputUrlTwo,jdbcType=VARCHAR}
+			</if>
+			<if test="goodsInputUrlThree != null goodsInputUrlThree and != ''">
+				and goods_input_url_three = #{goodsInputUrlThree,jdbcType=VARCHAR}
+			</if>
+			<if test="goodsInputUrlFour != null  goodsInputUrlFour and != ''">
+				and goods_input_url_four = #{goodsInputUrlFour,jdbcType=VARCHAR}
+			</if>
+			
+			
+		</where>
+	</select>
+	
+ 	<select id="selectByPopStoreNum" parameterType="string" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store_decorate_info
+		where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+	</select> 
+	
+	<update id="updateByPopStoreNum" parameterType="com.ync365.seed.bussiness.modules.user.bo.PopStoreDecorateBO" >
+		update sys_pop_store_decorate_info
+		<set>
+			<if test="popStoreNum != null">
+				pop_store_num = #{popStoreNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreDecorate != null">
+				pop_store_decorate = #{popStoreDecorate,jdbcType=INTEGER},
+			</if>
+			<if test="homePageTopBigPic != null">
+				home_page_top_big_pic = #{homePageTopBigPic,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic1 != null">
+				focus_pic1 = #{focusPic1,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic2 != null">
+				focus_pic2 = #{focusPic2,jdbcType=VARCHAR},
+			</if>
+			<if test="focusPic3 != null">
+				focus_pic3 = #{focusPic3,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendAdvertPic != null">
+				recommend_advert_pic = #{recommendAdvertPic,jdbcType=VARCHAR},
+			</if>
+			<if test="advertGoodsId != null">
+				advert_goods_id = #{advertGoodsId,jdbcType=INTEGER},
+			</if>
+			<if test="bottomPic != null">
+				bottom_pic = #{bottomPic,jdbcType=VARCHAR},
+			</if>
+			<if test="homePageRecommendGoodsNum != null">
+				home_page_recommend_goods_num =
+				#{homePageRecommendGoodsNum,jdbcType=INTEGER},
+			</if>
+			<if test="recommendGoodsIds != null">
+				recommend_goods_ids = #{recommendGoodsIds,jdbcType=VARCHAR},
+			</if>
+			<if test="backgroundTemplate != null">
+				background_template = #{backgroundTemplate,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="recommendGoodsPic1 != null">
+				recommend_goods_pic1 = #{recommendGoodsPic1,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic2 != null">
+				recommend_goods_pic2 = #{recommendGoodsPic2,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic3 != null">
+				recommend_goods_pic3 = #{recommendGoodsPic3,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendGoodsPic4 != null">
+				recommend_goods_pic4 = #{recommendGoodsPic4,jdbcType=VARCHAR},
+			</if>
+			
+			
+			<if test="goodsInputUrlOne != null">
+				goods_input_url_one = #{goodsInputUrlOne,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlTwo != null">
+				goods_input_url_two = #{goodsInputUrlTwo,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlThree != null">
+				goods_input_url_three = #{goodsInputUrlThree,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsInputUrlFour != null">
+				goods_input_url_four = #{goodsInputUrlFour,jdbcType=VARCHAR},
+			</if>
+			
+			
+		</set>
+		where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+	</update> 
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderGoodsChangeInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsChangeInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_goods_id" property="orderGoodsId" jdbcType="INTEGER" />
+    <result column="after_goods_price" property="afterGoodsPrice" jdbcType="DECIMAL" />
+    <result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+    <result column="change_num" property="changeNum" jdbcType="CHAR" />
+    <result column="change_name" property="changeName" jdbcType="VARCHAR" />
+    <result column="change_time" property="changeTime" jdbcType="TIMESTAMP" />
+    <result column="audit_num" property="auditNum" jdbcType="CHAR" />
+    <result column="audit_name" property="auditName" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_goods_id, after_goods_price, audit_status, change_num, change_name, change_time, 
+    audit_num, audit_name, audit_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_goods_change_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_goods_change_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsChangeInfo" >
+    insert into order_goods_change_info (id, order_goods_id, after_goods_price, 
+      audit_status, change_num, change_name, 
+      change_time, audit_num, audit_name, 
+      audit_time)
+    values (#{id,jdbcType=INTEGER}, #{orderGoodsId,jdbcType=INTEGER}, #{afterGoodsPrice,jdbcType=DECIMAL}, 
+      #{auditStatus,jdbcType=INTEGER}, #{changeNum,jdbcType=CHAR}, #{changeName,jdbcType=VARCHAR}, 
+      #{changeTime,jdbcType=TIMESTAMP}, #{auditNum,jdbcType=CHAR}, #{auditName,jdbcType=VARCHAR}, 
+      #{auditTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsChangeInfo" >
+    insert into order_goods_change_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderGoodsId != null" >
+        order_goods_id,
+      </if>
+      <if test="afterGoodsPrice != null" >
+        after_goods_price,
+      </if>
+      <if test="auditStatus != null" >
+        audit_status,
+      </if>
+      <if test="changeNum != null" >
+        change_num,
+      </if>
+      <if test="changeName != null" >
+        change_name,
+      </if>
+      <if test="changeTime != null" >
+        change_time,
+      </if>
+      <if test="auditNum != null" >
+        audit_num,
+      </if>
+      <if test="auditName != null" >
+        audit_name,
+      </if>
+      <if test="auditTime != null" >
+        audit_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderGoodsId != null" >
+        #{orderGoodsId,jdbcType=INTEGER},
+      </if>
+      <if test="afterGoodsPrice != null" >
+        #{afterGoodsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="changeNum != null" >
+        #{changeNum,jdbcType=CHAR},
+      </if>
+      <if test="changeName != null" >
+        #{changeName,jdbcType=VARCHAR},
+      </if>
+      <if test="changeTime != null" >
+        #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditNum != null" >
+        #{auditNum,jdbcType=CHAR},
+      </if>
+      <if test="auditName != null" >
+        #{auditName,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsChangeInfo" >
+    update order_goods_change_info
+    <set >
+      <if test="orderGoodsId != null" >
+        order_goods_id = #{orderGoodsId,jdbcType=INTEGER},
+      </if>
+      <if test="afterGoodsPrice != null" >
+        after_goods_price = #{afterGoodsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="auditStatus != null" >
+        audit_status = #{auditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="changeNum != null" >
+        change_num = #{changeNum,jdbcType=CHAR},
+      </if>
+      <if test="changeName != null" >
+        change_name = #{changeName,jdbcType=VARCHAR},
+      </if>
+      <if test="changeTime != null" >
+        change_time = #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditNum != null" >
+        audit_num = #{auditNum,jdbcType=CHAR},
+      </if>
+      <if test="auditName != null" >
+        audit_name = #{auditName,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsChangeInfo" >
+    update order_goods_change_info
+    set order_goods_id = #{orderGoodsId,jdbcType=INTEGER},
+      after_goods_price = #{afterGoodsPrice,jdbcType=DECIMAL},
+      audit_status = #{auditStatus,jdbcType=INTEGER},
+      change_num = #{changeNum,jdbcType=CHAR},
+      change_name = #{changeName,jdbcType=VARCHAR},
+      change_time = #{changeTime,jdbcType=TIMESTAMP},
+      audit_num = #{auditNum,jdbcType=CHAR},
+      audit_name = #{auditName,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

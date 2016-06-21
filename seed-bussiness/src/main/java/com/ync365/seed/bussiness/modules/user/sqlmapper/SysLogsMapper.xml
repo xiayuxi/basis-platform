@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysLogsMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysLogs">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="group_name" property="groupName" jdbcType="VARCHAR" />
+		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
+		<result column="operator_name" property="operatorName"
+			jdbcType="VARCHAR" />
+		<result column="operating_content" property="operatingContent"
+			jdbcType="VARCHAR" />
+		<result column="parameter" property="parameter" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="operating_admin_num" property="operatingAdminNum" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, create_time, group_name, role_name, operator_name,
+		operating_content,
+		parameter,state,operating_admin_num
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_logs
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_logs
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLogs"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into sys_logs
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="groupName != null">
+				group_name,
+			</if>
+			<if test="roleName != null">
+				role_name,
+			</if>
+			<if test="operatorName != null">
+				operator_name,
+			</if>
+			<if test="operatingContent != null">
+				operating_content,
+			</if>
+			<if test="parameter != null">
+				parameter,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="operatingAdminNum != null">
+				operating_admin_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="groupName != null">
+				#{groupName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleName != null">
+				#{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="operatorName != null">
+				#{operatorName,jdbcType=VARCHAR},
+			</if>
+			<if test="operatingContent != null">
+				#{operatingContent,jdbcType=VARCHAR},
+			</if>
+			<if test="parameter != null">
+				#{parameter,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=INTEGER},
+			</if>
+			<if test="operatingAdminNum != null">
+				#{operatingAdminNum,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLogs">
+		update sys_logs
+		<set>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="groupName != null">
+				group_name = #{groupName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleName != null">
+				role_name = #{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="operatorName != null">
+				operator_name = #{operatorName,jdbcType=VARCHAR},
+			</if>
+			<if test="operatingContent != null">
+				operating_content = #{operatingContent,jdbcType=VARCHAR},
+			</if>
+			<if test="parameter != null">
+				parameter = #{parameter,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				state=#{state,jdbcType=INTEGER},
+			</if>
+			<if test="operatingAdminNum != null">
+				operating_admin_num=#{operatingAdminNum,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_logs
+		<where>
+			<if test="beginOpratingTime != null and beginOpratingTime!=''">
+				<![CDATA[AND create_time > #{beginOpratingTime,jdbcType=TIMESTAMP}]]>
+			</if>
+			<if test="endOpratingTime !=null and endOpratingTime!=''">
+				<![CDATA[AND create_time < #{endOpratingTime,jdbcType=TIMESTAMP}]]>
+			</if>
+			<if test="groupName != null and groupName!=''">
+				and group_name = #{groupName,jdbcType=VARCHAR}
+			</if>
+			<if test="roleName != null and roleName !=''">
+				and role_name = #{roleName,jdbcType=VARCHAR}
+			</if>
+			<if test="operatorName != null and operatorName !=''">
+				and operator_name = #{operatorName,jdbcType=VARCHAR}
+			</if>
+			<if test="operatingContent != null and operatingContent !=''">
+				and operating_content =
+				#{operatingContent,jdbcType=VARCHAR}
+			</if>
+			<if test="parameter != null and parameter !=''">
+				and parameter = #{parameter,jdbcType=VARCHAR}
+			</if>
+			<if test="state != null and state!=''">
+				and state=#{state,jdbcType=INTEGER}
+			</if>
+			<if test="operatingAdminNum != null and operatingAdminNum !=''">
+				and operating_admin_num=#{operatingAdminNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+		<if test="pageIndex !=null and pageSize != null">
+			order by create_time desc
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	<select id="selectCountByMap" resultType="java.lang.Integer"
+		parameterType="map">
+		select
+		count(1)
+		from sys_logs
+		<where>
+		<if test="beginOpratingTime != null and beginOpratingTime!=''">
+				<![CDATA[AND create_time > #{beginOpratingTime,jdbcType=TIMESTAMP}]]>
+			</if>
+			<if test="endOpratingTime !=null and endOpratingTime!=''">
+				<![CDATA[AND create_time < #{endOpratingTime,jdbcType=TIMESTAMP}]]>
+			</if>
+			<if test="groupName != null and groupName!=''">
+				and group_name = #{groupName,jdbcType=VARCHAR}
+			</if>
+			<if test="roleName != null and roleName !=''">
+				and role_name = #{roleName,jdbcType=VARCHAR}
+			</if>
+			<if test="operatorName != null and operatorName !=''">
+				and operator_name = #{operatorName,jdbcType=VARCHAR}
+			</if>
+			<if test="operatingContent != null and operatingContent !=''">
+				and operating_content =
+				#{operatingContent,jdbcType=VARCHAR}
+			</if>
+			<if test="parameter != null and parameter !=''">
+				and parameter = #{parameter,jdbcType=VARCHAR}
+			</if>
+			<if test="state != null and state!=''">
+				and state=#{state,jdbcType=INTEGER}
+			</if>
+			<if test="operatingAdminNum != null and operatingAdminNum !=''">
+				and operating_admin_num=#{operatingAdminNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderCouponMapperManual" >
+	<select id="selectOrderCouponByOrderNo" resultType="com.ync365.seed.bussiness.modules.order.entity.OrderCoupon" parameterType="java.lang.String" >
+		SELECT
+			t.id as id,
+			t.order_type as orderType,
+			t.user_coupon_id as userCouponId,
+			t.coupon_type as couponType,
+			t.coupon_amount as couponAmount,
+			t.create_time as createTime,
+			t.order_no as orderNo
+		FROM order_coupon t
+	  	WHERE t.order_no = #{orderNo}
+	</select>
+</mapper>

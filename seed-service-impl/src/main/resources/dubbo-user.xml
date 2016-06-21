@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<!-- <bean id="formTokenInterceptor" class="com.ync365.seed.service.interceptor.FormTokenInterceptor"></bean> -->
+
+	<!-- <aop:config> <aop:aspect ref="formTokenInterceptor"> <aop:around method="doAround" 
+		pointcut-ref="post" /> <aop:after-throwing method="doException" pointcut-ref="post" 
+		throwing="exception" /> <aop:pointcut expression="execution(* com.ync365.seed.service.user..*.*(..))" 
+		id="post" /> </aop:aspect> </aop:config> -->
+	<!-- execution(* com.ync365.seed.service.user..*.*(..)) && @annotation(javax.ws.rs.GET) -->
+	<dubbo:service interface="com.ync365.seed.service.user.IUserService"
+		ref="userService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="userService" class="com.ync365.seed.service.user.impl.UserServiceImpl"></bean>
+	<dubbo:service interface="com.ync365.seed.service.user.IUserBaseService"
+		ref="userBaseService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="userBaseService" class="com.ync365.seed.service.user.impl.UserBaseServiceImpl"></bean>
+
+
+	<dubbo:service interface="com.ync365.seed.service.user.IUserInfoService"
+		ref="userInfoService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="userInfoService" class="com.ync365.seed.service.user.impl.IUserInfoServiceImpl"></bean>
+	
+	<dubbo:service interface="com.ync365.seed.service.user.IUserLoginRegisterService"
+		ref="userLoginRegisterService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="userLoginRegisterService" class="com.ync365.seed.service.user.impl.UserLoginRegisterServiceImpl"></bean>
+	
+	<dubbo:service interface="com.ync365.seed.service.user.IPOPService"
+		ref="popStoreService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="popStoreService" class="com.ync365.seed.service.user.impl.IPOPServiceImpl"></bean>
+</beans>

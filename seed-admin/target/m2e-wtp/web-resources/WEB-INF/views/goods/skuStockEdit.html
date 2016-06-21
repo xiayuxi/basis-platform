@@ -1,0 +1,75 @@
+<#assign ctx="${request.contextPath}" /> 
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+ 
+<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script> -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>  
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>  
+<body>
+	    <div>
+		<input type ="hidden" name ="skuIds" id = "skuIds" value="${skuIds!''}"/>
+		<table id="tb" class="view">
+			<tr>
+				<th><label for="opertorType"><font color="red">*</font>操作类型：</label></th>
+				<td>
+					<input type="radio" name="opertorType" value="1" />设置为新的库存
+					<input type="radio" name="opertorType" value="2" checked="checked"/>增加库存
+					<input type="radio" name="opertorType" value="3" />减少库存
+				</td>
+			</tr>	
+			<tr>
+				<th><label for="stockNum"><font color="red">*</font>库存：</label></th>
+				<td>
+					<input type="text" id="stockNum" name="stockNum" onkeyup="this.value=this.value.replace(/\D/g,'')" maxLength=8 onafterpaste="this.value=this.value.replace(/\D/g,'')" onpaste="return false"/>
+				</td>
+			</tr>			
+		</table>
+		<button class="focus_button" onclick="submit1()">提交</button>
+		<input type="button" name="cancel" value="取消"  onclick="cancelFun()">
+		
+	</div>
+	
+</body>
+<script type="text/javascript">
+	function submit1(e){	
+   	    var	opertorTypeVal =$("input[name='opertorType']:checked").val();
+   	    var skuIds = document.getElementById("skuIds").value;
+    	if(opertorTypeVal == ""){
+    		alert("请选择一个类型");
+    		return;
+    	}
+    	 var stockNumVal = $("#stockNum").val();
+		var postData = {
+			opertorType : opertorTypeVal,
+			stockNum : stockNumVal,
+			skuIds:skuIds
+		};
+		//alert("111");
+		 $.post("${ctx}/sku/stockEdit", postData, function(data) {
+			//alert(data);
+			if (data.success) {
+				alert("修改成功");
+					if(e == null)
+					parent.updrAttrValue();
+					return false;
+			} else {
+				alert("修改失败");
+			}
+		}, 'JSON') 
+		 
+	 }
+
+	function cancelFun(e){
+		if(e == null)
+			parent.closeStockEditPage();
+			return false;
+	}
+</script>
+</html>

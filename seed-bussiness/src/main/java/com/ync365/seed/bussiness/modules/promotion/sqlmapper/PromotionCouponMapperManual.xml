@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.promotion.dao.PromotionCouponMapperManual">
+	 <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.promotion.entity.PromotionCoupon" >
+    <id column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+    <result column="coupon_channel" property="couponChannel" jdbcType="INTEGER" />
+    <result column="coupon_type" property="couponType" jdbcType="INTEGER" />
+    <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL" />
+    <result column="coupon_count" property="couponCount" jdbcType="INTEGER" />
+    <result column="coupon_used_count" property="couponUsedCount" jdbcType="INTEGER" />
+    <result column="grant_start_time" property="grantStartTime" jdbcType="TIMESTAMP" />
+    <result column="grant_end_time" property="grantEndTime" jdbcType="TIMESTAMP" />
+    <result column="limited_amount" property="limitedAmount" jdbcType="DECIMAL" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+    <result column="coupon_all_amount" property="couponAllAmount" jdbcType="DECIMAL" />
+    <result column="coupon_used_amount" property="couponUsedAmount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    promotion_id, coupon_channel, coupon_type, coupon_amount, coupon_count, coupon_used_count, 
+    grant_start_time, grant_end_time, limited_amount, is_delete, coupon_all_amount, coupon_used_amount
+  </sql>
+	<select id="getPromotionCouponByCouponType" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		 pc.promotion_id, pc.coupon_channel, pc.coupon_type, pc.coupon_amount, pc.coupon_count, pc.coupon_used_count, 
+    pc.grant_start_time, pc.grant_end_time, pc.limited_amount, pc.is_delete, pc.coupon_all_amount, pc.coupon_used_amount
+		from promotion_coupon  pc
+		left join promotion p on pc.promotion_id = p.promotion_id
+		<where>
+			<if test="couponChannel != null">
+				and pc.coupon_channel = #{couponChannel,jdbcType=INTEGER}
+			</if>
+			<if test="currentDate != null">
+				AND #{currentDate} BETWEEN pc.grant_start_time AND
+				pc.grant_end_time
+			</if>
+			<if test="promotionStatus != null">
+				and p.status = #{promotionStatus,jdbcType = INTEGER}
+			</if>
+		</where>
+	</select>
+	<select id="getPromotionCouponByPromotionId" resultMap ="BaseResultMap" parameterType="map">
+	select
+	<include refid="Base_Column_List"/>
+	from promotion_coupon
+	<where>
+		<if test = "promotionId != null">
+			and promotion_id = #{promotionId,jdbcType=INTEGER}
+		</if>
+	</where>
+	</select>
+</mapper>

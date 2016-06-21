@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysUserWorkRelationshipMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysUserWorkRelationship" >
+    <result column="user_num" property="userNum" jdbcType="VARCHAR" />
+    <result column="work" property="work" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+	  user_num,work
+	</sql>
+  
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserWorkRelationship" >
+    insert into sys_user_work_relationship
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="work != null" >
+        work,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        #{userNum,jdbcType=VARCHAR},
+      </if>
+      <if test="work != null" >
+        #{work,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 通过map参数查询记录  list记录-->
+  <select id="selectPageByMap" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List"></include>
+    from sys_user_work_relationship
+    <where>
+		<if test="userNum != null ">
+			and user_num = #{userNum,jdbcType=VARCHAR}
+		</if>
+		<if test="work != null">
+			and work = #{work,jdbcType=VARCHAR}
+		</if>
+	</where>
+  </select>
+  
+  <!-- 通过userNum删除-->
+  	<delete id="deleteSysUserWorkByUserNum" parameterType="java.lang.String">
+		delete from
+		sys_user_work_relationship
+		where  user_num = #{userNum,jdbcType=VARCHAR}
+	</delete>
+	
+  <update id="update" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserWorkRelationship">
+		update sys_user_work_relationship
+		<set>
+			<if test="userNum != null ">
+			 	user_num = #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="work != null">
+				 work = #{work,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</update>
+	
+	
+	  <!-- 通过map参数查询记录  list记录-->
+  <select id="selectWorkByUserNum" resultType="string" parameterType="string" >
+    select 
+    	work
+    from sys_user_work_relationship
+    where user_num = #{userNum,jdbcType=VARCHAR}
+  </select>
+</mapper>

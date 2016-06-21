@@ -1,0 +1,513 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>后台管理系统</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="${staticCtx}/assets/css/dpl-min.css" rel="stylesheet"
+	type="text/css" />
+<link href="${staticCtx}/assets/css/bui-min.css" rel="stylesheet"
+	type="text/css" />
+<link href="${staticCtx}/assets/css/main-min.css" rel="stylesheet"
+	type="text/css" />
+</head>
+<body>
+
+	<div class="header">
+
+		<div class="dl-title">
+			<!--<img src="/chinapost/Public/assets/img/top.png">-->
+			管理系统
+		</div>
+
+		<div class="dl-log">
+			欢迎您，<span class="dl-log-user">${userName!''}</span>&nbsp;
+			
+			上次登录时间：${last_login_time?string("yyyy-MM-dd HH:mm:ss")}&nbsp;
+			
+			<a href="${ctx}/admin/changepwdPage" title="修改密码"
+				class="dl-log-quit">修改密码</a>&nbsp;
+			
+			
+			<a href="${ctx}/logout" title="退出系统"
+				class="dl-log-quit">退出</a>
+		</div>
+	</div>
+	<div class="content">
+		<div class="dl-main-nav">
+			<div class="dl-inform">
+				<div class="dl-inform-title">
+					<s class="dl-inform-icon dl-up"></s>
+				</div>
+			</div>
+			<ul id="J_Nav" class="nav-list ks-clear">
+				<@shiro.hasPermission name="usersysmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-home">商品管理</div></li>
+				</@shiro.hasPermission>		
+				<@shiro.hasPermission name="usersysmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">订单管理</div></li>
+				</@shiro.hasPermission>		
+				<@shiro.hasPermission name="usersysmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">促销管理</div></li>
+				</@shiro.hasPermission>		
+				<@shiro.hasPermission name="usersysmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">出库管理</div></li>
+				</@shiro.hasPermission>
+				<@shiro.hasPermission name="businessmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">工程师管理</div></li>
+				</@shiro.hasPermission>
+				<@shiro.hasPermission name="usersysmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">入驻商管理</div></li>
+				</@shiro.hasPermission>		
+				<@shiro.hasPermission name="usersysmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">广告管理</div></li>
+				</@shiro.hasPermission>
+				<@shiro.hasPermission name="usersysmodel">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">用户管理</div></li>
+				</@shiro.hasPermission>
+				<@shiro.hasPermission name="authorization">
+				<li class="nav-item dl-selected"><div
+						class="nav-item-inner nav-order">权限管理</div></li>
+				</@shiro.hasPermission>
+				
+			</ul>
+		</div>
+		<ul id="J_NavContent" class="dl-tab-conten">
+
+		</ul>
+	</div>
+	<script type="text/javascript"
+		src="${staticCtx}/assets/js/jquery-1.8.1.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/assets/js/bui-min.js"></script>
+	<script type="text/javascript"
+		src="${staticCtx}/assets/js/common/main-min.js"></script>
+	<script type="text/javascript"
+		src="${staticCtx}/assets/js/config-min.js"></script>
+	<script>
+		BUI.use('common/main', function() {
+
+			var config = [ 
+				<@shiro.hasPermission name="usersysmodel">           
+			               {
+				id : '1',
+				menu : [ {
+					text : '商品管理',
+					items : [ {
+						id : '101',
+						text : '分类管理',
+						href : 'category/list.html'
+					}, {
+						id : '102',
+						text : '属性管理',
+						href : 'feature/list.html'
+					}, {
+						id : '103',
+						text : '品牌管理',
+						href : 'brand/list.html'
+					}, {
+						id : '104',
+						text : '商品管理',
+						href : 'goods/list.html'
+					}, {
+						id : '105',
+						text : '库存管理',
+						href : 'sku/list.html'
+					}, {
+						id : '106',
+						text : '商品审核管理',
+						href : 'goodsAudit/auditList.html'
+					}, {
+						id : '107',
+						text : '商品回收站',
+						href : 'goodsAudit/recycleBinList.html'
+					} , {
+
+						id : '109',
+						text : '区域管理',
+						href : 'region/list.html'
+					} ]
+				}]
+			}, 
+			</@shiro.hasPermission>
+			<@shiro.hasPermission name="usersysmodel"> 
+			{
+				id : '2',
+				//homePage : '9',
+				menu : [ {
+					text : '订单管理',
+					items : [ {
+						id : '201',
+						text : '订单列表',
+						href : 'order/list.html'
+					} ]
+				} ]
+			} ,
+			</@shiro.hasPermission>
+			
+			<@shiro.hasPermission name="usersysmodel"> 
+			{
+				id : '3',
+				//homePage : '9',
+				menu : [ {
+					text : '促销管理',
+					items : [ {
+						id : '301',
+						text : '满赠活动',
+						href : 'promotion/list.html?promotionType=5'
+					}, {
+						id : '302',
+						text : '满减活动',
+						href : 'promotion/list.html?promotionType=3'
+					},{
+						id : '303',
+						text : '满返活动',
+						href : 'promotion/list.html?promotionType=4'
+					},{
+						id : '304',
+						text : '秒杀活动',
+						href : 'promotion/list.html?promotionType=6'
+					},{
+						id : '305',
+						text : '直降活动',
+						href : 'promotion/list.html?promotionType=7'
+					},{
+						id : '307',
+						text : '红包活动',
+						href : 'promotion/list.html?promotionType=2'						
+					}]
+				} ]
+			} , 
+			</@shiro.hasPermission>
+			
+			
+			<@shiro.hasPermission name="usersysmodel"> 
+			{
+				id : '4',
+				//homePage : '9',
+				menu : [ {
+					text : '出库管理',
+					items : [ {
+						id : '401',
+						text : '已支付的订单',
+						href : 'paidOrder/list.html'
+					},{
+						id : '402',
+						text : '已配货的订单',
+						href : 'preparedOrder/list.html'
+					},{
+						id : '403',
+						text : '已出库的订单',
+						href : 'stockOutOrder/list.html'
+					},{
+						id : '404',
+						text : '已发货的订单',
+						href : 'deliveryOrder/list.html'
+					},{
+						id : '405',
+						text : '入驻商订单',
+						href : 'popOrder/list.html'
+					} ]
+				} ]
+			} , 
+			</@shiro.hasPermission>
+			<@shiro.hasPermission name="businessmodel">
+			{
+				id : '5',
+				//homePage : '9',
+				menu : [ {
+					text : '工程师管理',
+					items : [
+					<@shiro.hasPermission name="businessmodel_seuser_indexcount">         
+					         {
+						id : '501',
+						text : 'SE首页',
+						href : 'sysindexcount/listse'
+					},
+					</@shiro.hasPermission>
+					
+					<@shiro.hasPermission name="businessmodel_a_user_indexcount">
+					{
+						id : '507',
+						text : 'A+首页',
+						href : 'sysindexcount/listai'
+					},
+					</@shiro.hasPermission>
+					
+					<@shiro.hasPermission name="rzshop_sys_list">
+					{
+						id : '502',
+						text : '供应商查询',
+						href : 'sysPopStore/list'
+					},
+					</@shiro.hasPermission>
+					
+					<@shiro.hasPermission name="vs_user_list">
+					{
+						id : '504',
+						text : 'VS列表',
+						href : 'sysvsinfo/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="us_user_list">
+					{
+						id : '505',
+						text : '农场主列表',
+						href : 'sysuserinfo/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="lager_user_list">
+					{
+						id : '506',
+						text : '大客户列表',
+						href : 'syslargecust/list'
+					},
+					</@shiro.hasPermission>
+					
+					<@shiro.hasPermission name="se_user_list">
+					{
+						id : '508',
+						text : 'SE列表',
+						href : 'sysadmininfo/seList'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="lc_user_list">
+					{
+						id : '509',
+						text : 'LC列表',
+						href : 'syslcinfo/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="businessmodel_seuser_infos">
+					{
+						id : '510',
+						text : 'SE账户信息',
+						href : 'sysadmininfo/mySeEditPage'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="businessmodel_a_user_infos">
+					{
+						id : '511',
+						text : 'A+账户信息',
+						href : 'sysadmininfo/myAEditPage'
+					} 
+					</@shiro.hasPermission>
+					]
+				} ]
+			} ,
+			</@shiro.hasPermission>
+			<@shiro.hasPermission name="usersysmodel"> 
+			{
+				id : '6',
+				//homePage : '9',
+				menu : [ {
+					text : '入驻商管理',
+					items : [ {
+						id : '601',
+						text : '供应商首页',
+						href : 'sysindexcount/listpop'
+					}, {
+						id : '602',
+						text : '入驻商列表',
+						href : 'sysPopStore/list'
+					} , {
+						id : '603',
+						text : '入驻商商品查询',
+						href : 'goods/storeList.html'
+					} , {
+						id : '604',
+						text : '订单查询',
+						href : 'popOrder/popOrderQuery'
+					} , {
+						id : '605',
+						text : '添加供应商',
+						href : 'sysPopStore/insertPopStorePage'
+					} , {
+						id : '606',
+						text : 'SS用户管理',
+						href : 'systwosinfo/list'
+					}
+					]
+				} ]
+			} , 
+			</@shiro.hasPermission>
+			
+			<@shiro.hasPermission name="usersysmodel"> 
+			{
+				id : '7',
+				//homePage : '9',
+				menu : [ { 
+					text : '广告管理',
+					items : [ {
+						id : '25',
+						text : '广告列表',
+						href : 'ad/list.html'
+					},{
+						id : '28',
+						text : '栏目类别列表',
+						href : 'articleCategory/list.html'
+					},{
+						id : '29',
+						text : '文章列表',
+						href : 'article/list.html'
+					},{
+						id : '210',
+						text : '导航列表',
+						href : 'navigation/list.html'
+					}]
+				} ]
+			} ,
+			</@shiro.hasPermission>
+			<@shiro.hasPermission name="usersysmodel">
+			{
+				id : '8',
+				//homePage : '9',
+				menu : [ {
+					text : '用户管理',
+					items : [ 
+					<@shiro.hasPermission name="usersysmodel_index_count">          
+					          {
+						id : '801',
+						text : '用户管理首页',
+						href : 'sysindexcount/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="us_user_list"> 
+					{
+						id : '802',
+						text : 'US列表',
+						href : 'sysuserinfo/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="vs_user_list"> 
+					{
+						id : '803',
+						text : 'VS列表',
+						href : 'sysvsinfo/list'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="lc_user_list"> 
+					{
+						id : '804',
+						text : 'LC列表',
+						href : 'syslcinfo/list'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="lager_user_list"> 
+					{
+						id : '805',
+						text : '大客户认证',
+						href : 'syslargecust/list'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="se_user_list"> 
+					{
+						id : '806',
+						text : 'SE列表',
+						href : 'sysadmininfo/seList'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="ai_user_list"> 
+					{
+						id : '807',
+						text : 'A+列表',
+						href : 'sysadmininfo/aList'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="rzshop_sys_list"> 
+					{
+						id : '808',
+						text : '入驻商列表',
+						href : 'sysPopStore/list'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="ctpf_user_tj"> 
+					{
+						id : '809',
+						text : '测土配肥统计',
+						href : 'sysuserinfo/listctpf'
+					} ,
+					</@shiro.hasPermission>
+					
+					<@shiro.hasPermission name="zcnr_user_sys_list"> 
+					{
+						id : '810',
+						text : '注册内容维护',
+						href : 'sysdowork/list'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="ssi_user_list"> 
+					{
+						id : '811',
+						text : 'SS用户管理',
+						href : 'systwosinfo/list'
+					}
+					</@shiro.hasPermission>
+					]
+				} ]
+			} ,
+			</@shiro.hasPermission>
+			<@shiro.hasPermission name="authorization">
+			{
+				id : '9',
+				//homePage : '9',
+				menu : [ {
+					text : '权限管理',
+					items : [ 
+					<@shiro.hasPermission name="authorization_indexcount">
+					          {
+						id : '901',
+						text : '权限管理首页',
+						href : 'admin/indexCount'
+					} ,
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="authorization_account_list">
+					{
+						id : '902',
+						text : '帐号管理',
+						href : 'admin/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="authorization_role">
+					{
+						id : '903',
+						text : '角色管理',
+						href : 'sysrole/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="authorization_viewfile">
+					{
+						id : '904',
+						text : '操作日志',
+						href : 'log/list'
+					},
+					</@shiro.hasPermission>
+					<@shiro.hasPermission name="authorization_module">
+					{
+						id : '905',
+						text : '权限列表',
+						href : 'sysmodule/list'
+					}
+					</@shiro.hasPermission>
+					]
+				} ]
+			} 
+			</@shiro.hasPermission>
+			
+			];
+			new PageUtil.MainPage({
+				modulesConfig : config
+			});
+		});
+	</script>
+
+</body>
+</html>

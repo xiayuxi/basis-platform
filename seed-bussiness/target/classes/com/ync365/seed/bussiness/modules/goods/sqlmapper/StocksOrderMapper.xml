@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.StocksOrderDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.StocksOrder" >
+    <id column="stocks_order_id" property="stocksOrderId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="stock_num" property="stockNum" jdbcType="INTEGER" />
+    <result column="front_stock_num" property="frontStockNum" jdbcType="INTEGER" />
+    <result column="back_stock_num" property="backStockNum" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="is_success" property="isSuccess" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    stocks_order_id, sku_id, goods_id, order_id, status, stock_num, front_stock_num, 
+    back_stock_num, create_time,is_success
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_stocks_order
+    where stocks_order_id = #{stocksOrderId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from goods_stocks_order
+    where stocks_order_id = #{stocksOrderId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.StocksOrder" >
+    insert into goods_stocks_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stocksOrderId != null" >
+        stocks_order_id,
+      </if>
+      <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="stockNum != null" >
+        stock_num,
+      </if>
+      <if test="frontStockNum != null" >
+        front_stock_num,
+      </if>
+      <if test="backStockNum != null" >
+        back_stock_num,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="isSuccess != null ">
+      	is_success,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stocksOrderId != null" >
+        #{stocksOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="stockNum != null" >
+        #{stockNum,jdbcType=INTEGER},
+      </if>
+      <if test="frontStockNum != null" >
+        #{frontStockNum,jdbcType=INTEGER},
+      </if>
+      <if test="backStockNum != null" >
+        #{backStockNum,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="isSuccess != null" >
+        #{isSuccess,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.StocksOrder" >
+    update goods_stocks_order
+    <set >
+      <if test="skuId != null" >
+        sku_id = #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="stockNum != null" >
+        stock_num = #{stockNum,jdbcType=INTEGER},
+      </if>
+      <if test="frontStockNum != null" >
+        front_stock_num = #{frontStockNum,jdbcType=INTEGER},
+      </if>
+      <if test="backStockNum != null" >
+        back_stock_num = #{backStockNum,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isSuccess != null ">
+      	is_success = #{isSuccess,jdbcType=INTEGER},
+      </if>
+    </set>
+    where stocks_order_id = #{stocksOrderId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="map" >
+  		select 
+    	<include refid="Base_Column_List" />
+    	from goods_stocks_order
+    	where order_id = #{orderId,jdbcType=INTEGER} 
+    	<if test="skuId != null ">
+    		and sku_id = #{skuId}
+    	</if>
+    	<if test="status != null ">
+    		and status = #{status}
+    	</if>
+  </select>
+</mapper>

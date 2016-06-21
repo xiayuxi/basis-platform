@@ -1,0 +1,209 @@
+<#assign ctx="${request.contextPath}" /> 
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" media="screen" type="text/css"
+	href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+
+<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!-- 表单验证 -->
+<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+<script type="text/javascript" src="${staticCtx}/validate/page/goods/featureEdit.js"></script>
+
+<script type="text/javascript">
+//添加一个属性值
+
+var i = #{fVList?size};
+//alert(i);
+function addValueFun(data){  
+	var str = "<div><input class='easyui-validatebox' type='text' id='optional"+i+"' name='fVList["+i+"].attrValue' style='width: 200px;' data-options='required:true' />&nbsp;&nbsp; <input type='button' value='删除' onclick='delValueFun(this)'/><br /></div>";
+	$("#tags").append(str);
+    i=i+1;
+} 
+//删除一个属性值
+function delValueFun(obj){  
+	$(obj).parent().remove();
+}
+</script>
+<!-- 类别三级联动 -->
+<script type="text/javascript">
+	var areaJson = {};
+    function setHtml(parentId,selectId){
+    	var temp_html = "<option value=''>请选择</option>";
+    	$.each(areaJson,function(i,category1){
+        	if(category1.pId==parentId){
+                temp_html+="<option value='"+category1.id+"'>"+category1.name+"</option>";
+        	}
+        });
+    	$(selectId).html(temp_html);
+    }
+ </script>
+ <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+</style>  
+<body onload="init();">
+	<form action="${ctx}/feature/edit" id="featureFormEdit" method="post" novalidate="novalidate">
+		<input type ="hidden" name ="featureId" id = "featureId" value="${feature.featureId!''}"/>
+		<table class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<th><label for="name"><font color="red">*</font>属性名称：</label></th>
+				<td><input class="easyui-validatebox" type="text" id="name" name="name"   value="${feature.name!''}"  />
+				</td>
+			</tr> 
+			<!--回显-->
+			<tr >
+				<th><label for="categoryId"><font color="red">*</font>所属分类：</label></th>
+				<td>
+					<div class="selectList">
+				        <select class="category1" id="categoryIds[0]"  name="categoryIds[0]">
+				            <option value=''>请选择</option>
+				        </select>
+				        <select class="category2" id="categoryIds[1]" name="categoryIds[1]">
+				            <option value=''>请选择</option>
+				        </select>
+				        <select class="category3" id="categoryIds[2]" name="categoryIds[2]">
+				            <option value=''>请选择</option>
+				        </select>
+				    </div>
+				</td>
+			</tr>
+
+			<tr>
+				<th><label for="isQuery">是否搜索字段：</label></th>
+				<td><input   type="radio" id="isQuery"	name="isQuery" value="1" <#if (feature.isQuery==1)> checked="checked" </#if>  />是 
+					<input   type="radio" id="isQuery" name="isQuery" value="2"  <#if (feature.isQuery==2)> checked="checked" </#if>  />否
+				</td> 
+			</tr>
+			
+
+			<tr>
+				<th><label for="isSpec">是否规格：</label></th>
+				<td><input   type="radio" id="isSpec"	name="isSpec" value="1" <#if (feature.isSpec==1)> checked="checked" </#if>  />是 
+					<input   type="radio" id="isSpec" name="isSpec" value="0"  <#if (feature.isSpec==0)> checked="checked" </#if>  />否
+				</td> 
+			</tr>
+
+
+			<tr>
+				<th><label for="status">状态：</label></th>
+				<td><input   type="radio" id="status"	name="status" value="3" <#if (feature.status==3)> checked="checked" </#if>  />启用 
+					<input   type="radio" id="status" name="status" value="4"  <#if (feature.status==4)> checked="checked" </#if>  />停用
+				</td> 
+			</tr>
+
+			<tr>
+				<th><label for="seq"><font color="red">*</font>排序：</label></th>
+				<td><input  type="text" id="seq" name="seq" data-options="required:true" value="${feature.seq!''}" onkeyup="this.value=this.value.replace(/\D/g,'')" maxLength=6 onafterpaste="this.value=this.value.replace(/\D/g,'')" /></td>
+			</tr>
+
+			<tr>
+				 
+				<td colspan="2">属性值&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' value='添加一个可选值' onclick='addValueFun()' class="btn"/></td>
+			</tr>
+			<tr>
+				<th><label for="optionals"><font color="red">*</font>可选值：</label></th>
+				<td>
+
+				
+					<div id="tags">
+					<#if fVList??>
+						<#list fVList as value>
+						<#if value_index == 0 >
+						<div><input type='hidden' name='fVList[${value_index}].id' value="${value.id}"><input type='text' id='optional"+${value_index}+"' name='fVList[${value_index}].attrValue'  value="${value.attrValue}" />&nbsp;&nbsp; <br /></div>
+						<#else>
+						<div><input type='hidden' name='fVList[${value_index}].id' value="${value.id}"><input type='text' id='optional"+${value_index}+"' name='fVList[${value_index}].attrValue'  value="${value.attrValue}" />&nbsp;&nbsp; <input type='button' value='删除' onclick='delValueFun(this)'/><br /></div>
+						</#if>
+						</#list>
+					</#if>
+					</div>
+						
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+ 					<input type="submit" name="submit" class="btn btn-primary" value="提交">
+				    <button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+	<!-- 此div为分类展示下拉框 -->
+<div id="menuContent" class="menuContent" style="display:none; position: absolute;">
+	<ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
+</div>
+</body>
+<script language="javascript">
+
+var areaJson = {};
+<#list categoryChain as categoryChainX>
+var categoryChain${categoryChainX_index+1} = ${categoryChainX.categoryId!'undefined'};
+</#list>
+$(function(){
+	$.getJSON("${ctx}/category/getree",function(data){
+        areaJson =data;
+        setHtml(0,".category1",categoryChain1);
+        if(categoryChain1!=undefined){
+        	setHtml(categoryChain1,".category2",categoryChain2);
+        	if(categoryChain2!=undefined){
+        		setHtml(categoryChain2,".category3",categoryChain3);
+        	}
+        }
+        
+        
+    });
+	$(".category1").change(function(){
+		setHtml(this.value,".category2");
+		setHtml("<option value=''>请选择</option>",".category3");
+	});
+	$(".category2").change(function(){
+		setHtml(this.value,".category3")
+	});
+});
+function setHtml(parentId,selectId,categoryChain_1){
+	var temp_html = "<option value=''>请选择</option>";
+	$.each(areaJson,function(i,category1){
+    	if(category1.pId==parentId){
+    		if(categoryChain_1!=undefined&&category1.id==categoryChain_1){
+    			temp_html+="<option value='"+category1.id+"' selected='selected'>"+category1.name+"</option>";
+    		}else{
+	            temp_html+="<option value='"+category1.id+"'>"+category1.name+"</option>";
+    		}
+    	}
+    });
+	$(selectId).html(temp_html);
+}
+//返回列表
+$(function () {       
+	$('#backid').click(function(){
+			window.location.href="list.html";
+			//history.back();
+	 });
+
+});
+</script> 
+</html>

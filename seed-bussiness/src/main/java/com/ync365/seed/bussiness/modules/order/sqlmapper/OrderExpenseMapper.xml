@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderExpenseMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderExpense" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+    <result column="village_expense" property="villageExpense" jdbcType="DECIMAL" />
+    <result column="platform_expense" property="platformExpense" jdbcType="DECIMAL" />
+    <result column="lc_expense" property="lcExpense" jdbcType="DECIMAL" />
+    <result column="integral_expense" property="integralExpense" jdbcType="DECIMAL" />
+    <result column="plan_expense" property="planExpense" jdbcType="DECIMAL" />
+    <result column="se_expense" property="seExpense" jdbcType="DECIMAL" />
+    <result column="a_expense" property="aExpense" jdbcType="DECIMAL" />
+    <result column="vs_num" property="vsNum" jdbcType="CHAR" />
+    <result column="lc_num" property="lcNum" jdbcType="CHAR" />
+    <result column="se_num" property="seNum" jdbcType="CHAR" />
+    <result column="a_num" property="aNum" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, order_no, order_type, village_expense, platform_expense, lc_expense, 
+    integral_expense, plan_expense, se_expense, a_expense, vs_num, lc_num, se_num, a_num, 
+    create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_expense
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_expense
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderExpense" >
+    insert into order_expense (id, order_id, order_no, 
+      order_type, village_expense, platform_expense, 
+      lc_expense, integral_expense, plan_expense, 
+      se_expense, a_expense, vs_num, 
+      lc_num, se_num, a_num, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{orderNo,jdbcType=CHAR}, 
+      #{orderType,jdbcType=INTEGER}, #{villageExpense,jdbcType=DECIMAL}, #{platformExpense,jdbcType=DECIMAL}, 
+      #{lcExpense,jdbcType=DECIMAL}, #{integralExpense,jdbcType=DECIMAL}, #{planExpense,jdbcType=DECIMAL}, 
+      #{seExpense,jdbcType=DECIMAL}, #{aExpense,jdbcType=DECIMAL}, #{vsNum,jdbcType=CHAR}, 
+      #{lcNum,jdbcType=CHAR}, #{seNum,jdbcType=CHAR}, #{aNum,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderExpense" >
+    insert into order_expense
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="orderType != null" >
+        order_type,
+      </if>
+      <if test="villageExpense != null" >
+        village_expense,
+      </if>
+      <if test="platformExpense != null" >
+        platform_expense,
+      </if>
+      <if test="lcExpense != null" >
+        lc_expense,
+      </if>
+      <if test="integralExpense != null" >
+        integral_expense,
+      </if>
+      <if test="planExpense != null" >
+        plan_expense,
+      </if>
+      <if test="seExpense != null" >
+        se_expense,
+      </if>
+      <if test="aExpense != null" >
+        a_expense,
+      </if>
+      <if test="vsNum != null" >
+        vs_num,
+      </if>
+      <if test="lcNum != null" >
+        lc_num,
+      </if>
+      <if test="seNum != null" >
+        se_num,
+      </if>
+      <if test="aNum != null" >
+        a_num,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="villageExpense != null" >
+        #{villageExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="platformExpense != null" >
+        #{platformExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="lcExpense != null" >
+        #{lcExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="integralExpense != null" >
+        #{integralExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="planExpense != null" >
+        #{planExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="seExpense != null" >
+        #{seExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="aExpense != null" >
+        #{aExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="vsNum != null" >
+        #{vsNum,jdbcType=CHAR},
+      </if>
+      <if test="lcNum != null" >
+        #{lcNum,jdbcType=CHAR},
+      </if>
+      <if test="seNum != null" >
+        #{seNum,jdbcType=CHAR},
+      </if>
+      <if test="aNum != null" >
+        #{aNum,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderExpense" >
+    update order_expense
+    <set >
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderType != null" >
+        order_type = #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="villageExpense != null" >
+        village_expense = #{villageExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="platformExpense != null" >
+        platform_expense = #{platformExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="lcExpense != null" >
+        lc_expense = #{lcExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="integralExpense != null" >
+        integral_expense = #{integralExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="planExpense != null" >
+        plan_expense = #{planExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="seExpense != null" >
+        se_expense = #{seExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="aExpense != null" >
+        a_expense = #{aExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="vsNum != null" >
+        vs_num = #{vsNum,jdbcType=CHAR},
+      </if>
+      <if test="lcNum != null" >
+        lc_num = #{lcNum,jdbcType=CHAR},
+      </if>
+      <if test="seNum != null" >
+        se_num = #{seNum,jdbcType=CHAR},
+      </if>
+      <if test="aNum != null" >
+        a_num = #{aNum,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderExpense" >
+    update order_expense
+    set order_id = #{orderId,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=CHAR},
+      order_type = #{orderType,jdbcType=INTEGER},
+      village_expense = #{villageExpense,jdbcType=DECIMAL},
+      platform_expense = #{platformExpense,jdbcType=DECIMAL},
+      lc_expense = #{lcExpense,jdbcType=DECIMAL},
+      integral_expense = #{integralExpense,jdbcType=DECIMAL},
+      plan_expense = #{planExpense,jdbcType=DECIMAL},
+      se_expense = #{seExpense,jdbcType=DECIMAL},
+      a_expense = #{aExpense,jdbcType=DECIMAL},
+      vs_num = #{vsNum,jdbcType=CHAR},
+      lc_num = #{lcNum,jdbcType=CHAR},
+      se_num = #{seNum,jdbcType=CHAR},
+      a_num = #{aNum,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

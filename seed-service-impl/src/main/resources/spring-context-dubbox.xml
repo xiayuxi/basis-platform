@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<context:component-scan base-package="com.ync365.seed.service" />
+	<aop:aspectj-autoproxy />
+	<dubbo:application name="seedService" />
+	<dubbo:registry address="zookeeper://192.168.98.65:2181"></dubbo:registry>
+	<dubbo:protocol name="rest" port="8001" contextpath="services"
+		server="tomcat"
+		extension="com.ync365.seed.service.exception.mapper.ValidateJsonExceptionMapper,com.ync365.seed.service.interceptor.RestLoggingFilter"></dubbo:protocol>
+	<import resource="dubbo-user.xml" />
+	<import resource="dubbo-order.xml" />
+	<import resource="dubbo-promotion.xml" />
+	<import resource="dubbo-goods.xml" />
+	<import resource="dubbo-common.xml" />
+</beans>

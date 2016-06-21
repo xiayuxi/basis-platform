@@ -1,0 +1,195 @@
+<#assign ctx="${request.contextPath}" /> <#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/pagination.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/tooldate.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/toolenum.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>	
+		<div style="margin: 10px;">
+			<form class="form-inline" role="form">
+				下单时间 <input class="Wdate"	onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" type="text" id="createTime" name="createTime" />
+				&nbsp;&nbsp;&nbsp;&nbsp;订单号：<input type="text" class="" name="orderNo" id="orderNo"/> 
+				&nbsp;&nbsp;&nbsp;&nbsp;US手机号：<input type="text" class="" name="usTel" id="usTel"/> <br/>
+				US姓名：<input type="text" class="" name="usName" id="usName" /> 
+				&nbsp;&nbsp;&nbsp;VS姓名：<input type="text" class="" name="vsName" id="vsName"/> 
+				&nbsp;&nbsp;&nbsp;VS手机号：<input type="text" class="" name="vsTel" id="vsTel" /><br/> 
+				地址：<input type="text" class="" name="vsAddressCode"  id="vsAddressCode"/> 				
+				&nbsp;&nbsp;&nbsp;
+				支付方式：<select name="payWay" id="payWay">
+						<option value="">--请选择--</option>
+						<option value="1">云农宝支付</option>
+						<option value="2">农行支付</option>
+					  </select>
+				支付时间 <input class="Wdate"	onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" type="text" id="payTime" name="payTime" />
+				<input type="button" id="btnSearch" class="btn btn-primary" value="查询"/>				
+			</form>
+		</div>		
+		<div class="">		
+			<table id="list" class="table table-hover">
+				<thead>
+					<tr align="center">	
+						<th>选择</th>				
+						<th>订单号</th>
+						<th>下单人</th>
+						<th>手机号</th>
+						<th>订单金额</th>
+						<th>下单时间</th>
+						<th>操作</th>						
+					</tr>
+				</thead>
+				<input id="allSelect" type="checkbox"/>全选&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="batchCreateStockOutOrder()">批量生成出库单</a>
+				<tbody id="tbodyList">					
+				</tbody>
+			</table>
+			<div id="pager"></div>
+		</div>
+		
+		
+</body>
+<#noparse>
+<!-- 列表模板  -->
+<script type="text/x-jquery-tmpl" id="tmplList">
+{{each(i,row) data.rows}}
+	<tr>
+		<td><input id="checkbox"  type="checkbox" value="${row.id},${row.orderType}" /></td>				
+		<td>${row.orderNo}</td>
+		<td>${row.username}</td>
+		<td>${row.userTel}</td>
+		<td>${row.actualAmount}</td>				
+		<td>${timestampToTime(row.createTime)}</td>
+		<td>
+			<a href="${data.ctx}/preparedOrder/orderDetail?orderId=${row.id}&orderType=${row.orderType}">查看详情</a>						
+		</td>
+	</tr>
+{{/each}}
+</script>
+</#noparse>
+<script type="text/javascript">
+	$(function() {
+		getList(1);
+		
+		$("#btnSearch").click(function(){					
+			getList(1);
+		});		
+		//给全选复选框绑定单击事件		
+		$("#allSelect").click(function() {
+			$('input#checkbox').prop("checked", this.checked);
+		});
+		var $subBox = $("input#checkbox");
+		$subBox.click(function() {
+			$("#allSelect").prop("checked",$subBox.length == $("input#checkbox:checked").length ? true: false);
+		});
+		
+	});
+	//***********批量生成出库单******************	
+	function batchCreateStockOutOrder() {		
+		var orderIds = new Array();
+		var orderTypes = new Array();
+		$("input#checkbox:checked").each(function() {					
+			var values = $(this).val();
+			if(values!=null&&values!=""){
+				var valueArray = new Array();				
+				valueArray = values.split(",");				
+				if (this.checked == true) {				
+					orderIds.push(valueArray[0]);//第一个是订单id
+					orderTypes.push(valueArray[1]);//第二个是订单类型				
+				}							
+			}
+					
+		});		
+		$.ajax({
+			type : "post",			
+			url : "${ctx}/preparedOrder/batchCreateStockOutOrder",			
+			data : {				
+				orderIds : orderIds.toString(),
+				orderTypes : orderTypes.toString()
+			},
+			success : function(data) {					
+				if (data == "OK") {
+					alert("出库单生成成功");
+					$("#btnSearch").click();
+				} else {
+					alert("出库单生成失败");
+				}
+			}	
+			
+		});
+	}
+	//单个订单生成出库单
+	function createStockOutOrder(orderId) {
+		$.ajax({
+			type : "post",
+			async : false,
+			url : "${ctx}/preparedOrder/createStockOutOrder",			
+			data : {
+				orderId:orderId,
+			},
+			success : function(data) {					
+				if (data == "OK") {
+					alert("出库单生成成功");
+					$("#btnSearch").click();
+				} else {
+					alert("出库单生成失败");
+				}
+			}	
+		});
+	}
+	//获取订单列表
+	function getList(pageIndex) {
+		//alert("---");
+		$.ajax({
+			type : "post",
+			url : "${ctx}/preparedOrder/grid",
+			data : {
+				createTime : $("#createTime").val(),
+				orderNo : $("#orderNo").val(),				
+				usTel : $("#usTel").val(),
+				usName : $("#usName").val(),
+				vsName : $("#vsName").val(),
+				vsTel : $("#vsTel").val(),
+				vsAddressCode : $("#vsAddressCode").val(),
+				payWay : $("#payWay").val(),
+				payTime : $("#payTime").val(),
+				pageIndex : pageIndex,// 当前页
+				pageSize : 10,//每页显示记录数				
+				sort : "create_time",//排序字段	
+				order : "desc"//asc||desc				
+			},
+			success : function(data) {
+				if (data == null || data.records == 0) {
+					$("#tbodyList").html("暂无记录");
+				} else {
+					data.ctx = "${ctx}";
+					$("#tbodyList").html($("#tmplList").tmpl({
+						data : data
+					}));
+					//分页控件
+					var pager = new pagination(function() {
+						getList($(this).attr("data-index"));
+					});
+					pager.pageIndex = data.page;//当前页码
+					pager.pageSize = data.pageSize;//页大小
+					pager.totalCount = data.records;//总条数
+					pager.totalPage = data.total;//总页数
+					$("#pager").html(pager.creat());
+				}
+			}
+		});
+	};
+	
+	
+</script>
+</html>

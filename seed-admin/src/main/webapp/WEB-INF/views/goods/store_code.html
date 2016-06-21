@@ -1,0 +1,67 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<!-- jquery-form.js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>  
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>  
+
+<body>
+	<div>搜索店铺</div></br>
+	<div>
+		 <input type="text" id="store_name" /><a href="#" onclick="searchStoreNum()">搜索</a> </br>
+		 <div id="ds">
+		 <#list  sysPopStoreList as spsl>
+         	<input type="radio" value="${spsl.id}" id="storeId" name="storeId" />${spsl.popStoreName}</br> 
+         </#list>
+         </div>
+	</div>
+	<div class="alone_footer tc">
+		<button class="focus_button" onclick="formatValue()">确定</button>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	function searchStoreNum(){
+		var store_name= $("#store_name").val();
+		$("#ds").empty();
+		
+	 	$.getJSON("${ctx}/goods/selectSysPopStoreList?storeName="+store_name,function(data){
+	 		var temp_html="";
+	 		$.each(data,function(i,sysPopStore){
+            	temp_html+="<input type='radio' value='"+sysPopStore.id+"' id='storeId' name='storeId' >"+sysPopStore.popStoreName+"</input></br>";
+    		});    	
+	 		$("#ds").html(temp_html);
+  		});
+	}
+</script>
+<script type="text/javascript">
+    var storeName="";
+    var storeId="";
+    
+    function formatValue(e){
+   	    var radios = $("input[name='storeId']");
+   	    for(var i=0;i<radios.size();i++){
+   	    	if(radios[i].checked == true ){
+   	    		storeId =$("input[name='storeId']:checked").val();
+   	    		storeName =radios[i].nextSibling.nodeValue;
+   	    	}
+   	    }
+    	
+    	if(storeId == ""){
+    		alert("请选择一个店铺");
+    		return;
+    	}
+    		
+    	var attr_values =new Array();
+    	attr_values[0]=storeId;
+    	attr_values[1]=storeName;
+         
+    	if(e == null)
+    		parent.updateStoreValue(attr_values);
+    	return false;
+    }
+</script>

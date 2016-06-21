@@ -1,0 +1,31 @@
+/* -----------------------------------------------------------------------
+	validation css
+----------------------------------------------------------------------- */
+input.errorv { border: 1px dotted red; background : #FFFFCC;}
+select.errorv { border: 1px dotted red; }  
+textarea.errorv { border: 1px dotted red; background : #FFFFCC;}  
+label.errorv { background:url(imgs/unchecked.gif) no-repeat; padding-left: 16px; color: red; display: none; }
+div.errorv{
+	background:url(imgs/unchecked.gif) no-repeat;
+	text-indent:15px;
+	white-space:nowrap;
+	display:block;
+	line-height:18px;
+	z-index: auto;
+	display: none;
+	position:absolute;
+	background: #FFFFFF;
+	opacity:0.9;
+    filter: alpha(opacity=50);
+    overflow:hidden;
+}
+
+b.rtop, b.rbottom{display:block;background: #FFFFFF} 
+b.rtop b, b.rbottom b{ display:block;height: 1px;overflow: hidden; background: #FFFFFF ;width:2px; } 
+b.r1{margin: 0 5px} 
+b.r2{margin: 0 3px} 
+b.r3{margin: 0 2px} 
+b.rtop b.r4, b.rbottom b.r4{margin: 0 1px;height: 2px} 
+.fl{ float:left;}
+.fr{ float:right;}
+.errmsgdiv{white-space:nowrap;background:url(imgs/unchecked.gif) no-repeat 1px 6px !important; border:#249ffc solid  1px; font-size:12px; padding:4px 2px; color:#0d5286;}	

@@ -1,0 +1,181 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	
+	<!--验证js-->
+	<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+	<script type="text/javascript" src="${staticCtx}/validate/page/user/sysUserInfoEditPage.js"></script>
+	<script type="text/javascript">
+
+		$(function () {
+			regionPlugin.init("${ctx}");
+			$("input[name=sysReceiveGoodsAddressId]").each(function(){
+				$(this).before(regionPlugin.getAllRegionString(this.value));
+			});
+			regionPlugin.regionInitParam({
+				defaultCityId:'${userInfoBO.registerLocation!''}'
+			});
+			$('#backid').click(function(){
+					history.back();
+			 });
+			$('#submitForm').click(function(){
+				$("#formId").submit();
+			 });
+		
+		});
+		function validateMobileRepeat(mobile){
+			var boolMobile = false;
+			$.ajax({
+				type:"get",
+				url:"${ctx}/user/validateMobileRepeat?mobile="+mobile+"&userNum=${userInfoBO.userNum!''}",
+				async:false,
+				success : function(data){
+					if(data=="true"){
+						boolMobile=true;
+					}
+				}
+			});
+			return boolMobile;
+		}
+	</script>
+ </HEAD>
+
+<body>
+	<div style="margin-left: 2px">
+	<form action="${ctx}/sysuserinfo/edit" method="post" id="formId">
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td >姓名：</td>
+			        <td><input name="sysUserRealName" value="${userInfoBO.sysUserRealName!''}"/></td>
+			        <td >手机号：</td>
+			        <td><input id="userMobile" name="userMobile" value="${userInfoBO.userMobile!''}"/></td>
+			    </tr> 
+			    <tr>
+			        <td>用户名</td>
+			        <td>${userInfoBO.userLoginName!''}</td>
+			        <td >用户编号：</td>
+			        <td><input name="userNum" type="hidden" value="${userInfoBO.userNum!''}"/>${userInfoBO.userNum!''}</td>
+			    </tr>
+			    <tr>
+			        <td>生日：</td>
+			        <td>
+			        	<#if userInfoBO.sysUserBirthday??>
+			        		<input name="sysUserBirthday" value="${userInfoBO.sysUserBirthday?string("yyyy-MM-dd")}" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})" readonly="readonly"/>
+			        	</#if>
+			        </td>
+			        <td>推荐人编号</td>
+			        <td>${userInfoBO.tjUserNum!''}</td>
+			    </tr>
+			    <tr>
+			        <td >收货地址：</td>
+			        <td>
+			        	<#if userInfoBO.sysReceiveGoodsInfos??>
+				        <#list userInfoBO.sysReceiveGoodsInfos as sysReceiveGoodsInfo>
+				        	<input type="hidden" name="sysReceiveGoodsAddressId" value="${sysReceiveGoodsInfo.sysReceiveGoodsAddress!''}"/>&nbsp;${sysReceiveGoodsInfo.sysReceiveGoodsAddressDetail!''}<br/>
+				        </#list>
+				        </#if>
+			        </td>
+			   
+			        <td >所在区域：</td>
+			        <td>
+			        	<select id="provinceRegion"></select>
+			        	<select id="cityRegion" name="registerLocation"></select>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td >推荐人电话</td>
+			        <td>${userInfoBO.tjUserMobile!''}</td>
+			   
+			        <td >农场面积</td>
+			        <td><input name="sysUserFarmArea" value="${userInfoBO.sysUserFarmArea!''}"/>亩</td>
+			    </tr>
+			    <tr>
+			        
+			    	<td >注册时间</td>
+			        <td>
+			        	<#if userInfoBO.createTime??>
+			        		${userInfoBO.createTime?string("yyyy-MM-dd HH:mm:ss")}
+			        	</#if>
+			        </td>
+			        <td >推荐人姓名</td>
+			        <td>${userInfoBO.tjUserRealName!''}</td>
+			    </tr>
+			    <tr>
+			    	<td >种植种类</td>
+			        <td colspan="3">
+			        <#if sysGrowKindList??>
+			        <#if userInfoBO.sysUserGrowKinds??>
+						<#list sysGrowKindList as sysGrowKind>
+							<input id="sysUserGrowKinds_${sysGrowKind_index}" name="sysUserGrowKinds[${sysGrowKind_index}]" type="checkbox" value="${sysGrowKind.name}"
+					        <#list userInfoBO.sysUserGrowKinds as sysUserGrowKind>
+					        	<#if sysUserGrowKind==sysGrowKind.name>
+					        	checked="checked"
+					        	</#if>
+					        </#list>
+					        />${sysGrowKind.name}&nbsp;&nbsp;
+					    </#list>
+			        </#if>
+			        </#if>
+			        </td>
+			    
+			    </tr>
+			</table>
+		</form>
+	</div>
+	<div style="margin-left: 2px">
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>村站编号：</td>
+				<td>${userInfoBO.vsNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.vsName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.vsMobile!''}</td>
+			</tr>
+			<tr>
+				<td>LC编号：</td>
+				<td>${userInfoBO.lcNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.lcName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.lcMobile!''}</td>
+			</tr>
+			<tr>
+				<td>SE编号：</td>
+				<td>${userInfoBO.seNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.seName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.seMobile!''}</td>
+			</tr>
+			<tr>
+				<td>A+编号：</td>
+				<td>${userInfoBO.aNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.aName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.aMobile!''}</td>
+			</tr>
+		</table>
+	</div>
+	<div style="margin-left: 20px">
+	<@shiro.hasPermission name="us_user_edit_save">
+		<input type="submit" class="btn btn-success" value="保存" name="submitForm" id="submitForm"/>
+	</@shiro.hasPermission>
+		<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+	</div>
+	
+
+</body>
+</html>

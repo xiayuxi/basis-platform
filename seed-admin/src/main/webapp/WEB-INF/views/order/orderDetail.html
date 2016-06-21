@@ -1,0 +1,226 @@
+<#assign ctx="${request.contextPath}" /> <#assign staticCtx="${request.contextPath}/resources" />
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/pagination.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/tooldate.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/toolenum.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<div id="div1" class="">	
+<table class="table table-hover">
+	<thead><th colspan="3">订单信息</th></thead>
+	<tbody id="tbodyList">
+		<tr >
+			<td>订单编号：${orderMap["orderInfo"].orderNo!'' }</td>
+			<td>下单时间：${orderMap["orderInfo"].createTime?string("yyyy-MM-dd HH:mm:ss") }</td>
+			<td>订单状态：				
+				<font color="gray"><#if (orderMap["orderInfo"].orderStatus==1)>待付款</#if></font>
+				<font color="orange"><#if (orderMap["orderInfo"].orderStatus==2)>待审核</#if></font>
+				<font color="green"><#if (orderMap["orderInfo"].orderStatus==3)>已审核</#if></font>
+				<font color="red"><#if (orderMap["orderInfo"].orderStatus==4)>已支付</#if></font>
+				<#if (orderMap["orderInfo"].orderStatus==5)>已配货</#if>
+				<#if (orderMap["orderInfo"].orderStatus==6)>已出库</#if>
+				<#if (orderMap["orderInfo"].orderStatus==7)>待收货</#if>
+				<font color="green"><#if (orderMap["orderInfo"].orderStatus==9)>已完成</#if></font>
+				<#if (orderMap["orderInfo"].orderStatus==10)>已取消</#if>
+				<#if (orderMap["orderInfo"].orderStatus==11)>已关闭</#if>
+				<#if (orderMap["orderInfo"].orderStatus==12)>已退货</#if>
+			</td>
+		</tr>
+		<tr>				
+			<td>
+				支付金额：
+				<#if orderMap["orderInfo"].actualAmount??>	
+					${orderMap["orderInfo"].actualAmount?string("0.00") }						
+				<#else>
+					暂未支付
+				</#if>				
+			</td>
+			<td>			
+				支付方式：
+				<#if orderMap["orderInfo"].payWay??>			
+					<#if (orderMap["orderInfo"].payWay==1)>云农宝支付</#if>	
+					<#if (orderMap["orderInfo"].payWay==2)>农行支付</#if>		
+				<#else>
+					暂未支付
+				</#if>							
+			</td>
+		</tr>
+
+		</tr>
+		<th colspan="3">用户信息</th>
+		<tr >
+		
+			<td>姓名：${orderMap["orderInfo"].usName!'' }</td>
+			<td>手机号：${orderMap["orderInfo"].usTel!'' }</td>
+			<td>详细地址：${orderMap["orderInfo"].usAddress!'' } </td>
+		</tr>
+		<th colspan="3">村级服务站</td></th>
+		<tr >
+			<td>姓名：${orderMap["orderInfo"].vsName!'' }</td>
+			<td>手机号：${orderMap["orderInfo"].vsTel!'' }</td>
+			<td>详细地址：${orderMap["orderInfo"].vsAddress!'' }</td>
+		</tr>
+		<th colspan="3">服务工程师</td></th>
+		<tr >
+			<td>姓名：${orderMap["orderInfo"].engineerName!'' }</td>
+			<td>手机号：${orderMap["orderInfo"].engineerPhone!'' }</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<div id="div2" class="">
+<h4>商品清单</h4>
+	<table class="table table-hover">
+		<thead>
+			<th>商品</th>
+			<th>单价</th>
+			<th>数量</th>
+			<th>小计</th>
+			<!-- <th>VS佣金</th>
+			<th>LC佣金</th>
+			<th>统筹费用</th> -->			
+		</thead>
+		<tbody id="tbodyList">
+		<#list orderMap["orderGoodsList"] as orderGoods>			
+			<tr>	
+				<td><img width="60" height="60" src="http://ynctest.b0.upaiyun.com${orderGoods.goodsUrl}" />${orderGoods.goodsName!'' }</td>
+				<td>￥${orderGoods.goodsPrice?string("0.00") }</td>
+				<td>x${orderGoods.goodsCount!'' }</td>
+				<td>￥${orderGoods.totalAmount?string("0.00") }</td>								
+			</tr>			
+		</#list>
+		<tr align="right">			
+			<td>			
+			金额合计：<font color="red">￥${orderMap["orderInfo"].totalAmount?string("0.00") }</font>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<#if (orderMap["orderGoodsDetail"]?size>0)>
+<div id="div3" class="col-xs-8">
+	<table border="1"  class="table table-hover">
+	<th colspan="8">改价详情</th>
+	<tr align="center">		
+		<td>商品名称</td>
+		<td>商品单价(元)</td>
+		<td>村站佣金(元)</td>
+		<!-- <td>平台佣金(元)</td> -->
+		<td>LC佣金(元)</td>		
+		<td>众筹费用(元)</td>		
+		<td>改价人</td>		
+		<td>审核人</td>		
+	</tr>
+	
+<#list orderMap["orderGoodsDetail"] as orderGoods>
+<tr align="center">	
+		<td>${orderGoods.goodsName!''}</td>
+		<td>${orderGoods.goodsPrice?string("0.00")}/<font color="red">${orderGoods.actualPrice?string("0.00")}</font></td>
+		<td>${orderGoods.villageExpense?string("0.000")}/<font color="red">${orderGoods.villageExpenseChange?string("0.000")}</font></td>
+		<!-- <td>${orderGoods.platformExpense!''}/<font color="red">${orderGoods.platformExpenseChange!''}</font></td> -->
+		<td>${orderGoods.lcExpense?string("0.000")}/<font color="red">${orderGoods.lcExpenseChange?string("0.000")}</font></td>		
+		<td>${orderGoods.planExpense?string("0.000")}/<font color="red">${orderGoods.planExpenseChange?string("0.000")}</font></td>	
+		<td>						
+			${orderGoods.changeName!''}<br/>
+			<#if orderGoods.changeTime??>	
+				${orderGoods.changeTime?string("yyyy-MM-dd HH:mm:ss")} 
+			<#else>
+				无
+			</#if>		
+						
+		</td>	
+		<td>		
+			${orderGoods.auditName!''}<br/>			
+			<#if orderGoods.auditTime??>	
+				${orderGoods.auditTime?string("yyyy-MM-dd HH:mm:ss")} 
+			<#else>
+				无
+			</#if>	
+		</td>				
+</tr>
+</#list>
+	</table>
+</div>
+</#if>
+<div id="div4" class="col-xs-8">	
+<table class="table table-hover">
+	<thead><th colspan="4">订单跟踪</th></thead>
+	<tbody id="tbodyList">
+		<tr>
+			<td>操作时间</td>
+			<td>处理信息</td>
+			<td>编号</td>
+			<td>操作人</td>
+		</tr>
+	<#list orderMap["orderOptLogList"] as orderOptLog>	
+		<tr>					
+			<td>${orderOptLog.optTime?string("yyyy-MM-dd HH:mm:ss")}</td>
+			
+			<td>				
+				<#if (orderOptLog.orderStatus==1)>下单</#if>
+				<#if (orderOptLog.orderStatus==2)>改价</#if>
+				<#if (orderOptLog.orderStatus==3)>审核</#if>
+				<#if (orderOptLog.orderStatus==4)>支付</#if>
+				<#if (orderOptLog.orderStatus==5)>配货</#if>
+				<#if (orderOptLog.orderStatus==6)>出库</#if>
+				<#if (orderOptLog.orderStatus==7)>发货</#if>				
+				<#if (orderOptLog.orderStatus==9)>确认收货</#if>				
+			</td>
+			<td>
+				<#if (orderOptLog.orderStatus==1)>订单号：${orderOptLog.orderNo!''}</#if>
+				<#if (orderOptLog.orderStatus==5)>配货号：${orderOptLog.preparedNo!''}</#if>
+				<#if (orderOptLog.orderStatus==6)>出库号：${orderOptLog.stockNo!''}</#if>
+				<#if (orderOptLog.orderStatus==7)>发货号：${orderOptLog.delivelyNo!''}</#if>							 
+			 </td>
+			<td>${orderOptLog.optName!'' }</td>			
+		</tr>	
+	</#list>	
+	</tbody>
+</table>
+</div>
+<div id="div5" class="col-xs-8">
+	<table class="table table-hover">
+		<thead><th colspan="4">支付信息</th></thead>
+		<tbody id="tbodyList">		
+			<tr>
+				<td>
+					共<font color="red">${orderMap["orderInfo"].orderGoodsCount!''}</font>件商品，商品总金额<font color="red">￥${orderMap["orderInfo"].totalAmount?string("0.00") }</font>&nbsp;&nbsp;-节省金额：<font color="red">￥${orderMap["orderInfo"].saveAmount?string("0.00") }</font>&nbsp;-红包：<font color="red">￥${orderMap["orderInfo"].couponAmount?string("0.00") }</font> = 应付总金额：<font color="red">￥${orderMap["orderInfo"].actualAmount?string("0.00") }</font>
+				</td>				
+			</tr>		
+		</tbody>
+	</table>
+</div>
+</body>
+<#noparse>
+<!-- 列表模板  -->
+<script type="text/x-jquery-tmpl" id="tmplList">
+{{each(i,row) data.rows}}
+	
+{{/each}}
+</script>
+</#noparse>
+<script type="text/javascript">
+	$(function() {
+		
+	});
+	//订单商品改价弹窗
+	function toChange(orderId){		   
+		window.showModalDialog("toOrderGoodsChange.html?orderId=" + orderId,"dialogWidth=70px;dialogHeight=70px");
+	}
+	
+</script>
+</html>

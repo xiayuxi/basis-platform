@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.SkuFeatureDao">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.goods.entity.SkuFeature">
+		<id column="tid" property="tid" jdbcType="INTEGER" />
+		<result column="feature_id" property="featureId" jdbcType="INTEGER" />
+		<result column="sku_id" property="skuId" jdbcType="INTEGER" />
+		<result column="spec_value" property="specValue" jdbcType="VARCHAR" />
+		<result column="is_spec" property="isSpec" jdbcType="DECIMAL" />
+		<result column="name" property="featureName" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER"/>
+	</resultMap>
+	<resultMap id="ResultFeatureMap"
+		type="com.ync365.seed.bussiness.modules.goods.entity.Feature">
+		<result column="featureId" property="featureId" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<collection property="featureValues" ofType="com.ync365.seed.bussiness.modules.goods.entity.FeatureValue">
+			<result column="featureValues.attrValue" property="attrValue"/>
+		</collection>
+	</resultMap>
+	<resultMap type="com.ync365.seed.bussiness.modules.goods.entity.Feature" id=""></resultMap>
+	<sql id="Base_Column_List">
+		tid, feature_id, sku_id, spec_value, is_spec,status
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_sku_feature
+		where tid = #{tid,jdbcType=INTEGER} and status!=1
+	</select>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		update goods_sku_feature set status=1
+		where tid = #{tid,jdbcType=INTEGER}
+	</update>
+	<insert id="insert"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.SkuFeature">
+		insert into goods_sku_feature (tid, feature_id, sku_id,
+		spec_value, is_spec,status)
+		values (#{tid,jdbcType=INTEGER}, #{featureId,jdbcType=INTEGER},
+		#{skuId,jdbcType=INTEGER},
+		#{specValue,jdbcType=VARCHAR}, #{isSpec,jdbcType=DECIMAL},0)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.SkuFeature">
+		insert into goods_sku_feature
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="tid != null">
+				tid,
+			</if>
+			<if test="featureId != null">
+				feature_id,
+			</if>
+			<if test="skuId != null">
+				sku_id,
+			</if>
+			<if test="specValue != null">
+				spec_value,
+			</if>
+			<if test="isSpec != null">
+				is_spec,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="tid != null">
+				#{tid,jdbcType=INTEGER},
+			</if>
+			<if test="featureId != null">
+				#{featureId,jdbcType=INTEGER},
+			</if>
+			<if test="skuId != null">
+				#{skuId,jdbcType=INTEGER},
+			</if>
+			<if test="specValue != null">
+				#{specValue,jdbcType=VARCHAR},
+			</if>
+			<if test="isSpec != null">
+				#{isSpec,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.SkuFeature">
+		update goods_sku_feature
+		<set>
+			<if test="featureId != null">
+				feature_id = #{featureId,jdbcType=INTEGER},
+			</if>
+			<if test="skuId != null">
+				sku_id = #{skuId,jdbcType=INTEGER},
+			</if>
+			<if test="specValue != null">
+				spec_value = #{specValue,jdbcType=VARCHAR},
+			</if>
+			<if test="isSpec != null">
+				is_spec = #{isSpec,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where tid = #{tid,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.SkuFeature">
+		update goods_sku_feature
+		set feature_id = #{featureId,jdbcType=INTEGER},
+		sku_id = #{skuId,jdbcType=INTEGER},
+		spec_value = #{specValue,jdbcType=VARCHAR},
+		is_spec = #{isSpec,jdbcType=DECIMAL},
+		status=#{status,jdbcType=INTEGER}
+		where tid = #{tid,jdbcType=INTEGER}
+	</update>
+
+	<select id="selectListBySkuId" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		gsf.tid,gsf.feature_id,gsf.sku_id,gsf.spec_value,gsf.is_spec,gf.name
+		from goods_feature gf,goods_sku_feature gsf
+		where gsf.feature_id = gf.feature_id
+		and gsf.status!=1
+		<if test="skuId != null">
+			and gsf.sku_id = #{skuId,jdbcType=INTEGER}
+		</if>
+		<if test="isSpec != null">
+			and gsf.is_spec =#{isSpec,jdbcType=DECIMAL}
+		</if>
+
+	</select>
+
+	<select id="selectAllFeaturesBySkuId" resultType="java.util.Map"
+		parameterType="map">
+		select wmsys.wm_concat(spec_value) opsStr,feature_id
+		featureId,feature_name featureName
+		from
+		( select
+		distinct gsf.feature_id,gsf.spec_value,gf.feature_name
+		from goods_feature gf,goods_sku_feature gsf
+		where gf.feature_id =gsf.feature_id
+		and gsf.status!=1
+		and gsf.sku_id in
+		<foreach item="item" index="index" collection="listIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		and gsf.is_spec =1
+		)a group by feature_id,feature_name
+	</select>
+	
+	<!-- 根据商品查询所有对应的属性列表 -->
+	<select id="selectFeaturesIdByGoodsId" resultMap="ResultFeatureMap" parameterType="map">
+		select t1.*,t2.name from (SELECT gsf.spec_value 'featureValues.attrValue',gsf.feature_id featureId FROM goods_sku_feature gsf 
+		WHERE gsf.status!=1 and gsf.sku_id in (SELECT gs1.sku_id from goods_sku gs1 where gs1.goods_id = #{goodsId} and gs1.is_Del!=1)
+		<if test="isSpec != null">and gsf.is_spec=#{isSpec}</if>
+		GROUP BY gsf.feature_id,gsf.spec_value) t1 left JOIN goods_feature t2 on t1.featureId=t2.feature_id
+	</select>
+	
+	<!-- 根据skuId查询商品对应的所有规格属性列表 -->
+	<select id="selectFeaturesIdBySkuId" resultMap="ResultFeatureMap" parameterType="map" >
+		select b.feature_id , group_concat(spec_value), c.name 
+		from goods_sku_feature b , goods_feature c 
+		where  b.feature_id = c.feature_id and b.sku_id in  (
+			select a.sku_id from goods_sku a where a.goods_id = (
+			select a.goods_id  from goods_sku a where a.sku_id=#{skuId}) ) 
+			<if test="isSpec != null">
+				and b.is_spec=#{isSpec}
+			</if>
+		group by b.feature_id 
+	</select>
+	
+</mapper>

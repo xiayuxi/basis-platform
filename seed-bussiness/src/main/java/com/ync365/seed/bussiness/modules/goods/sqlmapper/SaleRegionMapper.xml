@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.SaleRegionDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.SaleRegion" >
+    <id column="sale_region_id" property="saleRegionId" jdbcType="INTEGER" />
+    <result column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+     <result column="price" property="price" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sale_region_id, region_id, sku_id, goods_id,price
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_sale_region
+    where sale_region_id = #{saleRegionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from goods_sale_region
+    where sale_region_id = #{saleRegionId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteBySkuId" parameterType="java.lang.Integer" >
+    delete from goods_sale_region
+    where sku_id = #{skuId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.goods.entity.SaleRegion" >
+    insert into goods_sale_region (sale_region_id, region_id, sku_id, 
+      goods_id)
+    values (#{saleRegionId,jdbcType=INTEGER}, #{regionId,jdbcType=INTEGER}, #{skuId,jdbcType=INTEGER}, 
+      #{goodsId,jdbcType=INTEGER})
+  </insert>
+
+  <!-- 通过skuid查找saleRegion -->
+  <select id="getSaleRegionsBySkuId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_sale_region 
+		where sku_id = #{skuId,jdbcType=INTEGER} 
+	</select>
+	
+	<select id="getSaleRegionsBySkuIdAndRegionId" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from goods_sale_region 
+		where sku_id = #{skuId,jdbcType=INTEGER} and region_id= #{regionId,jdbcType=INTEGER}
+	</select>
+	
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.SaleRegion" >
+    insert into goods_sale_region
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="saleRegionId != null" >
+        sale_region_id,
+      </if>
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="saleRegionId != null" >
+        #{saleRegionId,jdbcType=INTEGER},
+      </if>
+      <if test="regionId != null" >
+        #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.SaleRegion" >
+    update goods_sale_region
+    <set >
+      <if test="regionId != null" >
+        region_id = #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        sku_id = #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        price=#{price,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where sale_region_id = #{saleRegionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.goods.entity.SaleRegion" >
+    update goods_sale_region
+    set region_id = #{regionId,jdbcType=INTEGER},
+      sku_id = #{skuId,jdbcType=INTEGER},
+      goods_id = #{goodsId,jdbcType=INTEGER},
+      price =  #{price,jdbcType=DECIMAL},
+    where sale_region_id = #{saleRegionId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getSaleRegionBySkuIdsAndRegion"  resultMap="BaseResultMap"  parameterType="map">
+ 	  select
+	  <include refid="Base_Column_List" />
+	   from goods_sale_region 
+	   where region_id= #{regionId,jdbcType=INTEGER}
+	   <if test="skuIds != null ">
+	   		and sku_id in 
+	   		 <foreach collection="skuIds" index="index" item="item" open="(" separator="," close=")">
+            	#{item}
+        	</foreach>
+	   </if>
+  </select>
+  
+  <select id="selectSaleRegionListFront" resultMap="BaseResultMap"  parameterType="map">
+  		select
+	  <include refid="Base_Column_List" />
+	   from goods_sale_region 
+	  <where>
+	  		<if test="regionIds != null ">
+		   		and region_id in (
+		   		 select region_id  from goods_sale_region a where a.region_id in ( select region_id from sys_region where pid = #{regionId}))
+	  		</if>
+	  		<if test="skuId != null ">
+	  			and sku_id = #{skuId}
+	  		</if>
+	  </where>
+  </select>
+  
+  
+</mapper>

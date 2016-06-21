@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd	
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd	
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- 自动扫描路径 -->
+	<context:component-scan base-package="com.ync365.seed.bussiness" />
+	<context:component-scan base-package="com.ync365.seed.commons" />
+	<!-- 连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" 	destroy-method="close">
+		<property name="driverClassName" value="$[mysql.master.driverClassName]" />
+		<property name="url" value="$[mysql.master.url]" />
+		<property name="username" value="$[mysql.master.username]" />
+		<property name="password" value="$[mysql.master.password]" />
+		<property name="initialSize" value="$[mysql.master.initialSize]" />
+		<property name="maxActive" value="$[mysql.master.maxActive]" />
+		<property name="minIdle" value="$[mysql.master.minIdle]" />
+		<property name="maxIdle" value="$[mysql.master.maxIdle]" />
+		<property name="validationQuery" value="$[mysql.master.validationQuery]" />
+		<property name="testOnBorrow" value="$[mysql.master.testOnBorrow]" />
+		<property name="testOnReturn" value="$[mysql.master.testOnReturn]" />
+		<property name="testWhileIdle" value="$[mysql.master.testWhileIdle]" />
+		<property name="minEvictableIdleTimeMillis" value="$[mysql.master.minEvictableIdleTimeMillis]" />
+		<property name="timeBetweenEvictionRunsMillis" value="$[mysql.master.timeBetweenEvictionRunsMillis]" />
+		<property name="filters" value="stat" /> 
+	</bean>
+	<!--  SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property  name="configLocation"  value="classpath:mybatis/mybatis-config.xml"/>  
+		<property name="mapperLocations" value="classpath*:com/ync365/seed/bussiness/modules/*/sqlmapper/*.xml" />
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		<property name="basePackage" value="com.ync365.seed.bussiness.modules.*.dao" />
+        <property name="annotationClass" value="com.ync365.seed.commons.annotation.MyBatisRepository"/>
+	</bean>
+	
+	<!-- 开启事务注解驱动 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- 事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- config -->
+    <bean id="configuration" class="com.ync365.seed.utils.Configuration">
+        <property name="privatekeyStore" value="$[rsa.privatekey]" />
+        <property name="publickeyStore" value="$[rsa.publickey]" />
+    </bean>
+   
+</beans>

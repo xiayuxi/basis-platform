@@ -1,0 +1,138 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.treegrid.js"></script>
+
+<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+
+<!-- jqgrid自动换行 -->
+<style>
+.ui-jqgrid tr.jqgrow td {
+  white-space: normal !important;
+  height:auto;
+  vertical-align:text-top;
+  padding-top:2px;
+ }
+</style>
+</head>
+<body>
+<div id="listDiv">
+	<div style="margin: 20px 0 10px 20px;">
+		<input type="checkbox" id="selectAllUser"/><label for="selectAllUser">全部用户</label>
+		<input type="checkbox" id="selectAllSearch"/><label for="selectAllUser">检索用户</label>
+		姓名：<input type="text" name="userRealName" id="userRealName" />&nbsp; &nbsp; 
+		手机号：<input type="text" name="userMobile" id="userMobile" />&nbsp; &nbsp; 
+					
+		<button type="submit" class="btn btn-primary" id="btnSearch">查询
+	</div>
+	<div style="margin-left: 20px">
+		<table id="list"></table>
+		<div id="pager"></div>
+	</div>
+	<button onclick="nextDo()">下一步</button>
+</div>
+
+	<div style="display:none;" id="bindingSe">
+		<form action="${ctx}/syslcinfo/bindingSe" method="post" id="bindingSeForm">
+			<a style="font-style: red;"></a>
+			<input type="hidden" name="oldNum" id="oldNum" value="${userNum}"/>
+			<input type="hidden" name="newNum" id="newNum" value=""/>
+			通过编号/手机号搜索Se
+			<br/>
+			<input name="seName" value="" type="text" id="seName"/><input type="button" title="搜索" value="搜索" onclick="searchSeObject(this)"/>
+			<div id="seNumDiv">
+			</div>
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+
+	$(function(){
+		regionPlugin.init("${ctx}");
+		$("#list").jqGrid({
+	        url:'${ctx}/syslcinfo/grid',// 获取数据的url,action
+	        datatype: "json",//后台返回的数据格式
+	        mtype:"post",//提交的方式,默认是get
+		    colNames:['姓名', '手机号','地址','用户编号'],
+	        colModel:[
+				{name:'name',index:'name', editable:true,sortable:true,width:70},
+				{name:'userMobile',index:'userMobile', align:"center",editable:true,width:90},
+				{name:'address',index:'address', align:"center",editable:true,formatter:getAddress,width:390},
+				{name:'userNum',index:'userNum', align:"center",editable:true,hidden:true}
+			],
+	        postData:{page:1,'seAdminNum':'${userNum}'},//此参数用来向后台提交数据*****可以自己添加需要的参数
+	        //styleUI : 'Bootstrap',
+	        //caption:"品牌列表",//表名称
+	        //multiselect: true,//开启多选
+	        rowNum:10,//每页显示的条数,此参数会被传递到后台
+	        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+	        viewrecords: true,//定义是否显示总的数据条数
+	        pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+	        height : "auto",
+	        width:550,
+	        rownumbers:true,//添加左侧行号
+	        multiselect:true,
+	        ondblClickRow:function(rowid){
+	        	selectInfo(rowid);
+	        }
+		});
+// 	    jQuery("#list").navGrid('#pager',{edit:false,add:false,del:false,search:false	z,refresh:true});
+	     
+	    $("#btnSearch").click(function () {
+			var userMobile = $("#userMobile").val();
+			var userRealName = $("#userRealName").val();
+			var seAdminNum = "${userNum}";
+			
+	    	//alert(qName);
+	    	$("#list").jqGrid('setGridParam',{ 
+	              url:"${ctx}/syslcinfo/grid", 
+	              postData:{'userMobileSearch':userMobile,"lcNameSearch":userRealName,
+	            	  "seAdminNum":seAdminNum}, //发送数据 
+	              page:1 
+	          	}).trigger("reloadGrid"); //重新载入 
+	      });
+	 });
+	function getAddress(cellValue,options,rowObject){
+		return regionPlugin.getAllRegionString(cellValue)+(rowObject.addressDetail?rowObject.addressDetail:"");
+	}
+	function nextDo(){
+		$("#listDiv").hide();
+		$("#bindingSe").show();
+	}
+	 //搜索lc
+	 function searchSeObject(object){
+		 var seName = $(object).parent().find("#seName")[0].value;
+		 var seNumDiv = $(object).parent().find("#seNumDiv")[0];
+		 if(seName==""){
+			 return;
+		 }
+		 $.get("${ctx}/sysadmininfo/searchSeObject?userNum="+seName,function(data){ 
+			 $(seNumDiv).empty();
+			 $(object).parent().find("#newNum")[0].value = "";
+			 if(data){
+				 var jobject = $(seNumDiv);
+				 jobject.append("编号："+data.adminNum+"<br/>姓名："+data.name+"<br/>手机号："+data.mobile+"<br/>服务区域：")
+				 if(data.sysAdminServiceList){
+					 for(var sysAdminService in data.sysAdminServiceList){
+						 jobject.append("<br/>&nbsp;"+data.sysAdminServiceList[sysAdminService]);
+					 }
+				 }
+				 $(object).parent().find("#newNum")[0].value = data.adminNum;
+			 }else{
+				 $(seNumDiv).append("<a style='color: red;'>未查询到此SE</a>");
+			 }
+		 });
+	 }
+</script>
+</html>

@@ -1,0 +1,109 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--  css  -->
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!--  js  -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<style type="text/css">
+body {
+    padding-bottom: 40px;
+}
+th{
+	width: 150px;
+}      
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+@media (max-width: 500px) {
+    /* Enable use of floated navbar text */
+    .navbar-text.pull-right {
+        float: none;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+</style>  
+<script type="text/javascript">
+$(function () {       
+	$('#backid').click(function(){
+			//window.location.href="index.html";
+			history.back();
+	 });
+
+});
+</script>
+
+<body>
+	<form id="promotionGiftFormAdd" action="${ctx}/promotionGift/edit"
+		method="post" enctype="multipart/form-data">
+		<table class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<div>
+					<input type="hidden" id="promotionId" name="promotionId"
+						value="${promotionGiftVo.promotionId}" />
+				</div>
+
+				<th><label for="name"><font color="red">*</font>活动名称：</label></th>
+				<td><input type="text" id="promotionName" name="promotionName"
+					value="${promotionGiftVo.promotionName}" /></td>
+			</tr>
+
+			<tr>
+				<th><label for="name"><font color="red">*</font>活动开始时间：</label></th>
+				<td><input class="Wdate"
+					onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="startTime" name="startTime"
+					value="${promotionGiftVo.startTime?string("yyyy-MM-dd HH:mm:ss")}  " /> 至<input class="Wdate"
+					onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="endTime" name="endTime"
+					value="${promotionGiftVo.endTime?string("yyyy-MM-dd HH:mm:ss")}  " /></td>
+			</tr>
+
+			<tr>
+				<th><label for="name"><font color="red">*</font>满赠类型：</label></th>
+				<td><select id="giftType" name="giftType">
+						<option value="1"<#if
+							(promotionGiftVo.giftType==1)> selected="selected" </#if> >非卖品</option>
+						<option value="2"<#if
+							(promotionGiftVo.giftType==2)> selected="selected" </#if> >在售商品</option></td>
+			</tr>
+
+			<tr>
+				<th><label for="name"><font color="red">*</font>优惠方式:</label></th>
+				<td><input type="radio" id="giftWay" name="giftWay" value="1"<#if
+					(promotionGiftVo.giftWay==1)> checked="checked" </#if> />是 <input
+					type="radio" id="giftWay" name="giftWay" value="2"<#if
+					(promotionGiftVo.giftWay==2)> checked="checked" </#if> />否</td>
+			</tr>
+			<th><label for="name"><font color="red">*</font>优惠条件：</label></th>
+			<td>满<input type="text" id="goodsAmount" name="goodsAmount"
+				value="${promotionGiftVo.goodsAmount}" /> 赠<input type="text"
+				id="goodsCount" name="goodsCount"
+				value="${promotionGiftVo.goodsCount}" />件
+			</td>
+
+			<tr>
+				<th><label for="name"><font color="red">*</font>活动备注：</label></th>
+				<td><input type="text" id="remark"  rows="3" cols="40"  name="remark"
+					value="${promotionGiftVo.remark}" /></td>
+			</tr>
+
+			<tr>
+				<td class="tableleft"></td>
+				<td>
+					<button type="submit" class="btn btn-primary" style="margin-left: 260px" type="button">保存</button>&nbsp;&nbsp;
+					<button type="button" class="btn btn-success" name="backid"
+						id="backid">返回列表</button>
+				</td>
+			</tr>
+	</form>
+</body>
+</html>

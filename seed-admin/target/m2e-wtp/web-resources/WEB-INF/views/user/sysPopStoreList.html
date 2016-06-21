@@ -1,0 +1,390 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<!-- 时间控件 css  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.treegrid.js"></script>
+<!-- 时间控件js  -->
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+
+	<script type="text/javascript">
+		$(function () {    
+			regionPlugin.init("${ctx}");
+			regionPlugin.regionInitParam({
+			});
+			$('#backid').click(function(){
+					history.back();
+			 });
+			$('#submitForm').click(function(){
+				$("#formId").submit();
+			 });
+		});
+	</script>
+</head>
+<body>
+	<div style="margin: 20px 0 10px 20px;">
+		店铺名称：<input type="text" name="popStoreNameSearch" id="popStoreNameSearch" />&nbsp; &nbsp; 
+		店铺编号：<input type="text" name="popStoreNumSearch" id="popStoreNumSearch" />&nbsp; &nbsp; 
+		负责人：<input type="text" name="popStorePrincipalSearch" id="popStorePrincipalSearch" />&nbsp; &nbsp; 
+		供应商类型：<select name="popStoreTypeSearch" id="popStoreTypeSearch" >
+					<option value="" >--请选择--</option>
+					<option value="DS" >DS</option>
+					<option value="SP" >SP</option>
+					<option value="FS" >FS</option>
+			   </select>&nbsp; &nbsp;
+		<br />
+		<br />	   
+		地址：<select id="provinceRegion">
+						</select>
+						<select id="cityRegion">
+						</select>
+						<select id="countyRegion">
+						</select>
+						<select id="townRegion">
+						</select>
+						<select id="villageRegion" name="popStoreAddress"></select>
+		
+		激活状态：<select name="isFrozenSearch" id="isFrozenSearch" >
+					<option value="" >--请选择--</option>
+					<option value="0" >激活</option>
+					<option value="1" >冻结</option>
+			   </select>&nbsp; &nbsp; 
+		<br /><br />
+		装修状态：<select name="popStoreDecorateSearch" id="popStoreDecorateSearch" >
+					<option value="" >--请选择--</option>
+					<option value="0" >未装修</option>
+					<option value="1" >已装修</option>
+			   </select>&nbsp; &nbsp; 
+		<br /><br />
+		注册时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})"
+					type="text" id="beginTimeSearch" name="beginTimeSearch" />
+					——
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})" 
+					type="text" id="endTimeSearch" name="endTimeSearch" />&nbsp; &nbsp; 
+		<button type="submit" class="btn btn-primary" id="btnSearch">查询</button>
+	</div>
+	<div style="margin-left: 20px">
+		<table id="list"></table>
+		<div id="pager"></div>
+	</div>
+	
+	<div style="display:none;" id="assignSe">
+		<form action="${ctx}/sysPopStore/updateSeRelation" method="post" id="SEForm"  style="margin: 10px;">
+			<a style="font-style: red;"></a>
+			<input type="hidden" name="popStoreNum" id="popStoreNum"/>
+			<input type="hidden" name="seNum" id="seNum"/>
+				通过 编号/手机号 搜索SE
+			<br/>
+			<input name="seInfo" value="" type="text" id="seInfo"/>
+			<input type="button" title="搜索" value="搜索" onclick="searchSEObject(this)"/>
+			<div id="SeInfoDiv">
+			</div>
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+
+	$(function(){
+		$("#list").jqGrid({
+	        url:'${ctx}/sysPopStore/grid',// 获取数据的url,action
+	        datatype: "json",//后台返回的数据格式
+	        mtype:"post",//提交的方式,默认是get
+	        //width:1024,//这个宽度不能为百分比,
+	        autowidth:true,//自动宽
+		    colNames:['id', '店名', '编号','联系人','手机号','供应商类型','负责人','注册时间','所处区域','状态'],
+	        colModel:[
+				{name:'id',index:'id', align:"center",editable:true,sortable:true,hidden:true},
+				{name:'popStoreName',index:'popStoreName', align:"center",editable:true,sortable:true},
+				{name:'popStoreNum',index:'popStoreNum', align:"center",editable:true},
+				{name:'popStoreContact',index:'popStoreContact', align:"center",editable:true},
+				{name:'popStoreMobile',index:'popStoreMobile', align:"center",editable:true},
+				{name:'popStoreType',index:'popStoreType', align:"center",editable:true},
+				{name:'popStorePrincipal',index:'popStorePrincipal', align:"center",editable:true},
+				{name:'createTime',index:'createTime', align:"center",editable:true,formatter:'date' ,
+              	  formatoptions:{srcformat:'u',newformat:'Y/m/d H:i:s'}},
+              	{name:'popStoreAddress',index:'popStoreAddress', align:"center",editable:true},
+				{name:'isFrozen',index:'isFrozen', align:"center",editable:true,formatter:formatFction},
+			],
+	        postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+	        //styleUI : 'Bootstrap',
+	        //caption:"品牌列表",//表名称
+	        //multiselect: true,//开启多选
+	        rowNum:10,//每页显示的条数,此参数会被传递到后台
+	        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+	        viewrecords: true,//定义是否显示总的数据条数
+	        pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+	        height : "auto",
+	        rownumbers:true,//添加左侧行号
+	        ondblClickRow:function(rowid){
+	        	selectInfo(rowid);
+	        }
+		});
+	    
+	     
+	    $("#btnSearch").click(function () {
+			var popStoreNameSearch = $("#popStoreNameSearch").val();
+			var popStoreNumSearch = $("#popStoreNumSearch").val();
+			var popStorePrincipalSearch = $("#popStorePrincipalSearch").val();
+			var popStoreTypeSearch = $("#popStoreTypeSearch").val();
+			var isFrozenSearch = $("#isFrozenSearch").val();
+			var beginTimeSearch = $("#beginTimeSearch").val();
+			var endTimeSearch = $("#endTimeSearch").val();
+			var addressSearch = $("#addressSearch").val();
+			var popStoreDecorateSearch = $("#popStoreDecorateSearch").val();
+			var contactSearch = $("#contactSearch").val();
+			var addressSearch = $("#villageRegion").val();
+			
+	    	$("#list").jqGrid('setGridParam',{ 
+	              url:"${ctx}/sysPopStore/grid", 
+	              postData:{
+	            	  'popStoreNameSearch':popStoreNameSearch,
+	            	  "popStoreNumSearch":popStoreNumSearch,
+	            	  "popStorePrincipalSearch":popStorePrincipalSearch,
+	            	  "popStoreTypeSearch":popStoreTypeSearch,
+	            	  "isFrozenSearch":isFrozenSearch,
+	            	  "beginTimeSearch":beginTimeSearch,
+	            	  "endTimeSearch":endTimeSearch,
+	            	  "addressSearch":addressSearch,
+	            	  "popStoreDecorateSearch":popStoreDecorateSearch,
+	            	  "contactSearch":contactSearch,
+	            	  "addressSearch":addressSearch
+	            	  }, //发送数据 
+	              page:1 
+	          	}).trigger("reloadGrid"); //重新载入 
+	      });
+	   	
+	    jQuery("#list").navGrid('#pager',{edit:false,add:false,del:false,search:false,refresh:true})
+	    //查看
+	    .navButtonAdd('#pager',{ 
+	    	caption:"查看", 
+	    	buttonicon:"ui-icon-add",
+	    	onClickButton: function(){ 
+	    		addFun();
+			},
+			position:"last"
+		})
+		
+		
+		//编辑
+		.navButtonAdd('#pager',{ 
+	    	caption:"编辑", 
+	    	buttonicon:"ui-icon-add",
+	    	onClickButton: function(){ 
+	    		editFun();
+			},
+			position:"last"
+		})
+		//重置密码
+		.navButtonAdd('#pager',{ 
+	    	caption:"重置密码", 
+	    	buttonicon:"ui-icon-add",
+	    	onClickButton: function(){ 
+	    		resetPasswordFun();	
+			},
+			position:"last"
+		})
+		//分配
+		.navButtonAdd('#pager',{ 
+	    	caption:"分配", 
+	    	buttonicon:"ui-icon-add",
+	    	onClickButton: function(){ 
+	    		bindingSeFun();
+			},
+			position:"last"
+		})
+		//激活
+		.navButtonAdd('#pager',{ 
+	    	caption:"激活/冻结", 
+	    	buttonicon:"ui-icon-add",
+	    	onClickButton: function(){ 
+	    		isFrozenFun();
+			},
+			position:"last"
+		})
+	 
+	 });
+	
+	//展示
+	function formatStatus(cellvalue,rowObject){
+		 if(cellvalue == true ){
+			 return "<font color=blue >已审核</font>";
+		 }else if(cellvalue == false ){
+			 return "<font color=red >未通过</font>";
+		 }else {
+			 return "<font color=red ></font>";
+		 }
+	 }
+	//展示
+	function formatFction(cellvalue, options, rowObject){
+        var popStoreDecorate = "";
+        if(rowObject.popStoreDecorate) {
+        	popStoreDecorate = "已开店";
+        }else {
+        	popStoreDecorate = "未开店";
+        }
+		 
+		if(cellvalue == true ){
+			 return "<font color=red >冻结&nbsp;</font>"+popStoreDecorate+"";
+		 }else if(cellvalue == false ){
+			 return "<font color=blue >激活&nbsp;</font>"+popStoreDecorate+"";
+		 }else {
+			 return "<font color=red ></font>";
+		 }
+	 }
+	 //操作
+	 /* function formatOperator(cellvalue, options, rowObject){ 
+		 //冻结、激活
+		 popStoreNum = '"' + rowObject.popStoreNum + '"';
+		 return "<a href='viewPage/"+rowObject.popStoreNum+"/view'>查看</a>&nbsp;<a href='viewPage/"+rowObject.popStoreNum+"/edit'>编辑</a>&nbsp;<a href='javascript:void(0);' onclick='resetPasswordFun("+popStoreNum+");'>重置密码</a>&nbsp;<a href='javascrip:void(0);' onclick='bindingSeFun("+popStoreNum+")'>分配</a>";
+	 } */
+	
+	
+	 //查看
+	 function addFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			window.location.href="${ctx}/sysPopStore/viewPage/"+ rowData.popStoreNum +"/view";
+		} 
+	 }
+	 
+	//编辑
+	 function editFun(){
+		 var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要查看的行！");
+			}else{
+				window.location.href="${ctx}/sysPopStore/viewPage/"+ rowData.popStoreNum +"/edit";
+			} 
+	 }
+	
+	 //修改密码
+	 function resetPasswordFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			$.post("${ctx}/sysPopStore/resetPassword/",{"popStoreNum": rowData.popStoreNum},function(data){
+				if(data==1) {
+					art.dialog({
+						  title:"重置成功",
+						  width:130,
+						  height:50,
+						  padding:0,
+						  lock:true,
+						  content:"密码：123456",
+						  ok:function(){
+						  }
+					 }).show();
+				} else {
+					art.dialog({
+						  title:"重置失败",
+						  width:200,
+						  height:50,
+						  padding:0,
+						  lock:true,
+						  content:"需要先添加供应商账号",
+						  ok:function(){
+						  }
+					 }).show();
+				}
+			})
+		} 
+	 }
+	 
+	 
+	 //分配SE窗口
+	 function bindingSeFun(){
+		 $(SeInfoDiv).html("");
+		 var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要查看的行！");
+			}else{
+				  var val= rowData.userNum;//获取每一行制定的列的数据
+				  art.dialog({
+					  title:"分配",
+					  width:500,
+					  height:"auto",
+					  padding:0,
+					  lock:true,
+					  content:$("#assignSe").html(),
+					  ok:function(){
+						  $("#popStoreNum").val(rowData.popStoreNum);
+						  var content = $(this.DOM.content[0]);
+						  content.find("#SEForm").submit();//提交
+					  },
+					  cancel:true
+				  }).show();
+			} 
+	 }
+	 
+	//搜索负责人方法
+	 function searchSEObject(object) {
+		 var userNum = $(object).parent().find("#seInfo")[0].value;
+		 $.get("${ctx}/sysadmininfo/searchSeObject?userNum="+userNum,function(data){
+			 if(data) {
+				$(SeInfoDiv).empty();
+				$("#seNum").val(data.adminNum);
+				$(SeInfoDiv).append("编号："+data.adminNum+"<br/>姓名：<span id='userName'>"+data.name+"</span><br/>手机号：<span id='userMobile'>"+data.mobile+"</span><br/>服务区域：");
+				if(data.sysAdminServiceList){
+					 for(var sysAdminService in data.sysAdminServiceList){
+						 $(SeInfoDiv).append("<br/>&nbsp;"+data.sysAdminServiceList[sysAdminService]);
+					 }
+				 }
+			 } else {
+				 $(SeInfoDiv).empty();
+				 $(vsNumDiv).append("<a style='color: red;'>未查询到此SE</a>");
+			 }
+		});
+	 }
+	
+	//审核
+	function isAuthenticationFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			var val= rowData.userNum;//获取每一行制定的列的数据
+			$.get("${ctx}/user/isAuthentication?userNum="+val,function(data){
+				window.location.reload();
+			});
+			
+		}
+	}
+	
+	//激活/冻结
+	function isFrozenFun() {
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			$.get("${ctx}/sysPopStore/changeFrozen/"+rowData.id+"",function(data){ 
+				window.location.reload();
+			});
+		}
+	}
+</script>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<dubbo:service interface="com.ync365.seed.service.order.CartService"
+		ref="cartService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="cartService" class="com.ync365.seed.service.order.impl.CartServiceImpl"></bean>
+	<dubbo:service interface="com.ync365.seed.service.order.OrderService"
+		ref="orderService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="orderService" class="com.ync365.seed.service.order.impl.OrderServiceImpl"></bean>
+	<dubbo:service interface="com.ync365.seed.service.order.MyAssetService"
+		ref="myAssetService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="myAssetService" class="com.ync365.seed.service.order.impl.MyAssetServiceImpl"></bean>
+	
+	<dubbo:service interface="com.ync365.seed.service.order.PayService"
+		ref="payService" protocol="rest" timeout="2000" connections="100"
+		validation="true"></dubbo:service>
+	<bean id="payService" class="com.ync365.seed.service.order.impl.PayServiceImpl"></bean>
+</beans>
+

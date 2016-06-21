@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.GoodsDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.Goods" >
+    <id column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="tag_img_id" property="tagImgId" jdbcType="VARCHAR" />
+    <result column="is_new" property="isNew" jdbcType="INTEGER" />
+    <result column="is_good" property="isGood" jdbcType="INTEGER" />
+    <result column="is_hot" property="isHot" jdbcType="INTEGER" />
+    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="opt_user" property="optUser" jdbcType="VARCHAR" />
+    <result column="opt_date" property="optDate" jdbcType="TIMESTAMP" />
+    <result column="opt_term" property="optTerm" jdbcType="VARCHAR" />
+    <result column="sales_count" property="salesCount" jdbcType="INTEGER" />
+    <result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
+    <result column="is_virtual" property="isVirtual" jdbcType="INTEGER" />
+    <result column="is_supply_area" property="isSupplyArea" jdbcType="INTEGER" />
+    <result column="is_overseas" property="isOverseas" jdbcType="INTEGER" />
+    <result column="send_time" property="sendTime" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="cost_price" property="costPrice" jdbcType="DECIMAL" />
+    <result column="fertilizer_station" property="fertilizerStation" jdbcType="VARCHAR" />
+    <result column="store_id" property="storeId" jdbcType="INTEGER" />
+    <result column="goods_type" property="goodsType" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    goods_id, name, code, remark, tag_img_id,  is_new, is_good, is_hot, keywords, 
+    is_del, create_time, brand_id, category_id, opt_user, opt_date, opt_term, sales_count,uuid,subtitle,
+    is_virtual,is_supply_area,is_overseas,send_time,status,unit,cost_price,fertilizer_station,store_id,goods_type
+  </sql>
+  
+  <sql id="Base_Column_List_Front" >
+    goods_id, name, code, is_new, is_good, is_hot, keywords, 
+    create_time, brand_id, category_id, sales_count,uuid,subtitle,
+    is_virtual,is_supply_area,is_overseas,send_time,status,unit,cost_price,fertilizer_station,store_id,goods_type
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from goods
+    where goods_id = #{goodsId}
+  </delete>
+  
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Goods" useGeneratedKeys="true" keyProperty="goodsId" keyColumn="goods_id" >
+    insert into goods (goods_id, name, code, 
+      remark, tag_img_id,
+      is_new, is_good, is_hot, 
+      keywords, is_del, create_time, 
+      brand_id, category_id, opt_user, 
+      opt_date, opt_term, sales_count,uuid,subtitle,
+      is_virtual,is_supply_area,is_overseas,send_time,status,
+      unit,cost_price,fertilizer_station,store_id,goods_type
+      )
+    values (#{goodsId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{tagImgId,jdbcType=VARCHAR}, 
+      #{isNew,jdbcType=INTEGER}, #{isGood,jdbcType=INTEGER}, #{isHot,jdbcType=INTEGER}, 
+      #{keywords,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{brandId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{optUser,jdbcType=VARCHAR}, 
+      #{optDate,jdbcType=TIMESTAMP}, #{optTerm,jdbcType=VARCHAR}, #{salesCount,jdbcType=INTEGER},
+      #{uuid,jdbcType=VARCHAR},#{subtitle,jdbcType=VARCHAR},#{isVirtual,jdbcType=INTEGER},
+      #{isSupplyArea,jdbcType=INTEGER},#{isOverseas,jdbcType=INTEGER}, #{sendTime,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER},#{unit,jdbcType=VARCHAR},#{costPrice,jdbcType=DECIMAL},
+      #{fertilizerStation,jdbcType=VARCHAR}, #{storeId,jdbcType=INTEGER},#{goodsType,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Goods" useGeneratedKeys="true" keyProperty="goodsId" keyColumn="goods_id">
+    insert into goods
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="tagImgId != null" >
+        tag_img_id,
+      </if>
+      <if test="isNew != null" >
+        is_new,
+      </if>
+      <if test="isGood != null" >
+        is_good,
+      </if>
+      <if test="isHot != null" >
+        is_hot,
+      </if>
+      <if test="keywords != null" >
+        keywords,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="optUser != null" >
+        opt_user,
+      </if>
+      <if test="optDate != null" >
+        opt_date,
+      </if>
+      <if test="optTerm != null" >
+        opt_term,
+      </if>
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="subtitle !=null">
+      	subtitle,
+      </if>
+      <if test="status !=null">
+      	status,
+      </if>
+      <if test="unit !=null">
+      	unit,
+      </if>
+      <if test="costPrice !=null">
+      	cost_price,
+      </if>
+      <if test="fertilizerStation !=null">
+      	fertilizer_station,
+      </if>
+      <if test="storeId !=null">
+      	store_id,
+      </if>
+      <if test="isOverseas !=null" >
+         is_overseas,
+      </if>
+      <if test="sendTime !=null ">
+      	 send_time,
+      </if>
+      <if test="goodsType !=null ">
+      	 goods_type,
+      </if>
+      <if test="isVirtual !=null ">
+      	 is_virtual,
+      </if>
+      <if test="isSupplyArea !=null ">
+      	 is_supply_area,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="tagImgId != null" >
+        #{tagImgId,jdbcType=VARCHAR},
+      </if>
+      <if test="isNew != null" >
+        #{isNew,jdbcType=INTEGER},
+      </if>
+      <if test="isGood != null" >
+        #{isGood,jdbcType=INTEGER},
+      </if>
+      <if test="isHot != null" >
+        #{isHot,jdbcType=INTEGER},
+      </if>
+      <if test="keywords != null" >
+        #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="optUser != null" >
+        #{optUser,jdbcType=VARCHAR},
+      </if>
+      <if test="optDate != null" >
+        #{optDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optTerm != null" >
+        #{optTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="subtitle !=null">
+      	#{subtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="unit !=null">
+      	#{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="costPrice != null" >
+        #{costPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="fertilizerStation !=null">
+      	#{fertilizerStation,jdbcType=VARCHAR},
+      </if>
+       <if test="storeId !=null">
+      	#{storeId,jdbcType=INTEGER},
+      </if>
+      <if test="isOverseas !=null">
+      	#{isOverseas,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime !=null">
+      	#{sendTime,jdbcType=VARCHAR},
+      </if>
+       <if test="goodsType !=null">
+      	#{goodsType,jdbcType=INTEGER},
+      </if>
+      <if test="isVirtual !=null">
+      	#{isVirtual,jdbcType=INTEGER},
+      </if>
+      <if test="isSupplyArea !=null">
+      	#{isSupplyArea,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Goods" >
+    update goods
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="tagImgId != null" >
+        tag_img_id = #{tagImgId,jdbcType=VARCHAR},
+      </if>     
+      <if test="isNew != null" >
+        is_new = #{isNew,jdbcType=INTEGER},
+      </if>
+      <if test="isGood != null" >
+        is_good = #{isGood,jdbcType=INTEGER},
+      </if>
+      <if test="isHot != null" >
+        is_hot = #{isHot,jdbcType=INTEGER},
+      </if>
+      <if test="keywords != null" >
+        keywords = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="brandId != null" >
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="optUser != null" >
+        opt_user = #{optUser,jdbcType=VARCHAR},
+      </if>
+      <if test="optDate != null" >
+        opt_date = #{optDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optTerm != null" >
+        opt_term = #{optTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCount != null" >
+        sales_count = #{salesCount,jdbcType=INTEGER},
+      </if>
+      <if test="uuid != null" >
+        uuid = #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="subtitle !=null">
+      	subtitle=#{subtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="isVirtual != null" >
+        is_virtual = #{isVirtual,jdbcType=INTEGER},
+      </if>
+      <if test="isSupplyArea != null" >
+        is_supply_area = #{isSupplyArea,jdbcType=INTEGER},
+      </if>
+      <if test="isOverseas != null" >
+        is_overseas = #{isOverseas,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null" >
+        send_time = #{sendTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="unit != null" >
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="costPrice != null" >
+        cost_price = #{costPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="fertilizerStation !=null">
+      	fertilizer_station=#{fertilizerStation,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId !=null">
+      	store_id=#{storeId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsType !=null">
+      	store_id=#{goodsType,jdbcType=INTEGER},
+      </if>
+    </set>
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Goods" >
+    update goods
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      tag_img_id = #{tagImgId,jdbcType=VARCHAR},
+      is_new = #{isNew,jdbcType=INTEGER},
+      is_good = #{isGood,jdbcType=INTEGER},
+      is_hot = #{isHot,jdbcType=INTEGER},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      brand_id = #{brandId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      opt_user = #{optUser,jdbcType=VARCHAR},
+      opt_date = #{optDate,jdbcType=TIMESTAMP},
+      opt_term = #{optTerm,jdbcType=VARCHAR},
+      sales_count = #{salesCount,jdbcType=INTEGER},
+      uuid = #{uuid,jdbcType=VARCHAR},
+      subtitle =#{subtitle,jdbcType=VARCHAR},
+      is_virtual = #{isVirtual,jdbcType=INTEGER},
+      is_supply_area =#{isSupplyArea,jdbcType=INTEGER},
+      is_overseas = #{isOverseas,jdbcType=INTEGER} ,
+      send_time = #{sendTime,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      unit = #{unit,jdbcType=VARCHAR},
+      cost_price = #{costPrice,jdbcType=DECIMAL},
+      fertilizer_station =#{fertilizerStation,jdbcType=VARCHAR},
+      store_id =#{storeId,jdbcType=INTEGER},
+      goods_type =#{goodsType,jdbcType=INTEGER}
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+ 
+    <!-- 根据分类查询对应的商品列表[前台，首页] -->
+    <select id="selectGoodsByCategoryList" resultMap="BaseResultMap"  parameterType="Integer">
+        select 
+            b.sku_id,a.goods_id, a.tag_img_id,a.brand_id, a.category_id, a.sales_count,
+	    	a.uuid,a.subtitle,a.send_time,a.status,
+	    	b.goods_name,b.full_name,b.market_price,b.cost_price
+        from  goods a,goods_sku b , (
+			select a.category_id   from goods_category  a where a.category_id=#{categoryId} 
+				union all
+			select b.category_id   from goods_category a ,goods_category b where a.category_id = b.parent_id and a.category_id=#{categoryId}
+				union all 
+			(	 select c.category_id  from goods_category c ,
+				 (select b.category_id from goods_category a ,goods_category b where a.category_id = b.parent_id and a.category_id=#{categoryId} ) d 
+			     where c.parent_id = d.category_id 
+			)
+		) c
+        <!-- 只支持三级 -->
+        where a.goods_id = b.goods_id and a.category_id = c.category_id
+        and a.status = 3 and a.is_del = 0 
+        limit #{pageSize}
+    </select> 
+ 
+     <!-- 商品上下架查询 -->
+     <select id="selectReleasePage" resultType="com.ync365.seed.bussiness.modules.goods.bo.GoodsBO" parameterType="map">
+			select a.code, a.goods_id,a.status,a.name ,a.cost_price,b.ch_name brand_name,a.fertilizer_station,a.store_id,
+				(select min(b.cost_price) from goods_sku b where a.goods_id = b.goods_id ) min_price,
+				(select min(c.stock_num ) from goods_stocks c where a.goods_id = c.goods_id ) min_stock_num,
+				(select o.release_user_id from goods_operate o where a.goods_id =o.goods_id ) release_user_id,
+				(select o.release_time from goods_operate o where a.goods_id =o.goods_id ) release_time
+			from
+				goods a left join goods_brand b on a.brand_id = b.brand_id
+						left join goods_operate o on a.goods_id =o.goods_id
+		     <where>	
+			     a.is_del = 0
+
+				 <if test="status!=null ">
+					and a.status =#{status}
+				 </if> 
+				 <if test="brandName != null and brandName != '' and brandName !='null' ">
+					and b.ch_name like '%'||#{brandName}||'%'
+				 </if>
+			     <if test="categoryId != null  ">
+			  	 	and a.category_id = #{categoryId,jdbcType=INTEGER}
+			     </if>
+			     <!-- 查询包含子属性 -->
+			     <if test="categoryIds != null   ">
+			  	 	and a.category_id in 
+			  	 	     <foreach collection="categoryIds" item="categoryId"  open="(" separator="," close=")">  
+					        #{categoryId}  
+					     </foreach>  
+			     </if>
+			     <!-- 搜索  审核时间 区间  -->
+			     <if test="beginDate != null  and beginDate != '' and beginDate !='null' ">
+				     and <![CDATA[o.release_time >= #{beginDate}]]>
+			     </if>
+			     <if test="endDate != null  and endDate != '' and endDate !='null' ">
+			  	 	 and <![CDATA[o.release_time <= #{endDate}]]>
+			     </if>
+			     <if test="storeList != null and storeList.size >  0 ">
+			     	and a.store_id in 
+			     	<foreach collection="storeList" item="store" open="(" separator="," close=")">
+			     		#{store.id} 
+			     	</foreach>
+			     </if>
+				 <if test="goodsType != null">
+		   	  	 	 and a.goods_type = #{goodsType}
+				 </if>
+			     <if test="releaseUserList != null and releaseUserList.size >  0 ">
+		     		and o.release_user_id in 
+		     		<foreach collection="releaseUserList" item="releaseUser" open="(" separator="," close=")">
+		     			#{releaseUser.adminNum} 
+		     		</foreach>
+			 	 </if>
+			     <if test="name != null and name != '' and name !='null' ">
+			     	 and (a.name like  concat('%','${name}','%' )    or a.code like concat('%','${name}','%' )  )
+			     </if>
+		     </where>
+		     	<choose>
+		     		<when test="releaseTime != null and releaseTime!= '' "> 
+		     			order by o.release_time desc
+		     		</when >  
+		     		<otherwise>
+							order by a.create_time desc
+		     		</otherwise>
+		     	</choose>
+		     	
+		        limit #{startIndex}  ,   #{pageSize}
+	</select> 
+	<!-- 商品总数查询 -->
+	<select id="selectReleasePageCount"  resultType="Integer"  parameterType="map">
+		 select
+			 count(1)
+	     from
+			goods a left join goods_operate b on a.goods_id = b.goods_id
+				    left join goods_brand c on a.brand_id = c.brand_id
+	     <where>
+	     	 a.is_del = 0
+			 <if test="status!=null">
+				 and a.status =#{status}
+			 </if>
+			 <if test="brandName!=null and brandName != '' and brandName !='null'">
+				 and c.ch_name like '%'||#{brandName}||'%'
+			 </if>			 
+		     <if test="categoryId != null  ">
+		  	 	 and a.category_id = #{categoryId,jdbcType=INTEGER}
+		     </if>
+		     <if test="goodsType != null">
+	   	  	 	 and a.goods_type = #{goodsType}
+			 </if>
+	     	 <!-- 查询包含子属性 -->
+		     <if test="categoryIds != null  ">
+		  	 	and a.category_id in 
+		  	 	     <foreach collection="categoryIds" item="categoryId"  open="(" separator="," close=")">  
+				        #{categoryId}  
+				     </foreach>  
+		     </if>
+		     <!-- 搜索  审核时间 区间  -->
+		     <if test="beginDate != null  and beginDate != '' and beginDate !='null' ">
+			     and <![CDATA[b.release_time >= #{beginDate}]]>
+		     </if>
+		     <if test="endDate != null   and endDate != '' and endDate !='null'">
+		  	 	 and <![CDATA[b.release_time <= #{endDate}]]>
+		     </if>
+		     <if test="storeList != null and storeList.size >  0 ">
+		     	and a.store_id in 
+		     	<foreach collection="storeList" item="store" open="(" separator="," close=")">
+		     		#{store.id} 
+		     	</foreach>
+			 </if>
+		     <if test="releaseUserList != null and releaseUserList.size >  0 ">
+		     	and a.release_user_id in 
+		     	<foreach collection="releaseUserList" item="releaseUser" open="(" separator="," close=")">
+		     		#{releaseUser.adminNum}
+		     	</foreach>
+			 </if>
+		     <if test="name != null and name != '' and name !='null' ">
+		     	 and (a.name like  concat('%','${name}','%' )    or a.code like concat('%','${name}','%' )  )
+		     </if>  
+	     </where>
+	</select>
+	
+	<!-- 审核搜索查询 -->
+ 	<select id="selectAuditPage" resultType="com.ync365.seed.bussiness.modules.goods.bo.GoodsBO" parameterType="map">
+		select 
+			a.code,a.name,a.goods_id,a.status,a.goods_type,b.ch_name brand_name,a.store_id,
+			(select min(b.cost_price) from goods_sku b where a.goods_id = b.goods_id ) min_price,
+			(select min(c.stock_num ) from goods_stocks c where a.goods_id = c.goods_id ) min_stock_num,
+			(select min(b.lower_limit ) from goods_sku b where a.goods_id = b.goods_id ) min_lower_limit
+		from 
+			goods a left join goods_brand b on a.brand_id = b.brand_id
+					left join goods_operate d on a.goods_id = d.goods_id
+	     <where>
+	      	 a.is_del = 0 
+			 <if test="allStatus!=null">
+				and a.status in (0,1,2)
+			 </if>
+			 <if test="status!=null ">
+				 <choose>
+		     		<when test="status==0"> 
+		     			and a.status in (0,4)
+		     		</when >  
+		     		<otherwise>
+						and a.status =#{status}
+		     		</otherwise>
+			     </choose>
+			 </if>
+		     <if test="categoryId != null and categoryId != ''  ">
+		  	 	and a.category_id = #{categoryId,jdbcType=INTEGER}
+		     </if>
+   			 <!-- 搜索  审核时间 区间  -->
+		     <if test="beginDate != null ">
+			     and <![CDATA[d.audit_time >= #{beginDate}]]>
+		     </if>
+		     <if test="endDate != null ">
+		  	 	 and <![CDATA[d.audit_time <= #{endDate}]]>
+		     </if>
+		     <if test="brandName != null and brandName != ''">
+	   	  	 	 and b.ch_name like '%'||#{brandName}||'%'
+			 </if>
+		     <if test="goodsType != null">
+	   	  	 	 and a.goods_type = #{goodsType}
+			 </if>
+		     <if test="storeList != null and storeList.size >  0 ">
+		     	and a.store_id in 
+		     	<foreach collection="storeList" item="store" open="(" separator="," close=")">
+		     		#{store.popStoreNum} 
+		     	</foreach>
+		     </if>
+		     <if test="name != null and name != '' and name !='null' ">
+		     	 and (a.name like  concat('%','${name}','%' )    or a.code like concat('%','${name}','%' )  )
+		     </if>  
+	     </where>
+	     		order by a.create_time desc
+		        limit #{startIndex}  ,   #{pageSize}
+	</select>  
+	
+	<select id="selectAuditPageCount" resultType="Integer" parameterType="map">
+		select
+			count(1)
+		from 	
+			goods a left join goods_operate d on a.goods_id = d.goods_id
+				    left join goods_brand e on a.brand_id = e.brand_id
+	     <where>
+	     	 a.is_del = 0 
+			 <if test="allStatus!=null">
+				and a.status in (0,1,2)
+			 </if>
+			 <if test="status!=null ">
+				and a.status =#{status}
+			 </if>
+		     <if test="categoryId != null and categoryId != ''  ">
+		  	 	and a.category_id = #{categoryId,jdbcType=INTEGER}
+		     </if>
+   				<!-- 搜索  审核时间 区间  -->
+		     <if test="beginDate != null ">
+			     and <![CDATA[d.audit_time >= #{beginDate}]]>
+		     </if>
+		     <if test="endDate != null ">
+		  	 	 and <![CDATA[d.audit_time <= #{endDate}]]>
+		     </if>
+		     <if test="brandName != null and brandName != ''">
+				 and e.ch_name like '%'||#{brandName}||'%'
+			 </if>
+			 <if test="goodsType != null">
+	   	  	 	 and a.goods_type = #{goodsType}
+			 </if>
+			 <if test="storeList != null and storeList.size >  0 ">
+		     	and a.store_id in 
+		     	<foreach collection="storeList" item="store" open="(" separator="," close=")">
+		     		#{store.popStoreNum} 
+		     	</foreach>
+		     </if>
+		     <if test="name != null and name != '' and name !='null' ">
+			     and (a.name like  concat('%','${name}','%' )    or a.code like concat('%','${name}','%' )  )
+		     </if>  
+	     </where>
+	</select>
+ 
+	<select id="selectRecyclePage" resultType="com.ync365.seed.bussiness.modules.goods.bo.GoodsBO" parameterType="map">
+		select a.code, a.goods_id,a.status,a.name ,b.ch_name brand_name,
+			(select min(b.cost_price) from goods_sku b where a.goods_id = b.goods_id )  min_price,
+			(select min(c.stock_num ) from goods_stocks c where a.goods_id = c.goods_id )  min_stock_num,
+			(select o.release_user_id from goods_operate o where a.goods_id =o.goods_id ) release_user_id,
+			(select o.release_time from goods_operate o where a.goods_id =o.goods_id ) release_time
+		from 
+			goods a left join goods_brand b on a.brand_id = b.brand_id
+					left join goods_operate d on a.goods_id = d.goods_id
+	     <where>
+		     a.is_del = 1 
+		     <if test="beginDate != null and beginDate != '' and beginDate !='null' ">
+			     and <![CDATA[d.audit_time >= #{beginDate}]]>
+		     </if>
+		     <if test="endDate != null and endDate != '' and endDate !='null' ">
+		  	 	 and <![CDATA[d.audit_time <= #{endDate}]]>
+		     </if>
+		     <if test="categoryId != null and categoryId != ''  ">
+		  	 	and a.category_id = #{categoryId,jdbcType=INTEGER}
+		     </if>
+			 <if test="branName != null and branName != '' and branName !='null' ">
+				and b.ch_name like '%'||#{branName}||'%'
+			 </if>
+			 <if test="storeList != null and storeList.size >  0 ">
+		     	and a.store_id in 
+		     	<foreach collection="storeList" item="store" open="(" separator="," close=")">
+		     		#{store.popStoreNum} 
+		     	</foreach>
+		     </if>
+		     <if test="releaseUserList != null and releaseUserList.size >  0 ">
+		     	and a.release_user_id in 
+		     	<foreach collection="releaseUserList" item="releaseUser" open="(" separator="," close=")">
+		     		#{releaseUser.adminNum}
+		     	</foreach>
+			 </if>
+		     <if test="name != null and name != '' and name !='null' ">
+		     	 and (a.name like '%'||#{name}||'%' or a.code like '%'||#{name}||'%'|)
+		     </if>  
+	     </where>
+	        limit #{startIndex}  ,   #{pageSize}
+	</select> 
+	<!-- 商品总数查询 -->
+	<select id="selectRecyclePageCount" resultType="Integer" parameterType="map">
+		select
+			count(1)  
+		from 
+			goods a left join goods_operate d on a.goods_id = d.goods_id
+				    left join goods_brand e on a.brand_id = e.brand_id
+	    <where>
+	    	a.is_del = 1
+		    <if test="beginDate != null and beginDate != '' and beginDate !='null' ">
+			     and <![CDATA[d.audit_time >= #{beginDate}]]>
+		    </if>
+		    <if test="endDate != null and endDate != '' and endDate !='null' ">
+		  	 	 and <![CDATA[d.audit_time <= #{endDate}]]>
+		    </if>
+		    <if test="categoryId != null and categoryId != ''  ">
+		  	 	and a.category_id = #{categoryId,jdbcType=INTEGER}
+		    </if>
+			<if  test="branName != null and branName != '' and branName !='null' ">
+				and e.ch_name like '%'||#{branName}||'%'
+			</if>
+			<if test="storeList != null and storeList.size >  0 ">
+		     	and a.store_id in 
+		     	<foreach collection="storeList" item="store" open="(" separator="," close=")">
+		     		#{store.popStoreNum} 
+		     	</foreach>
+		    </if>
+		    <if test="releaseUserList != null and releaseUserList.size >  0 ">
+		     	and a.release_user_id in 
+		     	<foreach collection="releaseUserList" item="releaseUser" open="(" separator="," close=")">
+		     		#{releaseUser.adminNum}
+		     	</foreach>
+			</if>
+		    <if test="name != null and name != '' and name !='null' ">
+		    	and (a.name like  concat('%','${name}','%' )    or a.code like concat('%','${name}','%' )  )
+		    </if>  
+	    </where>
+	</select>
+ 
+ 
+ 	<!-- 上下架  -->
+	<update id="grounding" parameterType="map">
+		update goods
+		set status = #{status}
+		where goods_id= #{goodsId,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 逻辑删除-->
+	<update id="logicDel" parameterType="java.lang.Integer">
+		update goods
+		set is_del = 1
+		where goods_id= #{goodsId}
+	</update>
+ 	
+ 	<!-- 从回收站恢复 -->
+	<update id="recover" parameterType="map">
+		update goods
+		set is_del = 0
+		where goods_id= #{goodsId,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectGoodsByCode" parameterType="String" resultType="Integer" >
+		select count(1)
+		from goods 
+		where code = #{code}
+	</select>
+	
+	 <!-- 店铺商品列表查询 -->
+     <select id="selectStoreGoodsListPage" resultType="com.ync365.seed.bussiness.modules.goods.bo.GoodsBO" parameterType="map">
+			select a.code, a.goods_id,a.status,a.name ,a.cost_price,b.ch_name brand_name,a.fertilizer_station,a.store_id,
+				(select min(b.cost_price) from goods_sku b where a.goods_id = b.goods_id ) min_price,
+				(select min(c.stock_num ) from goods_stocks c where a.goods_id = c.goods_id ) min_stock_num,
+				(select o.release_user_id from goods_operate o where a.goods_id =o.goods_id ) release_user_id,
+				(select o.release_time from goods_operate o where a.goods_id =o.goods_id ) release_time
+			from
+				goods a left join goods_brand b on a.brand_id = b.brand_id
+						left join goods_operate o on a.goods_id =o.goods_id
+		     <where>	
+			     a.is_del = 0
+				 and a.store_id =#{storeId}
+				 <if test="status!=null ">
+					and a.status =#{status}
+				 </if> 
+				 <if test="brandName != null and brandName != '' and brandName !='null' ">
+					and b.ch_name like '%'||#{brandName}||'%'
+				 </if>
+			     <if test="categoryId != null and categoryId != ''  ">
+			  	 	and a.category_id = #{categoryId,jdbcType=INTEGER}
+			     </if>
+			     <!-- 查询包含子属性 -->
+			     <if test="categoryIds != null and categoryIds != ''  ">
+			  	 	and a.category_id in 
+			  	 	     <foreach collection="categoryIds" item="categoryId"  open="(" separator="," close=")">  
+					        #{categoryId}  
+					     </foreach>  
+			     </if>
+			     <!-- 搜索  审核时间 区间  -->
+			     <if test="beginDate != null  and beginDate != '' and beginDate !='null' ">
+				     and <![CDATA[o.release_time >= #{beginDate}]]>
+			     </if>
+			     <if test="endDate != null  and endDate != '' and endDate !='null' ">
+			  	 	 and <![CDATA[o.release_time <= #{endDate}]]>
+			     </if>
+ 
+				 <if test="goodsType != null">
+		   	  	 	 and a.goods_type = #{goodsType}
+				 </if>
+	 
+			     <if test="name != null and name != '' and name !='null' ">
+			     	 and (a.name like  concat('%','${name}','%' )    or a.code like concat('%','${name}','%' )  )
+			     </if>
+		     </where>
+	 
+		      order by a.create_time desc
+		     limit #{startIndex}  ,   #{pageSize}
+	</select> 
+	
+	<select id="selectStoreGoodsListPageCount"  resultType="Integer"  parameterType="map">
+		 select
+			 count(1)
+	     from
+			goods a left join goods_operate b on a.goods_id = b.goods_id
+				    left join goods_brand c on a.brand_id = c.brand_id
+	     <where>
+	     	 a.is_del = 0
+	     	 and a.store_id =#{storeId}
+			 <if test="status!=null">
+				 and a.status =#{status}
+			 </if>
+			 <if test="brandName!=null and brandName != '' and brandName !='null'">
+				 and c.ch_name like '%'||#{brandName}||'%'
+			 </if>			 
+		     <if test="categoryId != null and categoryId != ''  ">
+		  	 	 and a.category_id = #{categoryId,jdbcType=INTEGER}
+		     </if>
+		     <if test="goodsType != null">
+	   	  	 	 and a.goods_type = #{goodsType}
+			 </if>
+	     	 
+		     <!-- 搜索  审核时间 区间  -->
+		     <if test="beginDate != null  and beginDate != '' and beginDate !='null' ">
+			     and <![CDATA[b.release_time >= #{beginDate}]]>
+		     </if>
+		     <if test="endDate != null   and endDate != '' and endDate !='null'">
+		  	 	 and <![CDATA[b.release_time <= #{endDate}]]>
+		     </if>
+		     
+		     <if test="name != null and name != '' and name !='null' ">
+		     	 and (a.name like  concat('%','${name}','%' )    or a.code like concat('%','${name}','%' )  )
+		     </if>  
+	     </where>
+	</select>
+	
+</mapper>

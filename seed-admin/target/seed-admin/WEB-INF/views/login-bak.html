@@ -1,0 +1,144 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html>
+<html>
+<head>
+<title>后台管理系统</title>
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-store" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet" type="text/css"
+	href="${staticCtx}/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css"
+	href="${staticCtx}/css/bootstrap-responsive.css" />
+<!-- js -->
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+
+<style type="text/css">
+body {
+	padding-bottom: 40px;
+	background-color: #f5f5f5;
+	background: url(${staticCtx}/images/bg55.jpg) no-repeat left top #013356;
+	background-size:cover;
+}
+
+.lod_all {
+	width: 960px\9;
+}
+
+.form-signin {
+	display: inline-block;
+	max-width: 800px;
+	padding: 19px 29px 5px;
+	*padding: 19px 44px 10px 25px;
+	background-color: #fff;
+	border: 1px solid #e5e5e5;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+
+.form-signin .form-signin-heading, .form-signin .checkbox {
+	margin-bottom: 10px;
+}
+
+.form-signin input[type="text"], .form-signin input[type="password"] {
+	font-size: 16px;
+	height: auto;
+	margin-bottom: 15px;
+	padding: 7px 9px;
+	max-width: 260px;
+}
+
+.lod_int {
+	float: left;
+	width: 350px;
+	height: 313px;
+	margin-top: 180px;
+	background: #fff
+}
+
+.login_header {
+	border-bottom: 2px solid #1da14c;
+	padding: 20px 0;
+}
+.whiteBg {
+    background: #fff none repeat scroll 0 0;
+}
+.w1000 {
+    width: 1000px;
+}
+.centerAuto {
+    margin: 0 auto;
+}
+
+</style>
+<script type="text/javascript">
+	function bodyOnload() {
+		if (window.top != window.self) {
+			window.parent.parent.location.href = window.document.location.href;
+		}
+	}
+</script>
+<body onload="bodyOnload()">
+	<div class="login_header whiteBg">
+		<div class="w1000 centerAuto">
+			<h1>
+				<a title="" href="#"> <img width="256" height="58" alt=""
+					src="${staticCtx}/images/logo.png">
+				</a>
+			</h1>
+		</div>
+	</div>
+	<div class="container lod_all">
+		<div class=""
+			style="float: left; width: 600px; height: 313px; background: url(${staticCtx}/images/bgbg.png) no-repeat left top"></div>
+
+
+		<form method="post" action="${ctx}/login" id="loginForm">
+			<div class="form-signin">
+				<h2 class="form-signin-heading">登录系统</h2>
+				<input type="text" name="username" class="input-block-level"
+					placeholder="账号"> <span> ${message_param!''}</span> <input
+					type="password" name="password" class="input-block-level"
+					placeholder="密码"> <span> ${message_pass_us!''}</span>
+				<div class="field">
+					<label for="captcha" class="field">验证码:</label> <input type="text"
+						id="captcha" name="captcha" size="4" maxlength="4"
+						class="required" /> <span style="float: right; padding: 5px;"
+						class=""> <img title="点击更换" id="img_captcha"
+						src="${ctx}/servlet/captchaCode">&nbsp; (看不清<a
+						href="javascript:void(0)" onclick="javascript:refreshCaptcha()">换一张</a>)&nbsp;
+						<span> ${error_lgong!''}</span>
+					</span>
+				</div>
+				<p>
+					<button class="btn btn-large btn-primary" type="submit">登录</button>
+				</p>
+			</div>
+		</form>
+		<div class="clear"></div>
+
+	</div>
+
+	<script type="text/javascript">
+		/* $(document).ready(function() {
+			$("#loginForm").validate();
+		}); */
+		var _captcha_id = "#img_captcha";
+		function refreshCaptcha() {
+			$(_captcha_id).attr("src",
+					"${ctx}/servlet/captchaCode?t=" + Math.random());
+		}
+	</script>
+</body>
+</html>
+

@@ -1,0 +1,9 @@
+com\ync365\seed\service\impl\AppTest.class
+com\ync365\seed\service\user\impl\UserServiceTest.class
+com\ync365\seed\service\promotion\impl\PromotionServiceImplTest.class
+com\ync365\seed\service\order\impl\OrderServiceImplTest.class
+com\ync365\seed\service\user\impl\UserServiceRestTest.class
+com\ync365\seed\service\goods\impl\GoodsServiceImplTest.class
+com\ync365\seed\service\order\impl\MyAssetServiceImplTest.class
+com\ync365\seed\service\order\impl\PayServiceImplTest.class
+com\ync365\seed\service\order\impl\CartServiceImplTest.class

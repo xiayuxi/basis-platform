@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysAdminInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysAdminInfo" >
+    <result column="admin_num" property="adminNum" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="INTEGER" />
+    <result column="address_detail" property="addressDetail" jdbcType="VARCHAR" />
+    <result column="ID_card" property="idCard" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="ResultMap" type="com.ync365.seed.bussiness.modules.user.bo.SysAdminInfoBO" extends="BaseResultMap">
+  	<result column="admin_mobile" property="mobile" jdbcType="VARCHAR" />
+  	<result column="admin_login_name" property="adminLoginName" jdbcType="VARCHAR" />
+  	<result column="is_authentication" property="isAuthentication" jdbcType="BIT" />
+  	<result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+  	<result column="aNum" property="aNum" jdbcType="VARCHAR" />
+  	<result column="aMobile" property="aMobile" jdbcType="VARCHAR" />
+  	<result column="aName" property="aName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	  admin_num, name, telephone, 
+      address, address_detail, ID_card, 
+      create_time
+	</sql>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdminInfo" >
+    insert into sys_admin_info (admin_num, name, telephone, 
+      address, address_detail, ID_card, 
+      create_time)
+    values (#{adminNum,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
+      #{address,jdbcType=INTEGER}, #{addressDetail,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, 
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdminInfo" >
+    insert into sys_admin_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="adminNum != null" >
+        admin_num,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="addressDetail != null" >
+        address_detail,
+      </if>
+      <if test="idCard != null" >
+        ID_card,
+      </if>
+<!--       <if test="createTime != null" > -->
+        create_time,
+<!--       </if> -->
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="adminNum != null" >
+        #{adminNum,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=INTEGER},
+      </if>
+      <if test="addressDetail != null" >
+        #{addressDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      now(),
+<!--       <if test="createTime != null" > -->
+<!--         #{createTime,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+    </trim>
+  </insert>
+  <delete id="deleteByPrimaryKey" parameterType="string">
+	delete from
+	sys_admin_info
+	where  admin_num = #{adminNum,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from sys_admin_info
+	    where admin_num = #{adminNum,jdbcType=VARCHAR}
+  	</select>
+  	
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdminInfo">
+	update sys_admin_info
+	<set>
+	    <if test="name != null and name != ''" >
+	      name = #{name,jdbcType=VARCHAR},
+	    </if>
+	    <if test="telephone != null and telephone != ''" >
+	      telephone = #{telephone,jdbcType=VARCHAR},
+	    </if>
+	    <if test="address != null" >
+	      address = #{address,jdbcType=INTEGER},
+	    </if>
+	    <if test="addressDetail != null and addressDetail != ''" >
+	      address_detail = #{addressDetail,jdbcType=VARCHAR},
+	    </if>
+	    <if test="idCard != null and idCard != ''" >
+	      ID_card = #{idCard,jdbcType=VARCHAR},
+	    </if>
+<!-- 	    <if test="createTime != null and createTime != ''" > -->
+<!-- 	      create_time = #{createTime,jdbcType=TIMESTAMP}, -->
+<!-- 	    </if> -->
+	</set>
+	where admin_num = #{adminNum,jdbcType=VARCHAR}
+  </update>
+  <select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from sys_admin_info
+  	<where>
+		<if test="adminNum != null and adminNum != ''" >
+	      and admin_num = #{adminNum,jdbcType=VARCHAR}
+	    </if>
+	    <if test="name != null and name != ''" >
+	     and name = #{name,jdbcType=VARCHAR}
+	    </if>
+	    <if test="telephone != null and telephone != ''" >
+	      and telephone = #{telephone,jdbcType=VARCHAR}
+	    </if>
+	    <if test="address != null" >
+	      and address = #{address,jdbcType=INTEGER}
+	    </if>
+	    <if test="addressDetail != null and addressDetail != ''" >
+	      and address_detail = #{addressDetail,jdbcType=VARCHAR}
+	    </if>
+	    <if test="idCard != null and idCard != ''" >
+	      and ID_card = #{idCard,jdbcType=VARCHAR}
+	    </if>
+	    <if test="createTime != null and createTime != ''" >
+	      and create_time = #{createTime,jdbcType=TIMESTAMP}
+	    </if>
+  	</where>
+  	<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+	</if>
+  </select>
+  <select id="selectPageCount" parameterType="map" resultType="int">
+  	select
+        count(1)
+  	from sys_admin_info
+  	<where>
+		<if test="adminNum != null and adminNum != ''" >
+	      and admin_num = #{adminNum,jdbcType=VARCHAR}
+	    </if>
+	    <if test="name != null and name != ''" >
+	      and name = #{name,jdbcType=VARCHAR}
+	    </if>
+	    <if test="telephone != null and telephone != ''" >
+	      and telephone = #{telephone,jdbcType=VARCHAR}
+	    </if>
+	    <if test="address != null" >
+	      and address = #{address,jdbcType=INTEGER}
+	    </if>
+	    <if test="addressDetail != null and addressDetail != ''" >
+	      and address_detail = #{addressDetail,jdbcType=VARCHAR}
+	    </if>
+	    <if test="idCard != null and idCard != ''" >
+	      and ID_card = #{idCard,jdbcType=VARCHAR}
+	    </if>
+	    <if test="createTime != null and createTime != ''" >
+	      and create_time = #{createTime,jdbcType=TIMESTAMP}
+	    </if>
+  	</where>
+  </select>
+  <select id="getSysAdminInfoByUserNum" parameterType="map" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/>  FROM sys_admin_info su WHERE su.admin_num = #{userNum} and su.admin_num in 
+		(SELECT sur.user_num FROM sys_user_role sur WHERE sur.role_id=#{roleId} and sur.is_authentication=#{isAuthentication});
+	</select>
+	<!-- 根据编号或者手机号查询 -->
+  <select id="getAdminInfoByUserNumOrMobile" parameterType="map" resultMap="ResultMap">
+		SELECT
+			sai.admin_num,
+			sai.address,
+			sai.`name`,
+			sa.admin_mobile
+			,sa.admin_login_name
+			,sa.is_authentication
+			,sa.is_frozen
+		FROM
+			sys_admin_info sai
+		LEFT JOIN sys_admin sa ON sa.admin_num = sai.admin_num
+		WHERE
+			sai.admin_num IN (
+				SELECT
+					sur.user_num
+				FROM
+					sys_user_role sur
+				WHERE
+					sur.role_id = #{roleId}
+			)
+		AND (
+			sa.admin_mobile = #{userNum}
+			OR sai.admin_num = #{userNum}
+		)
+	</select>
+	
+	<!-- by vs编号获取se信息 -->
+	<select id="selectSysAdminInfoByVsNum" resultMap="BaseResultMap" parameterType="string">
+		select b.* from sys_admin a
+			INNER JOIN sys_admin_info b on a.admin_num = b.admin_num
+			LEFT JOIN sys_lc_se_relationship c  on a.admin_num = c.se_num 
+			LEFT JOIN sys_vs_lc_relationship d on c.lc_num = d.lc_num
+			LEFT JOIN sys_user e on d.vs_num = e.user_num
+			where e.user_num = #{userNum,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- by us编号获取se信息 -->
+	<select id="selectSysAdminInfoByUsNum" resultMap="BaseResultMap" parameterType="string">
+		select b.* from sys_admin a
+			INNER JOIN sys_admin_info b on a.admin_num = b.admin_num
+			LEFT JOIN sys_lc_se_relationship c  on a.admin_num = c.se_num 
+			LEFT JOIN sys_vs_lc_relationship d on c.lc_num = d.lc_num
+			LEFT JOIN sys_us_vs_relationship e on  e.vs_num = d.vs_num
+			LEFT JOIN sys_user f on e.us_num = f.user_num
+			where f.user_num  = #{userNum,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- by lc编号获取se信息 -->
+	<select id="selectSysAdminInfoByLcNum" resultMap="BaseResultMap" parameterType="string">
+		select b.* from sys_admin a
+			INNER JOIN sys_admin_info b on a.admin_num = b.admin_num
+			LEFT JOIN sys_lc_se_relationship c  on a.admin_num = c.se_num 
+			LEFT JOIN sys_user d on c.lc_num = d.user_num
+			where d.user_num  = #{userNum,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<!-- SE列表 包含统计数据 -->
+	<select id="selectSysSeInfoByParam" resultMap="ResultMap" parameterType="com.ync365.seed.bussiness.modules.user.bo.AdminInfoSearchBO">
+		SELECT
+			sei.address 'address',
+			sei.address_detail 'addressDetail',
+			sei.admin_num 'adminNum',
+			se.create_time 'createTime',
+			sei.ID_card 'idCard',
+			sei.telephone 'telephone',
+			sei.`name` 'name',
+			se.admin_mobile 'mobile',
+			se.admin_login_name 'adminLoginName',
+			se.is_authentication 'isAuthentication',
+			se.is_frozen 'isFrozen',
+<!-- 			seusnum.num 'usCount', -->
+<!-- 			sevsnum.num 'vsCount', -->
+<!-- 			selcnum.num 'lcCount', -->
+			a.admin_num 'aNum',
+			a.admin_mobile 'aMobile',
+			ai.`name` 'aName'
+		FROM
+			(
+				SELECT
+					sa.address,
+					sa.address_detail,
+					sa.admin_num,
+					sa.create_time,
+					sa.ID_card,
+					sa.telephone,
+					sa.`name`
+				FROM
+					sys_admin_info sa
+				LEFT JOIN sys_user_role sur ON sa.admin_num = sur.user_num
+				WHERE
+					sur.role_id = #{roleId}
+			) sei
+		LEFT JOIN sys_admin se ON se.admin_num = sei.admin_num
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				c.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_us_vs_relationship a -->
+<!-- 			LEFT JOIN sys_vs_lc_relationship b ON a.vs_num = b.vs_num -->
+<!-- 			LEFT JOIN sys_lc_se_relationship c ON b.lc_num = c.lc_num -->
+<!-- 			GROUP BY -->
+<!-- 				c.se_num -->
+<!-- 		) seusnum ON se.admin_num = seusnum.se_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				b.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_vs_lc_relationship a -->
+<!-- 			LEFT JOIN sys_lc_se_relationship b ON a.lc_num = b.lc_num -->
+<!-- 			GROUP BY -->
+<!-- 				b.se_num -->
+<!-- 		) sevsnum ON se.admin_num = sevsnum.se_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				a.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_lc_se_relationship a -->
+<!-- 			GROUP BY -->
+<!-- 				a.se_num -->
+<!-- 		) selcnum ON se.admin_num = selcnum.se_num -->
+		LEFT JOIN sys_se_a_relationship ssar ON ssar.se_num = se.admin_num
+		LEFT JOIN sys_admin a ON a.admin_num = ssar.a_num
+		LEFT JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+		<where>
+			<if test="name != null and name != ''">
+				AND sei.`name` = #{name}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND se.admin_mobile = #{mobile}
+			</if>
+			<if test="adminNum != null and adminNum != ''">
+				AND sei.admin_num = #{adminNum}
+			</if>
+			<if test="isAuthentication != null">
+				AND se.is_authentication = #{isAuthentication}
+			</if>
+			<if test="isFrozen != null">
+				AND se.is_frozen = #{isFrozen}
+			</if>
+			<if test="address != null">
+				AND sei.address = #{address}
+			</if>
+			<if test="serviceDistinct != null">
+				AND sei.admin_num in (select admin_num from sys_admin_service where admin_service_distinct=#{serviceDistinct})
+			</if>
+			<if test="aName != null and aName != ''">
+				AND (
+					a.admin_mobile = #{aName}
+					OR ai.`name` = #{aName}
+				)
+			</if>
+<!-- 			<if test="usCountBegin != null"> -->
+<!-- 				<![CDATA[  AND seusnum.num > #{usCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="usCountEnd != null"> -->
+<!-- 				<![CDATA[  AND seusnum.num < #{usCountEnd}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountBegin != null"> -->
+<!-- 				<![CDATA[  AND sevsnum.num > #{vsCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountBegin != null"> -->
+<!-- 				<![CDATA[  AND sevsnum.num > #{vsCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountEnd != null"> -->
+<!-- 				<![CDATA[  AND sevsnum.num < #{vsCountEnd}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="lcCountBegin != null"> -->
+<!-- 				<![CDATA[  AND selcnum.num > #{lcCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="lcCountEnd != null"> -->
+<!-- 				<![CDATA[  AND selcnum.num < #{lcCountEnd}  ]]> -->
+<!-- 			</if> -->
+			<if test="beginDate != null">
+				<![CDATA[  AND se.create_time > #{beginDate}  ]]>
+			</if>
+			<if test="endDate != null">
+				<![CDATA[  AND se.create_time < #{endDate}  ]]>
+			</if>
+			<!--角色为a+时 出传人的参数  -->
+			<if test="aAiAdminNum != null and aAiAdminNum != ''">
+				AND a.admin_num = #{aAiAdminNum}
+			</if>
+		</where>
+		order by se.create_time desc
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	<select id="selectSysSeInfoByParamCount" resultType="int" parameterType="com.ync365.seed.bussiness.modules.user.bo.AdminInfoSearchBO">
+		SELECT
+			count(1)
+		FROM
+			(
+				SELECT
+					sa.address,
+					sa.address_detail,
+					sa.admin_num,
+					sa.create_time,
+					sa.ID_card,
+					sa.telephone,
+					sa.`name`
+				FROM
+					sys_admin_info sa
+				LEFT JOIN sys_user_role sur ON sa.admin_num = sur.user_num
+				WHERE
+					sur.role_id = #{roleId}
+			) sei
+		LEFT JOIN sys_admin se ON se.admin_num = sei.admin_num
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				c.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_us_vs_relationship a -->
+<!-- 			LEFT JOIN sys_vs_lc_relationship b ON a.vs_num = b.vs_num -->
+<!-- 			LEFT JOIN sys_lc_se_relationship c ON b.lc_num = c.lc_num -->
+<!-- 			GROUP BY -->
+<!-- 				c.se_num -->
+<!-- 		) seusnum ON se.admin_num = seusnum.se_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				b.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_vs_lc_relationship a -->
+<!-- 			LEFT JOIN sys_lc_se_relationship b ON a.lc_num = b.lc_num -->
+<!-- 			GROUP BY -->
+<!-- 				b.se_num -->
+<!-- 		) sevsnum ON se.admin_num = sevsnum.se_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				a.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_lc_se_relationship a -->
+<!-- 			GROUP BY -->
+<!-- 				a.se_num -->
+<!-- 		) selcnum ON se.admin_num = selcnum.se_num -->
+		LEFT JOIN sys_se_a_relationship ssar ON ssar.se_num = se.admin_num
+		LEFT JOIN sys_admin a ON a.admin_num = ssar.a_num
+		LEFT JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+		<where>
+			<if test="name != null and name != ''">
+				AND sei.`name` = #{name}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND se.admin_mobile = #{mobile}
+			</if>
+			<if test="adminNum != null and adminNum != ''">
+				AND sei.admin_num = #{adminNum}
+			</if>
+			<if test="isAuthentication != null">
+				AND se.is_authentication = #{isAuthentication}
+			</if>
+			<if test="isFrozen != null">
+				AND se.is_frozen = #{isFrozen}
+			</if>
+			<if test="address != null">
+				AND sei.address = #{address}
+			</if>
+			<if test="serviceDistinct != null">
+				AND sei.admin_num in (select admin_num from sys_admin_service where admin_service_distinct=#{serviceDistinct})
+			</if>
+			<if test="aName != null and aName != ''">
+				AND (
+					a.admin_mobile = #{aName}
+					OR ai.`name` = #{aName}
+				)
+			</if>
+<!-- 			<if test="usCountBegin != null"> -->
+<!-- 				<![CDATA[  AND seusnum.num > #{usCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="usCountEnd != null"> -->
+<!-- 				<![CDATA[  AND seusnum.num < #{usCountEnd}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountBegin != null"> -->
+<!-- 				<![CDATA[  AND sevsnum.num > #{vsCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountBegin != null"> -->
+<!-- 				<![CDATA[  AND sevsnum.num > #{vsCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountEnd != null"> -->
+<!-- 				<![CDATA[  AND sevsnum.num < #{vsCountEnd}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="lcCountBegin != null"> -->
+<!-- 				<![CDATA[  AND selcnum.num > #{lcCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="lcCountEnd != null"> -->
+<!-- 				<![CDATA[  AND selcnum.num < #{lcCountEnd}  ]]> -->
+<!-- 			</if> -->
+			<if test="beginDate != null">
+				<![CDATA[  AND se.create_time > #{beginDate}  ]]>
+			</if>
+			<if test="endDate != null">
+				<![CDATA[  AND se.create_time < #{endDate}  ]]>
+			</if>
+			<!--角色为a+时 出传人的参数  -->
+			<if test="aAiAdminNum != null and aAiAdminNum != ''">
+				AND a.admin_num = #{aAiAdminNum}
+			</if>
+		</where>
+	</select>
+	<!-- A+列表 包含统计数据 -->
+	<select id="selectSysAInfoByParam" resultMap="ResultMap" parameterType="com.ync365.seed.bussiness.modules.user.bo.AdminInfoSearchBO">
+		SELECT
+			ai.address 'address',
+			ai.address_detail 'addressDetail',
+			ai.admin_num 'adminNum',
+			a.create_time 'createTime',
+			ai.ID_card 'idCard',
+			ai.telephone 'telephone',
+			ai.`name` 'name',
+			a.admin_mobile 'mobile',
+			a.admin_login_name 'adminLoginName',
+			a.is_authentication 'isAuthentication',
+			a.is_frozen 'isFrozen'
+<!-- 			,ausnum.num 'usCount', -->
+<!-- 			avsnum.num 'vsCount', -->
+<!-- 			alcnum.num 'lcCount', -->
+<!-- 			asenum.num 'seCount' -->
+		FROM
+			(
+				SELECT
+					sa.address,
+					sa.address_detail,
+					sa.admin_num,
+					sa.create_time,
+					sa.ID_card,
+					sa.telephone,
+					sa.`name`
+				FROM
+					sys_admin_info sa
+				LEFT JOIN sys_user_role sur ON sa.admin_num = sur.user_num
+				WHERE
+					sur.role_id = #{roleId}
+			) ai
+		LEFT JOIN sys_admin a ON a.admin_num = ai.admin_num
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				d.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_us_vs_relationship a -->
+<!-- 			LEFT JOIN sys_vs_lc_relationship b ON a.vs_num = b.vs_num -->
+<!-- 			LEFT JOIN sys_lc_se_relationship c ON b.lc_num = c.lc_num -->
+<!-- 			LEFT JOIN sys_se_a_relationship d ON d.se_num = c.se_num -->
+<!-- 			GROUP BY -->
+<!-- 				d.a_num -->
+<!-- 		) ausnum ON a.admin_num = ausnum.a_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				c.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_vs_lc_relationship a -->
+<!-- 			LEFT JOIN sys_lc_se_relationship b ON a.lc_num = b.lc_num -->
+<!-- 			LEFT JOIN sys_se_a_relationship c ON c.se_num = b.se_num -->
+<!-- 			GROUP BY -->
+<!-- 				c.a_num -->
+<!-- 		) avsnum ON a.admin_num = avsnum.a_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				b.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_lc_se_relationship a -->
+<!-- 			LEFT JOIN sys_se_a_relationship b ON a.se_num = b.se_num -->
+<!-- 			GROUP BY -->
+<!-- 				b.a_num -->
+<!-- 		) alcnum ON a.admin_num = alcnum.a_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				a.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_se_a_relationship a -->
+<!-- 			GROUP BY -->
+<!-- 				a.a_num -->
+<!-- 		) asenum ON a.admin_num = asenum.a_num -->
+		<where>
+			<if test="name != null and name != ''">
+				AND ai.`name` = #{name}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.admin_mobile = #{mobile}
+			</if>
+			<if test="adminNum != null and adminNum != ''">
+				AND ai.admin_num = #{adminNum}
+			</if>
+			<if test="isAuthentication != null">
+				AND a.is_authentication = #{isAuthentication}
+			</if>
+			<if test="isFrozen != null">
+				AND a.is_frozen = #{isFrozen}
+			</if>
+			<if test="address != null">
+				AND ai.address = #{address}
+			</if>
+			<if test="serviceDistinct != null">
+				AND ai.admin_num in (select admin_num from sys_admin_service where admin_service_distinct=#{serviceDistinct})
+			</if>
+			<if test="aName != null and aName != ''">
+				AND (
+					a.admin_mobile = #{aName}
+					OR ai.`name` = #{aName}
+				)
+			</if>
+<!-- 			<if test="usCountBegin != null"> -->
+<!-- 				<![CDATA[  AND ausnum.num > #{usCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="usCountEnd != null"> -->
+<!-- 				<![CDATA[  AND ausnum.num < #{usCountEnd}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountBegin != null"> -->
+<!-- 				<![CDATA[  AND avsnum.num > #{vsCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountBegin != null"> -->
+<!-- 				<![CDATA[  AND avsnum.num > #{vsCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="vsCountEnd != null"> -->
+<!-- 				<![CDATA[  AND avsnum.num < #{vsCountEnd}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="lcCountBegin != null"> -->
+<!-- 				<![CDATA[  AND alcnum.num > #{lcCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="lcCountEnd != null"> -->
+<!-- 				<![CDATA[  AND alcnum.num < #{lcCountEnd}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="seCountBegin != null"> -->
+<!-- 				<![CDATA[  AND asenum.num > #{seCountBegin}  ]]> -->
+<!-- 			</if> -->
+<!-- 			<if test="seCountEnd != null"> -->
+<!-- 				<![CDATA[  AND asenum.num < #{seCountEnd}  ]]> -->
+<!-- 			</if> -->
+			<if test="beginDate != null">
+				<![CDATA[  AND a.create_time > #{beginDate}  ]]>
+			</if>
+			<if test="endDate != null">
+				<![CDATA[  AND a.create_time < #{endDate}  ]]>
+			</if>
+		</where>
+		order by a.create_time desc
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	<select id="selectSysAInfoByParamCount" resultType="int" parameterType="com.ync365.seed.bussiness.modules.user.bo.AdminInfoSearchBO">
+		SELECT
+			count(1)
+		FROM
+			(
+				SELECT
+					sa.address,
+					sa.address_detail,
+					sa.admin_num,
+					sa.create_time,
+					sa.ID_card,
+					sa.telephone,
+					sa.`name`
+				FROM
+					sys_admin_info sa
+				LEFT JOIN sys_user_role sur ON sa.admin_num = sur.user_num
+				WHERE
+					sur.role_id = #{roleId}
+			) ai
+		LEFT JOIN sys_admin a ON a.admin_num = ai.admin_num
+		LEFT JOIN (
+			SELECT
+				count(1) num,
+				d.a_num
+			FROM
+				sys_us_vs_relationship a
+			LEFT JOIN sys_vs_lc_relationship b ON a.vs_num = b.vs_num
+			LEFT JOIN sys_lc_se_relationship c ON b.lc_num = c.lc_num
+			LEFT JOIN sys_se_a_relationship d ON d.se_num = c.se_num
+			GROUP BY
+				d.a_num
+		) ausnum ON a.admin_num = ausnum.a_num
+		LEFT JOIN (
+			SELECT
+				count(1) num,
+				c.a_num
+			FROM
+				sys_vs_lc_relationship a
+			LEFT JOIN sys_lc_se_relationship b ON a.lc_num = b.lc_num
+			LEFT JOIN sys_se_a_relationship c ON c.se_num = b.se_num
+			GROUP BY
+				c.a_num
+		) avsnum ON a.admin_num = avsnum.a_num
+		LEFT JOIN (
+			SELECT
+				count(1) num,
+				b.a_num
+			FROM
+				sys_lc_se_relationship a
+			LEFT JOIN sys_se_a_relationship b ON a.se_num = b.se_num
+			GROUP BY
+				b.a_num
+		) alcnum ON a.admin_num = alcnum.a_num
+		LEFT JOIN (
+			SELECT
+				count(1) num,
+				a.a_num
+			FROM
+				sys_se_a_relationship a
+			GROUP BY
+				a.a_num
+		) asenum ON a.admin_num = asenum.a_num
+		<where>
+			<if test="name != null and name != ''">
+				AND ai.`name` = #{name}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.admin_mobile = #{mobile}
+			</if>
+			<if test="adminNum != null and adminNum != ''">
+				AND ai.admin_num = #{adminNum}
+			</if>
+			<if test="isAuthentication != null">
+				AND a.is_authentication = #{isAuthentication}
+			</if>
+			<if test="isFrozen != null">
+				AND a.is_frozen = #{isFrozen}
+			</if>
+			<if test="address != null">
+				AND ai.address = #{address}
+			</if>
+			<if test="serviceDistinct != null">
+				AND ai.admin_num in (select admin_num from sys_admin_service where admin_service_distinct=#{serviceDistinct})
+			</if>
+			<if test="aName != null and aName != ''">
+				AND (
+					a.admin_mobile = #{aName}
+					OR ai.`name` = #{aName}
+				)
+			</if>
+			<if test="usCountBegin != null">
+				<![CDATA[  AND ausnum.num > #{usCountBegin}  ]]>
+			</if>
+			<if test="usCountEnd != null">
+				<![CDATA[  AND ausnum.num < #{usCountEnd}  ]]>
+			</if>
+			<if test="vsCountBegin != null">
+				<![CDATA[  AND avsnum.num > #{vsCountBegin}  ]]>
+			</if>
+			<if test="vsCountBegin != null">
+				<![CDATA[  AND avsnum.num > #{vsCountBegin}  ]]>
+			</if>
+			<if test="vsCountEnd != null">
+				<![CDATA[  AND avsnum.num < #{vsCountEnd}  ]]>
+			</if>
+			<if test="lcCountBegin != null">
+				<![CDATA[  AND alcnum.num > #{lcCountBegin}  ]]>
+			</if>
+			<if test="lcCountEnd != null">
+				<![CDATA[  AND alcnum.num < #{lcCountEnd}  ]]>
+			</if>
+			<if test="seCountBegin != null">
+				<![CDATA[  AND asenum.num > #{seCountBegin}  ]]>
+			</if>
+			<if test="seCountEnd != null">
+				<![CDATA[  AND asenum.num < #{seCountEnd}  ]]>
+			</if>
+			<if test="beginDate != null">
+				<![CDATA[  AND a.create_time > #{beginDate}  ]]>
+			</if>
+			<if test="endDate != null">
+				<![CDATA[  AND a.create_time < #{endDate}  ]]>
+			</if>
+		</where>
+	</select>
+	<!-- SE查询单个 包含统计数据 -->
+	<select id="selectSysSeInfoByNum" resultMap="ResultMap" parameterType="map">
+		SELECT
+			sei.address 'address',
+			sei.address_detail 'addressDetail',
+			sei.admin_num 'adminNum',
+			se.create_time 'createTime',
+			sei.ID_card 'idCard',
+			sei.telephone 'telephone',
+			sei.`name` 'name',
+			se.admin_mobile 'mobile',
+			se.admin_login_name 'adminLoginName',
+			se.is_authentication 'isAuthentication',
+			se.is_frozen 'isFrozen',
+			<!-- seusnum.num 'usCount',
+			sevsnum.num 'vsCount',
+			selcnum.num 'lcCount', -->
+			a.admin_num 'aNum',
+			a.admin_mobile 'aMobile',
+			ai.`name` 'aName'
+		FROM
+			(
+				SELECT
+					sa.address,
+					sa.address_detail,
+					sa.admin_num,
+					sa.create_time,
+					sa.ID_card,
+					sa.telephone,
+					sa.`name`
+				FROM
+					sys_admin_info sa
+				LEFT JOIN sys_user_role sur ON sa.admin_num = sur.user_num
+				WHERE
+					sur.role_id = #{roleId}
+					AND sa.admin_num = #{adminNum}
+			) sei
+		LEFT JOIN sys_admin se ON se.admin_num = sei.admin_num
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				c.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_us_vs_relationship a -->
+<!-- 			LEFT JOIN sys_vs_lc_relationship b ON a.vs_num = b.vs_num -->
+<!-- 			LEFT JOIN sys_lc_se_relationship c ON b.lc_num = c.lc_num -->
+<!-- 			GROUP BY -->
+<!-- 				c.se_num -->
+<!-- 		) seusnum ON se.admin_num = seusnum.se_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				b.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_vs_lc_relationship a -->
+<!-- 			LEFT JOIN sys_lc_se_relationship b ON a.lc_num = b.lc_num -->
+<!-- 			GROUP BY -->
+<!-- 				b.se_num -->
+<!-- 		) sevsnum ON se.admin_num = sevsnum.se_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				a.se_num -->
+<!-- 			FROM -->
+<!-- 				sys_lc_se_relationship a -->
+<!-- 			GROUP BY -->
+<!-- 				a.se_num -->
+<!-- 		) selcnum ON se.admin_num = selcnum.se_num -->
+		LEFT JOIN sys_se_a_relationship ssar ON ssar.se_num = se.admin_num
+		LEFT JOIN sys_admin a ON a.admin_num = ssar.a_num
+		LEFT JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+	</select>
+	<!-- A+查询单个 包含统计数据 -->
+	<select id="selectSysAInfoByNum" resultMap="ResultMap" parameterType="map">
+		SELECT
+			ai.address 'address',
+			ai.address_detail 'addressDetail',
+			ai.admin_num 'adminNum',
+			a.create_time 'createTime',
+			ai.ID_card 'idCard',
+			ai.telephone 'telephone',
+			ai.`name` 'name',
+			a.admin_mobile 'mobile',
+			a.admin_login_name 'adminLoginName',
+			a.is_authentication 'isAuthentication',
+			a.is_frozen 'isFrozen'
+			<!-- ausnum.num 'usCount',
+			avsnum.num 'vsCount',
+			alcnum.num 'lcCount',
+			asenum.num 'seCount' -->
+		FROM
+			(
+				SELECT
+					sa.address,
+					sa.address_detail,
+					sa.admin_num,
+					sa.create_time,
+					sa.ID_card,
+					sa.telephone,
+					sa.`name`
+				FROM
+					sys_admin_info sa
+				LEFT JOIN sys_user_role sur ON sa.admin_num = sur.user_num
+				WHERE
+					sur.role_id = #{roleId}
+					AND sa.admin_num = #{adminNum}
+			) ai
+		LEFT JOIN sys_admin a ON a.admin_num = ai.admin_num
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				d.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_us_vs_relationship a -->
+<!-- 			LEFT JOIN sys_vs_lc_relationship b ON a.vs_num = b.vs_num -->
+<!-- 			LEFT JOIN sys_lc_se_relationship c ON b.lc_num = c.lc_num -->
+<!-- 			LEFT JOIN sys_se_a_relationship d ON d.se_num = c.se_num -->
+<!-- 			GROUP BY -->
+<!-- 				d.a_num -->
+<!-- 		) ausnum ON a.admin_num = ausnum.a_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				c.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_vs_lc_relationship a -->
+<!-- 			LEFT JOIN sys_lc_se_relationship b ON a.lc_num = b.lc_num -->
+<!-- 			LEFT JOIN sys_se_a_relationship c ON c.se_num = b.se_num -->
+<!-- 			GROUP BY -->
+<!-- 				c.a_num -->
+<!-- 		) avsnum ON a.admin_num = avsnum.a_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				b.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_lc_se_relationship a -->
+<!-- 			LEFT JOIN sys_se_a_relationship b ON a.se_num = b.se_num -->
+<!-- 			GROUP BY -->
+<!-- 				b.a_num -->
+<!-- 		) alcnum ON a.admin_num = alcnum.a_num -->
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				a.a_num -->
+<!-- 			FROM -->
+<!-- 				sys_se_a_relationship a -->
+<!-- 			GROUP BY -->
+<!-- 				a.a_num -->
+<!-- 		) asenum ON a.admin_num = asenum.a_num -->
+	</select>
+	
+	
+	<select id="selectAdminNumListByAdminName" parameterType="string" resultMap="BaseResultMap">
+  		select a.admin_num 
+  			from sys_admin_info a 
+  			where a.`name` like '%${adminName}%'
+  </select>
+</mapper>

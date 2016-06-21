@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysSsInfoMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysSsInfo">
+		<id column="user_num" property="userNum" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="user_password" property="userPassword"
+			jdbcType="VARCHAR" />
+		<result column="user_real_name" property="userRealName"
+			jdbcType="VARCHAR" />
+		<result column="user_mobile" property="userMobile" jdbcType="VARCHAR" />
+		<result column="safe_score" property="safeScore" jdbcType="INTEGER" />
+		<result column="user_ID_card" property="userIdCard" jdbcType="VARCHAR" />
+		<result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		user_num, user_name, user_password, user_real_name,
+		user_mobile, user_ID_card,
+		is_frozen,safe_score,
+		create_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from sys_ss_info
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		sys_ss_info
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysSsInfo">
+		insert into sys_ss_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userNum != null">
+				user_num,
+			</if>
+			<if test="userName != null">
+				user_name,
+			</if>
+			<if test="userPassword != null">
+				user_password,
+			</if>
+			<if test="userRealName != null">
+				user_real_name,
+			</if>
+			<if test="userMobile != null">
+				user_mobile,
+			</if>
+			<if test="userIdCard != null">
+				user_ID_card,
+			</if>
+			<if test="isFrozen != null">
+				is_frozen,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="safeScore != null">
+				safe_score,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userNum != null">
+				#{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="userPassword != null">
+				#{userPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="userRealName != null">
+				#{userRealName,jdbcType=VARCHAR},
+			</if>
+			<if test="userMobile != null">
+				#{userMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="userIdCard != null">
+				#{userIdCard,jdbcType=VARCHAR},
+			</if>
+			<if test="isFrozen != null">
+				#{isFrozen,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="safeScore != null">
+				#{safeScore,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysSsInfo">
+		update sys_ss_info
+		<set>
+			<if test="userName != null">
+				user_name = #{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="userPassword != null">
+				user_password = #{userPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="userRealName != null">
+				user_real_name = #{userRealName,jdbcType=VARCHAR},
+			</if>
+			<if test="userMobile != null">
+				user_mobile = #{userMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="userIdCard != null">
+				user_ID_card = #{userIdCard,jdbcType=VARCHAR},
+			</if>
+			<if test="isFrozen != null">
+				is_frozen = #{isFrozen,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="safeScore != null">
+				safe_score = #{safeScore,jdbcType=INTEGER},
+			</if>
+		</set>
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_ss_info
+		<where>
+			<if test="userName != null">
+			and	user_name = #{userName,jdbcType=VARCHAR}
+			</if>
+			<if test="userPassword != null">
+			and	user_password = #{userPassword,jdbcType=VARCHAR}
+			</if>
+			<if test="userRealName != null">
+			and	user_real_name = #{userRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="userMobile != null">
+			and	user_mobile = #{userMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="userIdCard != null">
+			and	user_ID_card = #{userIdCard,jdbcType=VARCHAR}
+			</if>
+			<if test="isFrozen != null">
+			and	is_frozen = #{isFrozen,jdbcType=BIT}
+			</if>
+			<if test="createTime != null">
+			and	create_time = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="safeScore != null">
+			and	safe_score = #{safeScore,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<select id="getSsInfoByMobileOrNum" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from sys_ss_info
+		where user_num = #{mobileOrNum,jdbcType=VARCHAR}
+		or user_mobile=#{mobileOrNum,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<select id="selectSsInfoByParam" resultType="com.ync365.seed.bussiness.modules.user.bo.SsInfoBO"
+		parameterType="com.ync365.seed.bussiness.modules.user.bo.SsInfoSearchBO">
+		select 
+			a.user_num as userNum ,a.user_real_name as userRealName,
+			a.user_mobile as userMobile ,a.create_time as createTime ,a.safe_score as safeScore,
+			a.is_frozen as isFrozen
+		from 
+			sys_ss_info a
+		<if test="popStoreNameSearch != null and popStoreNameSearch != ''">
+			LEFT JOIN sys_ss_pop_store_relationship b on a.user_num = b.ss_num
+			LEFT  JOIN sys_pop_store c on b.pop_store_num = c.pop_store_num  
+		</if>
+		<where>
+			<if test="popStoreNameSearch != null and popStoreNameSearch != ''">
+				AND c.pop_store_name = #{popStoreNameSearch}
+			</if>
+			<if test="userMobileSearch != null and userMobileSearch != ''">
+				AND a.user_mobile = #{userMobileSearch}
+			</if>
+			<if test="userRealNameSearch != null and userRealNameSearch !=''">
+				AND a.user_real_name = #{userRealNameSearch}
+			</if>
+			<if test="userNameSearch != null and userNameSearch !=''">
+				AND a.user_name = #{userNameSearch}
+			</if>
+			<if test="beginDateSearch != null">
+				<![CDATA[AND a.create_time > #{beginDateSearch}]]>
+			</if>
+			<if test="endDateSearch != null">
+				<![CDATA[AND a.create_time < #{endDateSearch}]]>
+			</if>
+			<if test="isFrozenSearch != null">
+				AND a.is_frozen = #{isFrozenSearch}
+			</if>
+ 			<if test=" userNumSearch!=null and userNumSearch!='' ">
+				AND a.user_num = #{userNumSearch }
+			</if>
+		</where>
+		ORDER BY a.create_time DESC
+		<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	
+	<select id="selectSsInfoByParamCount" resultType="int"
+		parameterType="com.ync365.seed.bussiness.modules.user.bo.SsInfoSearchBO">
+		select 
+			count(1)  from
+		(select 
+			a.user_num as userNum ,a.user_real_name as userRealName,
+			a.user_mobile as userMobile ,a.create_time as createTime ,
+			a.is_frozen as isFrozen
+		from 
+			sys_ss_info a
+		<if test="popStoreNameSearch != null and popStoreNameSearch != ''">
+			LEFT JOIN sys_ss_pop_store_relationship b on a.user_num = b.ss_num
+			LEFT  JOIN sys_pop_store c on b.pop_store_num = c.pop_store_num  
+		</if>
+		<where>
+		<if test="popStoreNameSearch != null and popStoreNameSearch != ''">
+			AND c.pop_store_name = #{popStoreNameSearch}
+		</if>
+		<if test="userMobileSearch != null and userMobileSearch != ''">
+			AND a.user_mobile = #{userMobileSearch}
+		</if>
+		<if test="userRealNameSearch != null and userRealNameSearch !=''">
+			AND a.user_real_name = #{userRealNameSearch}
+		</if>
+		<if test="userNameSearch != null and userNameSearch !=''">
+			AND a.user_name = #{userNameSearch}
+		</if>
+		<if test="beginDateSearch != null">
+		<![CDATA[AND a.create_time > #{beginDateSearch}]]>
+		</if>
+		<if test="endDateSearch != null">
+		<![CDATA[AND a.create_time < #{endDateSearch}]]>
+		</if>
+		<if test="isFrozenSearch != null">
+		AND a.is_frozen = #{isFrozenSearch}
+		</if>
+		
+		</where>
+		 GROUP BY userNum) ctal
+	</select>
+</mapper>

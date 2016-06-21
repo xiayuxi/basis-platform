@@ -1,0 +1,166 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" type="text/css"
+	href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		$("#goods_categoryId")
+				.change(
+						function() {
+							var id = $(this).val();
+							$
+									.post(
+											"${ctx}/feature/getfeature",
+											{
+												"CategoryId" : id
+											},
+											function(data) {
+												//alert(data);
+												for ( var i in data) {
+													//alert(data[i].name);
+													$("#feature")
+															.append(
+																	"<div>"
+																			+ data[i].name
+																			+ "<input index='"+i+"' onclick='speClick(this)' type='checkbox' name='skufeatures["+i+"].featureId' value="
+																			+ data[i].featureId
+																			+ " /></div>")
+												}
+
+											}, "json");
+						
+						});
+		$("#goods_categoryId").change();
+	})
+	function speClick(event) {
+		
+		if (event.checked) {
+			var index=$(event).attr("index");
+			var data=getHtml(index);
+			$(event).parent().append(data);
+		}else{
+			$(event).next().remove();
+		}
+	}
+	function getHtml(n){
+		var data="<div>"
+				+"<div>"
+				+"	规格值 "//<input type='hidden' name='skufeatures["+n+"].featureId' /> 
+				+"<input type='text' name='skufeatures["+n+"].specValue' /> "
+				+"<input type='hidden' name='skufeatures["+n+"].isSpec' value='1' />"
+				+"</div>"
+				+"<table>"
+				+"<thead>"
+				+"<tr><td>货号</td><td>数量</td><td>市场价格</td><td>价格</td><td>购买下限</td><td>购买上限</td><td>sku类型</td><td>sku前台排序</td><td>销量</td><td>状态</td><td>属性字符串</td><td>条码</td><td>产品代码</td></tr>"		
+				+"</thead>"	
+				+"<tbody>"	
+				+"<tr>"		
+				+"<td><input type='text' name='skus["+n+"].sku' /></td>"			
+				+'<td><input type="text" name="skus['+n+'].stock" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].marketPrice" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].price" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].lowerLimit" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].upperLimit" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].ftype" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].sort" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].sales" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].status" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].featureStr" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].barCode" /></td>'			
+				+'<td><input type="text" name="skus['+n+'].goodsCode" /></td>'			
+			+"</tr>"			
+			+"</tbody>"
+			+"</table>"
+			+"</div>";
+			return data;
+	}
+</script>
+<body>
+	<form action="${ctx}/goods/add" method="post"
+		enctype="application/x-www-form-urlencoded">
+		<div>
+			<table>
+				<tbody>
+					<tr>
+						<td>商品名称</td>
+						<td><input type="text" name="goods.name" /></td>
+					</tr>
+					<tr>
+						<td>商品编码</td>
+						<td><input type="text" name="goods.code" /></td>
+					</tr>
+					<tr>
+						<td>描述</td>
+						<td><input type="text" name="goods.remark" /></td>
+					</tr>
+					<tr>
+						<td>图片id</td>
+						<td><input type="text" name="goods.tagImgId" /></td>
+					</tr>
+					<tr>
+						<td>参考价格</td>
+						<td><input type="text" name="goods.price" /></td>
+					</tr>
+					<tr>
+						<td>是否新品</td>
+						<td><input type="checkbox" name="goods.isNew" value="1" /></td>
+					</tr>
+					<tr>
+						<td>是否商品</td>
+						<td><input type="checkbox" name="goods.isGood" value="1" /></td>
+					</tr>
+					<tr>
+						<td>是否热门</td>
+						<td><input type="checkbox" name="goods.isHot" value="1" /></td>
+					</tr>
+					<tr>
+						<td>页面关键字</td>
+						<td><input type="text" name="goods.keywords" /></td>
+					</tr>
+
+					<tr>
+						<td>品牌id</td>
+						<td><select id="goods.brandId" name="goods.brandId"><option
+									value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option></select></td>
+					</tr>
+					<tr>
+						<td>分类id</td>
+						<td><select id="goods_categoryId" name="goods.categoryId"><option
+									value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option></select></td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+		<div>
+			规格属性
+			<div id="feature"></div>
+			
+		</div>
+		<div></div>
+		<div>
+			<input type="submit" value="提交" />
+			&nbsp;&nbsp;&nbsp;
+			<input type="button"  onclick="javascript:window.location.href='${ctx}/goods/list';" value="返回列表">
+		</div>
+	</form>
+</body>
+</html>

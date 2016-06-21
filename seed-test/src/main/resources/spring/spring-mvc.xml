@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd	
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean id="jacksonMessageConverter"
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+			</bean>
+		</mvc:message-converters>
+		<!-- 
+		<mvc:argument-resolvers>
+			<bean class="com.nslm365.admin.resolver.PageableHandlerMethodArgumentResolver" />
+		</mvc:argument-resolvers>
+		 -->
+	</mvc:annotation-driven>
+	
+	<mvc:annotation-driven/>
+
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<!-- method interceptor <mvc:interceptors> </mvc:interceptors> -->
+	<!-- register DefaultAnnotationHandlerMapping and AnnotationMethodHandlerAdapter 
+		instance <mvc:annotation-driven /> -->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean>
+
+	<!-- freemarker的格式和其他配置 -->
+	<bean id="freemarkerConfigurer"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/views/" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">10</prop>
+				<prop key="locale">zh_CN</prop>
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="date_format">yyyy-MM-dd</prop>
+				<prop key="number_format">#.##</prop>
+			</props>
+		</property>
+		<property name="freemarkerVariables">  
+            <map>  
+                <entry key="xml_escape" value-ref="fmXmlEscape" />  
+            </map>  
+        </property>
+	</bean>
+	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+	<!-- FreeMarker视图解析,在这里配置后缀名ftl和视图解析器 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="suffix" value=".html" />
+		<property name="requestContextAttribute" value="request" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
+
+	<!-- this config must be last -->
+	<mvc:default-servlet-handler />
+	
+	<context:component-scan base-package="com.ync365.seed.admin.controller">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+
+</beans>

@@ -1,0 +1,135 @@
+<#assign ctx="${request.contextPath}" /> <#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--  css  -->
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!--  js  -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+</style>
+
+<body>
+	<form id="form1">
+		<table class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<th>活动名称：</th>
+				<td>
+					<input id="promotionName" name="promotionName"  value="${promotion.promotionName}" />
+					店铺名称：					
+					<select	name="storeId" id="storeId">
+						<option value="">--请选择店铺--</option>
+						<option value="-1" <#if (popStoreId==-1)> selected="selected"</#if>>自营</option>
+						<#list popStoreList as popStore>
+							<option value="${popStore.id}" <#if (popStore.id==popStoreId)> selected="selected"</#if>>${popStore.popStoreName}</option>
+						</#list>
+					</select> 
+				</td>
+			</tr>
+			<tr>
+				<th>活动时间：</th>
+				<td><input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" type="text" id="startTime" name="startTime" />至
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" type="text" id="endTime" name="endTime" /></td>
+			</tr>
+			<tr>
+				<th><label for="goodsAmount">活动规则：</label></th>
+				<td><textarea rows="3" cols="40" id="remark" name="remark">${promotion.remark}</textarea></td>
+			</tr>
+			<tr >
+				<td colspan="2">
+					<div style="display: none">
+						<input name="promotionId" value="${promotion.promotionId}"> <input name="version" value="${promotion.version}">
+					</div> <input id="btnSbumit" type="button" style="margin-left: 260px" class="btn btn-primary" value="保存" onclick="save()" /> 
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+<script type="text/javascript">
+	$(function() {
+		$("#startTime").val(
+				"${promotion.startTime?string('yyyy-MM-dd HH:mm:ss')}");
+		$("#endTime").val("${promotion.endTime?string('yyyy-MM-dd HH:mm:ss')}");
+		var opera = "${opera}";
+		if (opera == "1") { //编辑
+		}else if(opera == "2"){ //查看
+			//隐藏按钮
+			$("#btnSbumit").hide();		
+		}
+	});
+	//保存
+	function save() {
+		var promotionName = $("#promotionName").val().trim();
+		if (promotionName.length == 0){
+			alert("请输入活动名称");
+			return;	
+		}
+			
+		if (promotionName.length >255){
+			alert("活动名称长度不能大于255个字符");
+			return;	
+		}
+		var startTime = $("#startTime").val();
+		if(startTime.length != 19){
+			alert("请输入活动起始时间");
+			return;	
+		}
+		var endTime = $("#endTime").val();
+		if(endTime.length != 19){
+			alert("请输入活动结束时间");
+			return;	
+		}
+		$.ajax({
+					type : "post",
+					url : "${ctx}/promotionDown/edit",
+					data : $("#form1").serialize(),
+					success : function(data) {
+						switch (data) {
+						case 1:							
+							window.location.href = "${ctx}/promotion/list?promotionType=7";
+							break;
+						case -5:
+							alert("保存失败:入参有误");
+							break;
+						case -11:
+							alert("保存失败:活动已启动");
+							break;
+						case -12:
+							alert("保存失败:活动信息已被他人修改");
+							break;
+						case -1:
+						case 0:
+							alert("保存失败:系统错误，请联系技术人员");
+							break;
+						default:
+							alert("保存失败:系统错误，请联系技术人员");
+							break;
+						}
+					}
+				});
+	};	
+</script>
+<style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        th{
+        	width: 150px;
+        }      
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 500px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+</style>  
+</html>

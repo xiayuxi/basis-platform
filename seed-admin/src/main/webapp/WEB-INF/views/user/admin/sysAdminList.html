@@ -1,0 +1,278 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<!-- 时间控件 css  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.treegrid.js"></script>
+<!-- 时间控件js  -->
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+
+<!-- 弹框 -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+</head>
+<body>
+	<div style="margin: 20px 0 10px 20px;">
+		用户名：<input type="text" name="adminNameSearch" id="adminNameSearch" />&nbsp; &nbsp; 
+		手机号：<input type="text" name="adminMobileSearch" id="adminMobileSearch" />&nbsp; &nbsp; 
+		注册时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="beginTimeSearch" name="beginTimeSearch" />
+					——
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+					type="text" id="endTimeSearch" name="endTimeSearch" />&nbsp; &nbsp; 
+		   角色名称：
+			<select name="roleNameSearch"  id = "mySelect" >
+				<option value="" >--请选择--</option>
+			</select>
+
+		<button type="submit" class="btn btn-primary" id="btnSearch">查询</button>
+	</div>
+	
+	<a href="${ctx}/admin/addPage">添加账号</a>
+	<div style="margin-left: 20px">
+		<table id="list"></table>
+		<div id="pager"></div>
+	</div>
+	
+	
+	<dir id="authenticationDiv" style="display:none;">
+		<form action="${ctx}/admin/isAuthentication" method="post" id="authenticationForm">
+			是否通过VS审核：<input type="radio" name="authenticationState" value="true" id="authenticationStateTrue" checked="checked"/><label for="authenticationStateTrue">通过</label>
+							<input type="radio" name="authenticationState" value="false" id="authenticationStateFalse"/><label for="authenticationStateFalse">拒绝</label>
+			<input type="hidden" name="adminNum" value=""/>
+			<!-- <input type="hidden" name="stat" value=""/> -->
+			<br/>
+			审核原因：<input type="text" name="infoMeg" id = "teee_id" />
+			<br/>
+			<span style="display:none;" id ="span_idd"><font color="red">*审核原因不能为空</font></span>
+		</form>
+	</dir>
+</body>
+<script type="text/javascript">
+
+	$(function(){
+		regionPlugin.init("${ctx}");
+		regionPlugin.regionInit();
+		$("#list").jqGrid({
+	        url:'${ctx}/admin/grid',// 获取数据的url,action
+	        datatype: "json",//后台返回的数据格式
+	        mtype:"post",//提交的方式,默认是get
+	        //width:1024,//这个宽度不能为百分比,
+	        autowidth:true,//自动宽
+		    colNames:['用户姓名', '联系方式','账号编号','角色','最后一次登录时间','注册时间','审核状态','状态'],
+	        colModel:[
+				{name:'adminName',index:'adminName', editable:true,sortable:true},
+				{name:'adminMobile',index:'adminMobile', align:"center",editable:true},
+				{name:'adminNum',index:'adminNum', align:"center",editable:true},
+				{name:'roleName',index:'roleName', align:"center",editable:true},
+				{name:'updateTime',index:'updateTime', align:"center",editable:true,formatter:'date' ,
+	              	  formatoptions:{srcformat:'u',newformat:'Y/m/d H:i:s'}},
+				{name:'createTime',index:'createTime', align:"center",editable:true,formatter:'date' ,
+              	  formatoptions:{srcformat:'u',newformat:'Y/m/d H:i:s'}},
+	            {name:'isAuthentication',index:'isAuthentication', align:"center",editable:true,formatter:formatStatus},
+				{name:'isFrozen',index:'isFrozen', align:"center",editable:true,formatter:formatFction}
+			],
+	        postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+	        //styleUI : 'Bootstrap',
+	        //caption:"品牌列表",//表名称
+	        //multiselect: true,//开启多选
+	        rowNum:10,//每页显示的条数,此参数会被传递到后台
+	        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+	        viewrecords: true,//定义是否显示总的数据条数
+	        pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+	        height : "auto",
+	        rownumbers:true,//添加左侧行号
+	        ondblClickRow:function(rowid){
+	        	selectInfo(rowid);
+	        }
+		});
+	      // $("#list").jqGrid('navGrid','#pager', {edit:true,add:true,del:true,search:true,refresh:true,addtext:'添加'});  
+	      //$("#list").jqGrid("navGrid","#pager",{view :true}); 
+	    jQuery("#list").navGrid('#pager',{edit:false,add:false,del:false,search:false,refresh:true})
+	     //自定义添加按钮
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"查看操作日志", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+							    	cheackOperFun();  
+							    	},
+			position:"last"
+		}) 
+
+		//编辑
+	     .navButtonAdd('#pager',{ 
+	    	 caption:"编辑",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 editFun();
+    		 }, 
+    		position:"last"
+    	}) 
+    	
+    	//冻结激活
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"冻结/激活",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 lockedUserFun();
+    		 }, 
+    		position:"last"
+    	})
+		//审核
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"审核",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 isAuthenticationFun();
+    		 }, 
+    		position:"last"
+    	})
+		
+	     
+	    $("#btnSearch").click(function () {
+			var adminNameSearch = $("#adminNameSearch").val();
+			var adminMobileSearch = $("#adminMobileSearch").val();
+			
+			var beginTimeSearch = $("#beginTimeSearch").val();
+			var endTimeSearch = $("#endTimeSearch").val();
+			var roleNameSearch = $("#mySelect").val();
+			
+	    	//alert(qName);
+	    	$("#list").jqGrid('setGridParam',{ 
+	              url:"${ctx}/admin/grid", 
+	              postData:{'adminNameSearch':adminNameSearch,"adminMobileSearch":adminMobileSearch,
+	            	  "beginTimeSearch":beginTimeSearch,"endTimeSearch":endTimeSearch,
+	            	  "roleNameSearch":roleNameSearch}, //发送数据 
+	              page:1 
+	          	}).trigger("reloadGrid"); //重新载入 
+	      });
+	   
+	 });
+	
+	//展示
+	function formatStatus(cellvalue){
+		 if(cellvalue == true ){
+			 return "<font color=blue >已审核</font>";
+		 }else if(cellvalue == false ){
+			 return "<font color=red >未通过</font>";
+		 }else {
+			 return "<font color=red ></font>";
+		 }
+	 }
+	//展示
+	function formatFction(cellvalue){
+		if(cellvalue == true ){
+			 return "<font color=red >冻结</font>";
+		 }else if(cellvalue == false ){
+			 return "<font color=blue >激活</font>";
+		 }else {
+			 return "<font color=red ></font>";
+		 }
+	 }
+	
+	 //
+	 function cheackOperFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			var val= rowData.adminNum;//获取每一行制定的列的数据
+		  	 window.location.href="${ctx}/log/listuser?adminNum="+val;
+		} 
+	 }
+	 //编辑
+	 function editFun(){
+			var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要编辑的行！");
+			}else{
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+			  	 window.location.href="${ctx}/admin/edit?adminNum="+val;
+			} 
+		 }
+	 
+		//冻结账户
+		function lockedUserFun(){
+			var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要查看的行！");
+			}else{
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+				$.get("${ctx}/admin/lockedUser?adminNum="+val,function(data){
+					window.location.reload();
+				});
+				
+			}
+		}
+		//审核
+		function isAuthenticationFun(){
+			var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要查看的行！");
+			}else{
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+				/* $.get("${ctx}/admin/isAuthentication?adminNum="+val,function(data){
+					window.location.reload();
+				}); */
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+				 art.dialog({
+					  title:"审核",
+					  width:400,
+					  height:300,
+					  padding:0,
+					  lock:true,
+					  content:$("#authenticationDiv").html(),
+					  ok:function(){
+						  var content = $(this.DOM.content[0]);
+						  content.find("input[name=adminNum]")[0].value=val;
+						 
+						  var t = $("#teee_id").val();
+						  if(t != ""){
+							  content.find("#authenticationForm").submit();//提交
+						  }else{
+							  $("#span_idd").show();
+							  return false;
+						  }
+					  },
+					  cancel:true
+				  }).show();
+				
+			}
+		}
+	 
+	 
+	 $(function () { 
+		 $.ajax({ 
+		        type: "GET", 
+		       	url: "${ctx}/sysrole/selectroleall", 
+		        dataType:"json", 
+		        success: function(data){ 
+		        	
+		        	 $("#mySelect").html("");
+						var tml = "<option  value = ''>--请选择--</option>"
+			             $.each(data, function(){
+			                tml += "<option value= "+this.id+">"+this.roleName+"</option>" ;
+			             });
+			             $("#mySelect").html(tml);
+		        } ,
+			});
+	 });
+</script>
+</html>

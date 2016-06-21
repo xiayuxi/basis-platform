@@ -1,0 +1,158 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	<script type="text/javascript">
+		
+		$(function () {       
+			$('#backid').click(function(){
+					history.back();
+			 });
+			regionPlugin.init("${ctx}");
+			$("#address_id").before(regionPlugin.getAllRegionString($("#address_id").val()));
+		});
+		
+	</script>
+ </HEAD>
+
+<body>
+	<div style="margin-left: 2px">
+	LC信息：
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td >名称</td>
+			        <td>${lcInfoBO.name!''}</td>
+			        <td >手机号</td>
+			        <td>${lcInfoBO.userMobile!''}</td>
+			    </tr> 
+			    <tr>
+			        <td >家庭住址</td>
+			        <td><input type="hidden" id="address_id" value="${lcInfoBO.address!''}"/>${lcInfoBO.addressDetail!''}</td>
+			        <td>用户名</td>
+			        <td>${lcInfoBO.userLoginName!''}</td>
+			    </tr>
+			    <tr>
+			        <td>座机</td>
+			        <td>${lcInfoBO.telephone!''}</td>
+			        <td >LC编号</td>
+			        <td>${lcInfoBO.userNum!''}</td>
+			    </tr>
+			    <tr>
+			        
+			   		<td >注册时间</td>
+			        <td>
+			        	<#if lcInfoBO.createTime??>
+			        		${lcInfoBO.createTime?string("yyyy-MM-dd HH:mm:ss")}
+			        	</#if>
+			        </td>
+			        <td >从业年限</td>
+			        <td>${lcInfoBO.workYear!''}</td>
+			    </tr>
+			    <tr>
+			        <td >身份证号</td>
+			        <td>${lcInfoBO.idCard!''}</td>
+			   
+			        <td >本村农地</td>
+			        <td>${lcInfoBO.localCroplandArea!''}亩</td>
+			    </tr>
+			    <tr>
+			        <td >本次农户</td>
+			        <td>${lcInfoBO.localFarmerCount!''}</td>
+					<td>生日</td>
+			    	<td>
+			    		<#if lcInfoBO.birthday??>
+			        		${lcInfoBO.birthday?string("yyyy-MM-dd")}
+			        	</#if>
+			    	</td>			        
+			    </tr>
+			    <tr>
+			    	<td >从事工作</td>
+			        <td colspan="3">
+			        	<#if lcInfoBO.doworks??>
+			        		<#list lcInfoBO.doworks as dowork>
+			        			${dowork}
+			        		</#list>
+			        	</#if>
+			        </td>
+			    </tr>
+			    <tr>
+			    	<td >服务区域</td>
+			        <td colspan="3"><#if serviceList??>
+							<#list serviceList as serviceString>
+								${serviceString}
+								<br/>
+							</#list>
+						</#if>
+					</td>
+			    </tr>
+			</table>
+	</div>
+	<div style="margin-left: 2px">
+	绑定关系：
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>SE编号：</td>
+				<td>${lcInfoBO.seNum!''}</td>
+				<td>联系人：</td>
+				<td>${lcInfoBO.seInfoName!''}</td>
+				<td>手机号：</td>
+				<td>${lcInfoBO.seMobile!''}</td>
+			</tr>
+			<tr>
+				<td>A+编号：</td>
+				<td>${lcInfoBO.aNum!''}</td>
+				<td>联系人：</td>
+				<td>${lcInfoBO.aInfoName!''}</td>
+				<td>手机号：</td>
+				<td>${lcInfoBO.aMobile!''}</td>
+			</tr>
+		</table>
+	</div>
+	
+	 <div style="margin-left: 2px">
+		交易订单:
+			<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+				<tr>
+					<th>订单号</th>
+					<th>下单时间</th>						
+					<th>下单金额</th>
+					<th>成交金额</th>
+					<!-- <th>下单人</th> -->
+				</tr>
+					<#if OrderInfoBOList??>
+						<#list OrderInfoBOList as valueTemp>
+							</tr>
+								<td>
+									${valueTemp.orderNo!''}
+								</td>
+								<td>	
+									${valueTemp.createTime?string("yyyy-MM-dd HH:mm:ss")}
+								</td>
+								<td>	
+									${valueTemp.totalAmount!''}
+								</td>
+								<td>	
+									${valueTemp.actualAmount!''}
+								</td>
+								<!-- <td>	
+									${valueTemp.username!''}
+								</td> -->
+							</tr>
+						</#list>
+					</#if>
+			</table>
+	     </div>
+	
+	<div style="margin-left: 20px">
+		<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+	</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+	<appender name="mainTime" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/opt/log/ynp-test/ynp-test.log</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>/opt/log/ynp-test/ynp-test-%d{yyyyMMdd-HH}.log</FileNamePattern>
+			<maxHistory>365</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<ImmediateFlush>true</ImmediateFlush>
+			<charset>utf-8</charset>
+			<Pattern>[%d{yyyyMMdd HH:mm:ss.SSS}] [%-5level] [%-30logger{0}][%-3L] [SeqId:%X{SeqId}] - %m%n</Pattern>
+		</encoder>
+	</appender>
+	<root level="info">
+		<appender-ref ref="mainTime" />
+	</root>
+</configuration>

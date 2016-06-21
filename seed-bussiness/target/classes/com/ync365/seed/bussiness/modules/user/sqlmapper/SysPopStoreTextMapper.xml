@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopStoreTextMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreText" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreTextWithBLOBs" extends="BaseResultMap" >
+    <result column="pop_after_service" property="popAfterService" jdbcType="LONGVARCHAR" />
+    <result column="pop_brand_advantage" property="popBrandAdvantage" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pop_store_num
+  </sql>
+  <sql id="Blob_Column_List" >
+    pop_after_service, pop_brand_advantage
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_pop_store_text
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_pop_store_text
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreTextWithBLOBs" >
+    insert into sys_pop_store_text
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="popStoreNum != null" >
+        pop_store_num,
+      </if>
+      <if test="popAfterService != null" >
+        pop_after_service,
+      </if>
+      <if test="popBrandAdvantage != null" >
+        pop_brand_advantage,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="popStoreNum != null" >
+        #{popStoreNum,jdbcType=VARCHAR},
+      </if>
+      <if test="popAfterService != null" >
+        #{popAfterService,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="popBrandAdvantage != null" >
+        #{popBrandAdvantage,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreTextWithBLOBs" >
+    update sys_pop_store_text
+    <set >
+      <if test="popStoreNum != null" >
+        pop_store_num = #{popStoreNum,jdbcType=VARCHAR},
+      </if>
+      <if test="popAfterService != null" >
+        pop_after_service = #{popAfterService,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="popBrandAdvantage != null" >
+        pop_brand_advantage = #{popBrandAdvantage,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByPopStoreNum" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_pop_store_text
+    where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+  </select>
+</mapper>

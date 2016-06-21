@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderEngineerMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderEngineer" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="engineer_num" property="engineerNum" jdbcType="CHAR" />
+    <result column="engineer_name" property="engineerName" jdbcType="VARCHAR" />
+    <result column="engineer_phone" property="engineerPhone" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_no, engineer_num, engineer_name, engineer_phone, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_engineer
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_engineer
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderEngineer" >
+    insert into order_engineer (id, order_no, engineer_num, 
+      engineer_name, engineer_phone, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=CHAR}, #{engineerNum,jdbcType=CHAR}, 
+      #{engineerName,jdbcType=VARCHAR}, #{engineerPhone,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderEngineer" >
+    insert into order_engineer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="engineerNum != null" >
+        engineer_num,
+      </if>
+      <if test="engineerName != null" >
+        engineer_name,
+      </if>
+      <if test="engineerPhone != null" >
+        engineer_phone,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="engineerNum != null" >
+        #{engineerNum,jdbcType=CHAR},
+      </if>
+      <if test="engineerName != null" >
+        #{engineerName,jdbcType=VARCHAR},
+      </if>
+      <if test="engineerPhone != null" >
+        #{engineerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderEngineer" >
+    update order_engineer
+    <set >
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="engineerNum != null" >
+        engineer_num = #{engineerNum,jdbcType=CHAR},
+      </if>
+      <if test="engineerName != null" >
+        engineer_name = #{engineerName,jdbcType=VARCHAR},
+      </if>
+      <if test="engineerPhone != null" >
+        engineer_phone = #{engineerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderEngineer" >
+    update order_engineer
+    set order_no = #{orderNo,jdbcType=CHAR},
+      engineer_num = #{engineerNum,jdbcType=CHAR},
+      engineer_name = #{engineerName,jdbcType=VARCHAR},
+      engineer_phone = #{engineerPhone,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

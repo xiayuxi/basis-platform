@@ -1,0 +1,447 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<!-- 时间控件 css  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.treegrid.js"></script>
+<!-- 时间控件js  -->
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+<style type="text/css">
+.countClass{
+	width: 50px;
+}
+</style>
+</head>
+<body>
+	<div style="margin: 20px 0 10px 20px;">
+		姓名：<input type="text" name="name" id="name" />&nbsp; &nbsp; 
+		手机号：<input type="text" name="mobile" id="mobile" />&nbsp; &nbsp; 
+		编号：<input type="text" name="adminNum" id="adminNum" />&nbsp; &nbsp; 
+		激活状态：<select name="isFrozen" id="isFrozen" >
+					<option value="" >--请选择--</option>
+					<option value="0" >激活</option>
+					<option value="1" >冻结</option>
+			   </select>&nbsp; &nbsp; 
+		<br/>
+<!-- 		绑定US数量:<input type="text" name="usCountBegin" id="usCountBegin" class="countClass"/> -->
+<!-- 					— -->
+<!-- 				<input type="text" name="usCountEnd" id="usCountEnd" class="countClass"/>	&nbsp; &nbsp;  -->
+<!-- 		绑定VS数量:<input type="text" name="vsCountBegin" id="vsCountBegin" class="countClass"/> -->
+<!-- 					— -->
+<!-- 				<input type="text" name="vsCountEnd" id="vsCountEnd" class="countClass"/>	&nbsp; &nbsp; -->
+<!-- 		绑定LC数量:<input type="text" name="lcCountBegin" id="lcCountBegin" class="countClass"/> -->
+<!-- 					— -->
+<!-- 				<input type="text" name="lcCountEnd" id="lcCountEnd" class="countClass"/>	&nbsp; &nbsp; -->
+<!-- 		绑定SE数量:<input type="text" name="seCountBegin" id="seCountBegin" class="countClass"/> -->
+<!-- 					— -->
+<!-- 				<input type="text" name="seCountEnd" id="seCountEnd" class="countClass"/>	&nbsp; &nbsp; -->
+<!-- 		<br/> -->
+		注册时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})"
+					type="text" id="beginDate" name="beginDate" />
+					——
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})" 
+					type="text" id="endDate" name="endDate" />&nbsp; &nbsp;
+		服务区域：<select id="provinceRegion">
+				</select>
+				<select id="cityRegion" name="serviceDistinct">
+				</select>
+		<button type="submit" class="btn btn-primary" id="btnSearch">查询</button>
+		<button type="submit" class="btn btn-primary" id="btnAddFun" onclick="aAddFun()">新增A+</button>
+	</div>
+	<div style="margin-left: 20px">
+		<table id="list"></table>
+		<div id="pager"></div>
+	</div>
+	
+	<dir id="authenticationDiv" style="display:none;">
+		<form action="${ctx}/sysadmininfo/isAuthentication" method="post" id="authenticationForm">
+			是否通过VS审核：<input type="radio" name="authenticationState" value="true" id="authenticationStateTrue" checked="checked"/><label for="authenticationStateTrue">通过</label>
+							<input type="radio" name="authenticationState" value="false" id="authenticationStateFalse"/><label for="authenticationStateFalse">拒绝</label>
+			<input type="hidden" name="adminNum" value=""/>
+			<input type="hidden" name="stat" value=""/>
+			<br/>
+			审核原因：<input type="text" name="infoMeg" id = "teee_id" />
+			<br/>
+			<span style="display:none;" id ="span_idd"><font color="red">*审核原因不能为空</font></span>
+		</form>
+	</dir>
+	
+</body>
+<script type="text/javascript">
+
+	$(function(){
+		regionPlugin.init("${ctx}");
+		regionPlugin.regionInit();
+		$("#list").jqGrid({
+	        url:'${ctx}/sysadmininfo/aGrid',// 获取数据的url,action
+	        datatype: "json",//后台返回的数据格式
+	        mtype:"post",//提交的方式,默认是get
+	        //width:1024,//这个宽度不能为百分比,
+	        autowidth:true,//自动宽
+		    colNames:['姓名', '手机号','用户名','编号','注册时间','审核状态','状态','状态h','审核状态h'],
+	        colModel:[
+				{name:'name',index:'name', editable:true,sortable:true},
+				{name:'mobile',index:'mobile', align:"center",editable:true},
+				{name:'adminLoginName',index:'adminLoginName', align:"center",editable:true},
+				{name:'adminNum',index:'adminNum', align:"center",editable:true},
+				{name:'createTime',index:'createTime', align:"center",editable:true,formatter:'date' ,
+              	  formatoptions:{srcformat:'u',newformat:'Y/m/d H:i:s'}},
+              	{name:'isAuthentication',index:'isAuthentication', align:"center",editable:true,formatter:formatStatus},
+				{name:'isFrozen',index:'isFrozen', align:"center",editable:true,formatter:formatFction},
+              	{name:'isFrozenHidden',index:'isFrozenHidden', align:"center",editable:true,hidden:true,jsonmap:'isFrozen'},
+				{name:'isAuthenticationHidden',index:'isAuthenticationHidden', align:"center",editable:true,hidden:true,jsonmap:'isAuthentication'}
+			],
+	        postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+	        //styleUI : 'Bootstrap',
+	        //caption:"品牌列表",//表名称
+	        //multiselect: true,//开启多选
+	        rowNum:10,//每页显示的条数,此参数会被传递到后台
+	        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+	        viewrecords: true,//定义是否显示总的数据条数
+	        pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+	        height : "auto",
+	        rownumbers:true,//添加左侧行号
+	        ondblClickRow:function(rowid){
+	        	addFun();
+	        },
+	        beforeSelectRow:function(rowid, e){
+	        	onCellSelectFun(rowid);
+	        }
+		});
+	      // $("#list").jqGrid('navGrid','#pager', {edit:true,add:true,del:true,search:true,refresh:true,addtext:'添加'});  
+	      //$("#list").jqGrid("navGrid","#pager",{view :true}); 
+	    jQuery("#list").navGrid('#pager',{edit:false,add:false,del:false,search:false,refresh:true})
+	     //自定义添加按钮
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"查看", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+				addFun();  
+			},
+			position:"last"
+		})
+
+		//编辑
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"编辑",
+	    	 id:"editButton",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 editFun();
+    		 }, 
+    		position:"last"
+    	})
+		//重置密码
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"重置密码",
+	    	 id:"resetPasswordButton",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 resetPasswordFun();
+    		 }, 
+    		position:"last"
+    	})
+    	//冻结激活
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"冻结/激活",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 lockedUserFun();
+    		 }, 
+    		position:"last"
+    	})
+		//审核
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"审核",
+	    	 id:"isAuthenticationButton",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 isAuthenticationFun();
+    		 }, 
+    		position:"last"
+    	})
+    	//转移
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"转移",
+	    	 id:"changeButton",
+	    	 buttonicon:"ui-icon-edit",  
+	   		 onClickButton:function(){
+	   			changeBinding();
+	   		 }, 
+	   		position:"last"
+		});
+    	
+	     
+	    $("#btnSearch").click(function () {
+			var name = $("#name").val();
+	    	var mobile = $("#mobile").val();
+	    	var adminNum = $("#adminNum").val();
+	    	var isFrozen = $("#isFrozen").val();
+	    	var beginDate = $("#beginDate").val();
+	    	var endDate = $("#endDate").val();
+	    	var usCountBegin = $("#usCountBegin").val();
+	    	var usCountEnd = $("#usCountEnd").val();
+	    	
+	    	var vsCountBegin = $("#vsCountBegin").val();
+	    	var vsCountEnd = $("#vsCountEnd").val();
+	    	
+	    	var lcCountBegin = $("#lcCountBegin").val();
+	    	var lcCountEnd = $("#lcCountEnd").val();
+	    	var seCountBegin = $("#seCountBegin").val();
+	    	var seCountEnd = $("#seCountEnd").val();
+	    	var serviceDistinct = $("#cityRegion").val();
+	    	//alert(name);
+	    	$("#list").jqGrid('setGridParam',{ 
+	              url:"${ctx}/sysadmininfo/aGrid", 
+	              postData:{'name':name,"mobile":mobile,"adminNum":adminNum,"isFrozen":isFrozen,"beginDate":beginDate,"endDate":endDate,"usCountBegin":usCountBegin,"usCountEnd":usCountEnd,"vsCountBegin":vsCountBegin,"vsCountEnd":vsCountEnd,"lcCountBegin":lcCountBegin,"lcCountEnd":lcCountEnd,"seCountBegin":seCountBegin,"seCountEnd":seCountEnd,"serviceDistinct":serviceDistinct}, //发送数据 
+	              page:1 
+	          	}).trigger("reloadGrid"); //重新载入 
+	      });
+	   
+	 });
+	//展示
+	function formatStatus(cellvalue){
+		 if(cellvalue == true ){
+			 return "<font color=blue >已审核</font>";
+		 }else if(cellvalue == false ){
+			 return "<font color=red >未通过</font>";
+		 }else {
+			 return "<font color=red ></font>";
+		 }
+	 }
+	//展示
+	function formatFction(cellvalue){
+		if(cellvalue == true ){
+			 return "<font color=red >冻结</font>";
+		 }else if(cellvalue == false ){
+			 return "<font color=blue >激活</font>";
+		 }else {
+			 return "<font color=red ></font>";
+		 }
+	 }
+	
+	function onCellSelectFun(rowid){
+		var rowData = $("#list").jqGrid('getRowData',rowid);//获取选中所有数据
+		if(rowData.isFrozenHidden != 'false'||rowData.isAuthenticationHidden != 'true'){
+			$('#changeButton').hide();
+			if(rowData.isFrozenHidden != 'false'){
+				$('#editButton').hide();
+				$('#resetPasswordButton').hide();
+				$('#isAuthenticationButton').hide();
+			}
+		}else{
+			$('#changeButton').show();
+			$('#editButton').show();
+			$('#resetPasswordButton').show();
+			$('#isAuthenticationButton').show();
+		}
+	}
+	 
+	 //查看
+	 function addFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			var val= rowData.adminNum;//获取每一行制定的列的数据
+		  	 window.location.href="${ctx}/sysadmininfo/aCheackPage?adminNum="+val;
+		}
+	 }
+	//编辑
+	 function editFun(){
+		 var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要查看的行！");
+			}else{
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+			  	 window.location.href="${ctx}/sysadmininfo/aEditPage?adminNum="+val;
+			} 
+	 }
+	
+	 //修改密码
+	 function resetPasswordFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			var val= rowData.adminNum;//获取每一行制定的列的数据
+			var contentHtml = "	<div id='resetPassword'>"+
+		"<form action='${ctx}/admin/resetPassword' method='post' id='ressetPasswordForm'>"+
+			"<input type='hidden' name='adminNum' id='adminNum' value='"+val+"'/>"+
+			"新密码:<input name='adminPassword' value='' type='password'/></form></div>";
+			  art.dialog({
+				  title:"重置密码",
+				  content:contentHtml,
+				  lock:true,
+				  ok:function(){
+					  var content = $(this.DOM.content[0]);
+					  var formData = content.find("#ressetPasswordForm").serialize();//提交
+					  $.post("${ctx}/admin/resetPassword", formData, function(data) {
+							if (data=="OK") {
+								window.location.reload();
+							} else {
+								alert("修改失败");
+							}
+						}, 'JSON')
+				  },
+				  cancel:true
+			  }).show();
+		} 
+	 }
+		//冻结账户
+		function lockedUserFun(){
+			var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要查看的行！");
+			}else{
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+				if(rowData.isFrozenHidden!="true"){
+					$.ajax({
+						type:"get",
+						url:"${ctx}/sysadmininfo/haveSubordinateA?userNum="+val,
+						async:false,
+						success : function(data){
+							if(data=="false"){
+								$.get("${ctx}/admin/lockedUser?adminNum="+val,function(data){
+									window.location.reload();
+								});
+							}else{
+								alert("此用户下有SE绑定，不能冻结！");
+							}
+						}
+					});
+				}else{
+					$.get("${ctx}/admin/lockedUser?adminNum="+val,function(data){
+						window.location.reload();
+					});
+				}
+			}
+		}
+		//审核
+		function isAuthenticationFun(){
+			var id=jQuery("#list").jqGrid('getGridParam','selrow');
+			var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+			if(null == rowData || '' == rowData || rowData.length > 0){
+				alert("请选择需要查看的行！");
+			}else{
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+				/* $.get("${ctx}/admin/isAuthentication?adminNum="+val,function(data){
+					window.location.reload();
+				}); */
+				var val= rowData.adminNum;//获取每一行制定的列的数据
+				 art.dialog({
+					  title:"审核",
+					  width:400,
+					  height:300,
+					  padding:0,
+					  lock:true,
+					  content:$("#authenticationDiv").html(),
+					  ok:function(){
+						  var content = $(this.DOM.content[0]);
+						  content.find("input[name=adminNum]")[0].value=val;
+						  content.find("input[name=stat]")[0].value="A+";
+						  var t = $("#teee_id").val();
+						  if(t != ""){
+							  content.find("#authenticationForm").submit();//提交
+						  }else{
+							  $("#span_idd").show();
+							  return false;
+						  }
+					  },
+					  cancel:true
+				  }).show();
+				
+				
+			}
+		}
+
+		//新增A+
+		 function aAddFun(){
+			window.location.href="${ctx}/sysadmininfo/aAddPage";
+		 }
+		
+		
+			function changeBinding(){
+				var id=jQuery("#list").jqGrid('getGridParam','selrow');
+				var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+				if(null == rowData || '' == rowData || rowData.length > 0){
+					alert("请选择需要查看的行！");
+				}else{
+					var val= rowData.adminNum;//获取每一行制定的列的数据
+					art.dialog.open("${ctx}/sysadmininfo/aChangeList?userNum="+val,{
+						  title:"转移",
+						  width:600,
+						  height:"auto",
+						  padding:0,
+						  lock:true,
+						  ok:function(){
+							  var content = $(this.iframe.contentDocument);
+							  if(content.find("#oldNum")[0].value==""||content.find("#newNum")[0].value==""){
+								  alert("请选择A+");
+								  return false;
+							  }
+							  var selectAllUserInput = content.find("#selectAllUser")[0];
+							  var selectAllSearchInput = content.find("#selectAllSearch")[0];
+							  var postData = {};
+							  if(selectAllUserInput.checked){
+								  postData["stateC"] = "all";
+							  }else if(selectAllSearchInput.checked){
+								  postData["stateC"] = "search";
+								  postData["adminInfoSearchBO.name"] = content.find("#userRealName")[0].value;
+								  postData["adminInfoSearchBO.mobile"] = content.find("#userMobile")[0].value;
+							  }else{
+								  postData["stateC"] = "data";
+								  var list = content.find("#list")[0];
+								  var jGIds = $(list).jqGrid('getGridParam','selarrrow');
+								  var x;
+								  if(jGIds==null||jGIds.length<1){
+									  return false;
+								  }
+								  for(x in jGIds){
+									  var rowData1 = $(list).jqGrid('getRowData',jGIds[x]);
+									  var listUserNum= rowData1.adminNum;
+									  postData["userNumList["+x+"]"] = listUserNum;
+								  }
+							  }
+							  postData["oldNum"] = content.find("#oldNum")[0].value;
+							  postData["newNum"] = content.find("#newNum")[0].value;
+							  
+							  $.ajax({
+							        type: "POST", 
+							       	url:"${ctx}/sysadmininfo/aChange",
+							       	data:postData,
+							        dataType:"json ", 
+							        success: function(data){ 
+							        	alert("已经转移 "+data+" 条数据！");
+			 						  	window.location.reload();
+							        } 
+							 });
+							  
+						  },
+						  cancel:true
+					  });
+				}
+			}
+
+</script>
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.BrandCategoryDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.BrandCategory" >
+    <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    brand_id, category_id
+  </sql>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.goods.entity.BrandCategory" >
+    insert into goods_brand_category (brand_id, category_id)
+    values (#{brandId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.BrandCategory" >
+    insert into goods_brand_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="brandId != null" >
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="searchBrandCategoryList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select * from goods_brand_category where brand_id = #{brandId} 
+  </select>
+  
+  <select id="searchBrandCategory" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_brand_category
+    where brand_id = #{brandId,jdbcType=INTEGER} AND category_id = #{categoryId,jdbcType=INTEGER}
+  </select>
+  
+   <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from goods_brand_category
+    where brand_id = #{brandId,jdbcType=INTEGER}
+  </delete>
+
+  
+</mapper>

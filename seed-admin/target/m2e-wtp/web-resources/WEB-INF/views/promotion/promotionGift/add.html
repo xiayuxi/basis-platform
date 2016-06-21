@@ -1,0 +1,110 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--  css  -->
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!--  js  -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+
+	//表单验证
+	function toVaild() {
+		var promotionName = $("#promotionName").val();		
+		var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
+		if (!promotionName) {
+			return false;
+		} else if (!startTime || !endTime) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+</script>
+
+<style type="text/css">
+body {
+    padding-bottom: 40px;
+}
+th{
+	width: 150px;
+}      
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+@media (max-width: 500px) {
+    /* Enable use of floated navbar text */
+    .navbar-text.pull-right {
+        float: none;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+</style>  
+
+<body>
+	<form action="${ctx}/promotionGift/add" id="promotionGiftFormAdd" method="post"
+		novalidate="novalidate" onsubmit="return toVaild()">
+		<table class="table table-bordered table-hover definewidth m10">
+ 
+			<tr>
+				<th><label for="name"><font color="red">*</font>活动名称：</label></th>
+				<td><input class="" type="text" id="promotionName"	name="promotionName"  />
+					店铺名称：					
+					<select	name="storeId" id="storeId">
+						<option value="">--请选择店铺--</option>
+						<option value="-1">自营</option>
+						<#list popStoreList as popStore>
+							<option value="${popStore.id}">${popStore.popStoreName}</option>
+						</#list>
+					</select> 
+				</td>
+			</tr>
+			
+		  	<tr>
+				<th><label for="name"><font color="red">*</font>活动开始时间：</label></th>
+				<td><input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+				type="text" id="startTime" name="startTime"  />至<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+				type="text" id="endTime" name="endTime" /></td>
+			</tr>
+			<tr >
+				<th><label for="giftType"><font color="red">*</font>满赠类型：</label></th>
+				<td>
+				<select id="giftType" name="giftType">
+					<option value="1" selected="selected">非卖品</option>
+                	<option value="2">在售商品</option>
+			</tr>
+			<tr>
+				<th><label for="giftWay">优惠方式：</label></th>
+				<td><input class="easyui-validatebox" type="radio" id="giftWay"
+					name="giftWay" value="1" checked="checked" />按金额 <input
+					class="easyui-validatebox" type="radio" id="giftWay" name="giftWay"
+					value="2" />按数量</td>
+			</tr>
+			<tr>
+				<th><label for="goodsAmount">优惠条件：</label></th>
+				<td>满 <input
+					class="easyui-validatebox" type="text" id="goodsAmount" name="goodsAmount"
+					 />赠<input
+					class="easyui-validatebox" type="text" id="goodsCount" name="goodsCount"
+				 	/>件</td>
+			</tr>
+			<tr>
+				<th><label for="remark">活动备注：</label></th>
+				<td><input class="" rows="3" cols="40"  type="text" id="remark"	name="remark"  /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" style="margin-left: 260px" name="submit" class="btn btn-primary" value="提交"></td>
+			</tr>
+		</table>
+	</form>
+</body>
+
+</html>

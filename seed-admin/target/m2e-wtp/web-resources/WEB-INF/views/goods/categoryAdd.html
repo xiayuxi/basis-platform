@@ -1,0 +1,272 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+	
+<link rel="stylesheet" href="${staticCtx}/zTree/css/demo.css" type="text/css">
+<link rel="stylesheet" href="${staticCtx}/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!-- js-->
+ <script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.exedit-3.5.js"></script> 
+<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.exhide-3.5.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript"   src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+<!-- 表单验证 -->
+<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+<script type="text/javascript" src="${staticCtx}/validate/page/goods/categoryAdd.js"></script>
+ <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+</style>  
+
+<SCRIPT type="text/javascript">
+		function submit(){
+		    $("#formId").submit();
+		}
+		$(function () {       
+			$('#backid').click(function(){
+					window.location.href="list.html";
+					//history.back();
+			 });
+		
+		});
+		
+		//以下是分类请求tree相关代码
+		var tree="";
+		var setting = {
+			
+			data: {
+				simpleData: {
+					enable: true
+				},
+				key: {
+					title: "title"
+				},
+			},
+			 callback: {
+				//beforeClick: beforeClick,
+				onClick: onClick,
+
+			}
+		};
+
+		var zNodes;
+
+		/* function beforeClick(treeId, treeNode) {
+			var check = (treeNode && !treeNode.isParent);
+			if (!check) alert("只能选择城市...");
+			return check;
+		} */
+		
+		function onClick(e, treeId, treeNode) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(true),
+			v = "";//显示分类名称
+			a = "";//用于保存时展示分类id
+			nodes.sort(function compare(a,b){return a.id-b.id;});
+			for (var i=0, l=nodes.length; i<l; i++) {
+				v = nodes[i].name ;
+				a = nodes[i].id;
+			}
+			//if (v.length > 0 ) v = v.substring(0, v.length-1);
+			var cityObj = $("#citySel");
+			//alert(cityObj);
+			cityObj.attr("value", v);
+			if(a.length > 0  ){
+				$("#parentId").val(a);
+			}else{
+				$("#parentId").val(0);
+			}
+		}
+
+		//用于展示下拉框
+		function showMenu() {
+			var cityObj = $("#citySel");
+			var cityOffset = $("#citySel").offset();
+			$("#menuContent").css({left:cityOffset.left + "px", top:cityOffset.top + cityObj.outerHeight() + "px"}).slideDown("fast");
+			$("body").bind("mousedown", onBodyDown); 
+		}
+		function hideMenu() {
+			$("#menuContent").fadeOut("fast");
+			$("body").unbind("mousedown", onBodyDown);
+		}
+		function onBodyDown(event) {
+			if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+				hideMenu();
+			}
+		}
+		
+		//初始化tree
+		function fuzhi(data){  
+            zNodes=eval(data);  
+            tree = $.fn.zTree.init($("#treeDemo"), setting, zNodes);  
+            tree.expandAll(true);
+        }  
+        
+		//用ajax请求分类树状结构
+        $(document).ready(function(){  
+	        $.get("${ctx}/category/getree",function(data){  
+	            fuzhi(data);  
+	        });  
+        });   
+	</SCRIPT>
+ </HEAD>
+
+<BODY>
+<div style="margin-left: 20px">
+		<form method="post" id="formId" action="${ctx}/category/add">
+		<input type ="hidden" name ="parentId" id = "parentId"/>
+        	<table class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td width="10%" class="tableleft">分类名称</td>
+			        <td><input type = "text" name = "name" /></td>
+			    </tr>
+			    <tr>
+			        <td class="tableleft">排序</td>
+			        <td><input type = "text" name = "seq" onkeyup="this.value=this.value.replace(/\D/g,'')" maxLength=6 onafterpaste="this.value=this.value.replace(/\D/g,'')" /></td>
+			    </tr> 
+			    <tr>
+			        <td class="tableleft">分类描述</td>
+			        <td><input type = "text" name = "remark"   /></td>
+			    </tr>
+			    <tr>
+			        <td class="tableleft">关键字</td>
+			        <td><input type = "text" name = "keywords"  /></td>
+			    </tr> 
+			    <tr>
+			        <td class="tableleft">上级分类名称</td>
+			        <td>
+			        	<input id="citySel" type="text" name = "" readonly value="" style="width:160px;"/>&nbsp;
+			        	<a id="menuBtn" href="#" onclick="showMenu(); return false;">选择</a>&nbsp;&nbsp;&nbsp;此项不填该分类为一级分类
+					</td>
+			    </tr> 
+			    
+			</table>
+			<table class="table table-bordered table-hover definewidth m10">
+				<tr>
+			        <td class="tableleft"></td>
+			        <td>
+			            <button type="submit" class="btn btn-primary" type="button">保存</button>&nbsp;&nbsp;
+			            <button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+			        </td>
+			    </tr>
+			</table>
+		</form>
+	</div>
+
+<!-- 此div为分类展示下拉框 -->
+<div id="menuContent" class="menuContent" style="display:none; position: absolute;">
+	<ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
+</div>
+
+<script type="text/javascript">
+
+var row = 0;
+$("#addAttrButton").on("click",function(){
+	var td = '<tr> <td><input type="text" name="featureList['+row+'].name"  /></td>';
+		td+= '<td><select class="middle attr_type"  name="featureList['+row+'].isMultiselect"> <option value="1" selected="">下拉可筛选</option> <option value="2">下拉不可筛选</option> <option value="3">输入不可搜索</option> </select></td>';
+		td+= '<td> <a href="${ctx}/feature/addPage" class="edit_button button">编辑</a> <span class="list_value"></span><input class="spanInput" type="hidden" name="featureList['+row+'].optionals"> </td>';
+		td+= '<td><input  type="radio" id="isInput" name="featureList['+row+'].isQuery" value="1" checked="checked" />是 <input type="radio" id="isInput" name="featureList['+row+'].isQuery value="2" />否</td>';
+		td+= '<td></td><td class="btn_min"><a href="javascript:;" class="icon-arrow-up-2">上升</a><a href="javascript:;" class="icon-arrow-down-2">下降</a><a href="javascript:;"  class="icon-remove-2">删除</a></td></tr>';
+    $("#attr").append(td);
+  bindEvent();
+  row = row+1;
+  return false;
+})
+ 
+
+bindEvent();
+//操作按钮事件绑定
+function bindEvent(){
+  $(".icon-arrow-down-2").off();
+  $(".icon-arrow-up-2").off();
+  $(".icon-remove-2").off();
+  $(".edit_button").off();
+  $(".attr_type").off();
+  $(".icon-arrow-down-2").on("click",function(){
+    var current_tr = $(this).parent().parent();
+    current_tr.insertAfter(current_tr.next());
+  });
+    $(".icon-arrow-up-2").on("click",function(){
+    var current_tr = $(this).parent().parent();
+    if(current_tr.prev().prev().html()!=null)current_tr.insertBefore(current_tr.prev());
+  });
+    $(".icon-remove-2").on("click",function(){
+      $(this).parent().parent().remove();
+      //else art.dialog.tips('必须至少保留一个规格值');
+    });
+    $(".attr_type").on("click",function(){
+      if($(this).val()>2)$(this).parent().next().find(".edit_button").css({display:'none'});
+      else $(this).parent().next().find(".edit_button").css({display:''});
+    });
+    $(".edit_button").each(function(i){
+      var num = i;
+      $(this).on("click",function(){
+      addAttrValue(num);
+      return false;
+    });
+    });
+}
+
+function check_invalid(e){
+  var index = $('.tab-body > *').has(e).index();
+  if(index!=-1){
+    tabs_select(0,index);
+    return false;
+  }
+  else return true;
+}
+
+function addAttrValue(num){
+  art.dialog.data('attr_num',num);
+  var current_value = $("input[name='attr_value[]']").eq(num).val();
+  art.dialog.data('current_value',current_value);
+  
+  art.dialog.open("${ctx}/feature/addValuePage",{id:'attr_dialog',resize:false,width:700,height:400});
+  //art.dialog.open("/index.php?con=goods&act=attr_values",{id:'attr_dialog',resize:false,width:700,height:400});
+}
+function updAttrValue(values){
+  var num = art.dialog.data('attr_num');
+  $("input[name='attr_value[]']").eq(num).val(values.join(','));
+  var values_str = "";
+  for(i in values){
+    var id_name = values[i].split(":=:");
+    values_str += id_name[1]+",";
+  }
+  if(values_str.length>0)values_str = values_str.slice(0,-1);
+  $("span.list_value").eq(num).text(values_str);
+  $("input.spanInput").eq(num).val(values_str);
+// $("input[name='attr_value[]']").eq(num).val('123');
+  art.dialog({id:'attr_dialog'}).close();
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysAdminMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysAdmin">
+		<result column="admin_num" property="adminNum" jdbcType="VARCHAR" />
+		<result column="admin_login_name" property="adminLoginName"
+			jdbcType="VARCHAR" />
+		<result column="admin_password" property="adminPassword"
+			jdbcType="VARCHAR" />
+		<result column="admin_mobile" property="adminMobile" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="last_opt_name" property="lastOptName" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDel" jdbcType="BIT" />
+		<result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+		<result column="is_authentication" property="isAuthentication"
+			jdbcType="BIT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+	  admin_num, admin_login_name, admin_password,
+		admin_mobile, state,
+		create_time,
+		update_time, last_opt_name, is_del,
+		is_frozen, is_authentication
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="string">
+		select
+		<include refid="Base_Column_List" />
+		from sys_admin
+		where  admin_num = #{adminNum,jdbcType=VARCHAR}
+	</select>
+	<select id="selectByAdminLoginName" resultMap="BaseResultMap" parameterType="string">
+		select
+		<include refid="Base_Column_List" />
+		from sys_admin
+		where  admin_login_name = #{adminLoginName,jdbcType=VARCHAR} or admin_mobile = #{adminLoginName,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="string">
+		delete from
+		sys_admin
+		where  admin_num = #{adminNum,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdmin">
+		insert into sys_admin
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="adminNum != null">
+				admin_num,
+			</if>
+			<if test="adminLoginName != null">
+				admin_login_name,
+			</if>
+			<if test="adminPassword != null">
+				admin_password,
+			</if>
+			<if test="adminMobile != null">
+				admin_mobile,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+<!-- 			<if test="createTime != null"> -->
+				create_time,
+<!-- 			</if> -->
+<!-- 			<if test="updateTime != null"> -->
+				update_time,
+<!-- 			</if> -->
+			<if test="lastOptName != null">
+				last_opt_name,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+			<if test="isFrozen != null">
+				is_frozen,
+			</if>
+			<if test="isAuthentication != null">
+				is_authentication,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="adminNum != null">
+				#{adminNum,jdbcType=VARCHAR},
+			</if>
+			<if test="adminLoginName != null">
+				#{adminLoginName,jdbcType=VARCHAR},
+			</if>
+			<if test="adminPassword != null">
+				#{adminPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="adminMobile != null">
+				#{adminMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=INTEGER},
+			</if>
+			now(),
+			now(),
+<!-- 			<if test="createTime != null"> -->
+<!-- 				#{createTime,jdbcType=TIMESTAMP}, -->
+<!-- 			</if> -->
+<!-- 			<if test="updateTime != null"> -->
+<!-- 				#{updateTime,jdbcType=TIMESTAMP}, -->
+<!-- 			</if> -->
+			<if test="lastOptName != null">
+				#{lastOptName,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=BIT},
+			</if>
+			<if test="isFrozen != null">
+				#{isFrozen,jdbcType=BIT},
+			</if>
+			<if test="isAuthentication != null">
+				#{isAuthentication,jdbcType=BIT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdmin">
+		update sys_admin
+		<set>
+			<if test="adminNum != null">
+				admin_num = #{adminNum,jdbcType=VARCHAR},
+			</if>
+			<if test="adminLoginName != null">
+				admin_login_name = #{adminLoginName,jdbcType=VARCHAR},
+			</if>
+			<if test="adminPassword != null">
+				admin_password = #{adminPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="adminMobile != null">
+				admin_mobile = #{adminMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
+<!-- 			<if test="createTime != null"> -->
+<!-- 				create_time = #{createTime,jdbcType=TIMESTAMP}, -->
+<!-- 			</if> -->
+<!-- 			<if test="updateTime != null"> -->
+				update_time = now(),
+<!-- 			</if> -->
+			<if test="lastOptName != null">
+				last_opt_name = #{lastOptName,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT},
+			</if>
+			<if test="isFrozen != null">
+				is_frozen = #{isFrozen,jdbcType=BIT},
+			</if>
+			<if test="isAuthentication != null">
+				is_authentication = #{isAuthentication,jdbcType=BIT},
+			</if>
+		</set>
+		where admin_num = #{adminNum,jdbcType=VARCHAR}
+	</update>
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_admin
+		<where>
+			<if test="adminNum != null">
+				and admin_num = #{adminNum,jdbcType=VARCHAR}
+			</if>
+			<if test="adminLoginName != null">
+				and admin_login_name = #{adminLoginName,jdbcType=VARCHAR}
+			</if>
+			<if test="adminPassword != null">
+				and admin_password = #{adminPassword,jdbcType=VARCHAR}
+			</if>
+			<if test="adminMobile != null">
+				and admin_mobile = #{adminMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="state != null">
+				and state = #{state,jdbcType=INTEGER}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="lastOptName != null">
+				and last_opt_name = #{lastOptName,jdbcType=VARCHAR}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel,jdbcType=BIT}
+			</if>
+			<if test="isFrozen != null">
+				and is_frozen = #{isFrozen,jdbcType=BIT}
+			</if>
+			<if test="isAuthentication != null">
+				and is_authentication = #{isAuthentication,jdbcType=BIT}
+			</if>
+		</where>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	<select id="selectPageCount" parameterType="map" resultType="int">
+		select
+		  count(1)
+		from sys_admin
+		<where>
+			<if test="adminNum != null">
+				and admin_num = #{adminNum,jdbcType=VARCHAR}
+			</if>
+			<if test="adminLoginName != null and adminLoginName != ''">
+				and admin_login_name = #{adminLoginName,jdbcType=VARCHAR}
+			</if>
+			<if test="adminPassword != null">
+				and admin_password = #{adminPassword,jdbcType=VARCHAR}
+			</if>
+			<if test="adminMobile != null and adminMobile != ''">
+				and admin_mobile = #{adminMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="state != null">
+				and state = #{state,jdbcType=INTEGER}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="lastOptName != null">
+				and last_opt_name = #{lastOptName,jdbcType=VARCHAR}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel,jdbcType=BIT}
+			</if>
+			<if test="isFrozen != null">
+				and is_frozen = #{isFrozen,jdbcType=BIT}
+			</if>
+			<if test="isAuthentication != null">
+				and is_authentication = #{isAuthentication,jdbcType=BIT}
+			</if>
+		</where>
+	</select>
+	
+	
+	 <!-- 查询sysadmininfo列表 -->
+	<select id="selectSysAdminListByPrimary" parameterType="com.ync365.seed.bussiness.modules.user.bo.AdminSearchBO" 
+					resultType="com.ync365.seed.bussiness.modules.user.bo.AdminBO">
+			select 
+				a.admin_mobile ,
+				a.admin_num ,
+				a.create_time,
+				a.update_time ,
+				d.`name` as adminName ,
+				a.is_authentication,
+				a.is_frozen
+			from 
+							sys_admin a 
+			LEFT JOIN sys_admin_info d on a.admin_num = d.admin_num
+			<if test="roleNameSearch != null and roleNameSearch !=''">
+			LEFT JOIN sys_user_role b on a.admin_num = b.user_num
+			LEFT JOIN sys_role c on b.role_id = c.id
+			</if>
+			<where>
+				<if test="adminMobileSearch != null and adminMobileSearch !=''">
+					AND a.admin_mobile = #{adminMobileSearch}
+				</if>
+				<if test="adminNameSearch != null and adminNameSearch !=''">
+					AND d.`name` = #{adminNameSearch}
+				</if>
+				<if test="beginTimeSearch != null">
+					<![CDATA[AND a.create_time >= #{beginTimeSearch}]]>
+				</if>
+				<if test="endTimeSearch != null">
+					<![CDATA[AND a.create_time <= #{endTimeSearch}]]>
+				</if>
+				<if test="roleNameSearch != null and roleNameSearch !=''">	
+						AND c.id  = #{roleNameSearch}
+				</if>
+			</where>
+			
+			ORDER BY a.create_time DESC
+			<if test="pageIndex !=null and pageSize != null">
+					limit ${pageIndex},${pageSize}
+			</if>
+		
+	</select>
+	
+	<!-- 查询sysadmin登录信息-->
+	<select id="selectSysAdminCountByPrimary" parameterType="com.ync365.seed.bussiness.modules.user.bo.AdminSearchBO" resultType="int">
+		select 
+			count(1)
+		from 
+						sys_admin a 
+		LEFT JOIN sys_admin_info d on a.admin_num = d.admin_num
+		<if test="roleNameSearch != null and roleNameSearch !=''">
+		LEFT JOIN sys_user_role b on a.admin_num = b.user_num
+		LEFT JOIN sys_role c on b.role_id = c.id
+		</if>
+		<where>
+			<if test="adminMobileSearch != null and adminMobileSearch !=''">
+				AND a.admin_mobile = #{adminMobileSearch}
+			</if>
+			<if test="adminNameSearch != null and adminNameSearch !=''">
+				AND d.`name` = #{adminNameSearch}
+			</if>
+			<if test="beginTimeSearch != null">
+				<![CDATA[AND a.create_time >= #{beginTimeSearch}]]>
+			</if>
+			<if test="endTimeSearch != null">
+				<![CDATA[AND a.create_time <= #{endTimeSearch}]]>
+			</if>	
+			<if test="roleNameSearch != null and roleNameSearch !=''">	
+				AND c.id  = #{roleNameSearch}
+			</if>			
+		</where>	  	
+	</select>
+	
+	
+	<!-- by seNum   查se被那个A+绑定 -->
+	<select id="selectAdminByParmartSeNum" parameterType="map" resultMap="BaseResultMap">
+		select a.admin_num ,a.admin_mobile,a.admin_login_name,a.create_time from sys_admin a
+				LEFT JOIN sys_se_a_relationship b on a.admin_num = b.a_num
+				LEFT JOIN sys_admin c on b.se_num = c.admin_num
+		<where>
+			<if test="seNum != null and seNum !=''">
+				AND c.admin_num = #{seNum}
+			</if>
+		
+		</where>	  	
+	</select>
+</mapper>

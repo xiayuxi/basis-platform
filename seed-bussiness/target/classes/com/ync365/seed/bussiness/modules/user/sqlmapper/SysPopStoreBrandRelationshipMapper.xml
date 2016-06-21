@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopStoreBrandRelationshipMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreBrandRelationship">
+		<result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+		<result column="brand_id" property="brandId" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		pop_store_num, brand_id
+	</sql>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreBrandRelationship">
+		insert into sys_pop_store_brand_relationship
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="popStoreNum != null">
+				pop_store_num,
+			</if>
+			<if test="brandId != null">
+				brand_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="popStoreNum != null">
+				#{popStoreNum,jdbcType=VARCHAR},
+			</if>
+			<if test="brandId != null">
+				#{brandId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<delete id="deleteByPopStoreNum" parameterType="string">
+		delete from
+		sys_pop_store_brand_relationship
+		where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByBrandId" parameterType="string">
+		delete from
+		sys_pop_store_brand_relationship
+		where brand_id = #{brandId,jdbcType=VARCHAR}
+	</delete>
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store_brand_relationship
+		<where>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="brandId != null">
+				and brand_id = #{brandId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据 popStoreNum 和 brandId 删除 -->
+	<delete id="deleteByPopStoreNumAndBrandId" parameterType="map">
+		delete from
+		sys_pop_store_brand_relationship
+		where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+		and
+		brand_id = #{brandId,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysAdminServiceMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysAdminService" >
+    <result column="admin_num" property="adminNum" jdbcType="VARCHAR" />
+    <result column="admin_service_distinct" property="adminServiceDistinct" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdminService" >
+    insert into sys_admin_service (admin_num, admin_service_distinct)
+    values (#{adminNum,jdbcType=VARCHAR}, #{adminServiceDistinct,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdminService" >
+    insert into sys_admin_service
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="adminNum != null" >
+        admin_num,
+      </if>
+      <if test="adminServiceDistinct != null" >
+        admin_service_distinct,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="adminNum != null" >
+        #{adminNum,jdbcType=VARCHAR},
+      </if>
+      <if test="adminServiceDistinct != null" >
+        #{adminServiceDistinct,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <delete id="deleteByAdminNum" parameterType="string">
+    delete from sys_admin_service where admin_num = #{adminNum,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByAdminNumAndLevel" parameterType="map">
+	DELETE
+	FROM
+		sys_admin_service
+	WHERE
+		admin_service_distinct IN (
+			SELECT
+				sr.id
+			FROM
+				(
+					SELECT
+						t1.admin_service_distinct
+					FROM
+						sys_admin_service t1
+					WHERE
+						t1.admin_num = #{adminNum}
+				) sas
+			LEFT JOIN sys_region sr ON sas.admin_service_distinct = sr.id
+			WHERE
+				sr. LEVEL = #{level})
+  </delete>
+  
+  <update id="update" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAdminService">
+ 	 update sys_admin_service
+    <set>
+      <if test="adminNum != null and adminNum != ''" >
+        admin_num = #{adminNum,jdbcType=VARCHAR},
+      </if>
+      <if test="adminServiceDistinct != null" >
+        admin_service_distinct = #{adminServiceDistinct,jdbcType=INTEGER},
+      </if>
+	</set>
+  </update>
+  
+  <select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+  	select admin_num, admin_service_distinct from
+  	sys_admin_service
+  	<where>
+  	  <if test="adminNum != null and adminNum != ''" >
+        admin_num = #{adminNum,jdbcType=VARCHAR},
+      </if>
+      <if test="adminServiceDistinct != null" >
+        admin_service_distinct = #{adminServiceDistinct,jdbcType=INTEGER},
+      </if>
+  	</where>
+  	<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+	</if>
+  </select>
+  <select id="selectServiceListByNum" parameterType="string" resultMap="BaseResultMap">
+  	select admin_num, admin_service_distinct from
+  	sys_admin_service
+  	where admin_num = #{userNum,jdbcType=VARCHAR}
+  </select>
+  <select id="selectServiceListByNumLevel" parameterType="map" resultMap="BaseResultMap">
+  	SELECT
+		t1.admin_num,
+		t1.admin_service_distinct
+	FROM
+	(
+		SELECT
+			admin_num,
+			admin_service_distinct
+		FROM
+			sys_admin_service
+		WHERE
+			admin_num = #{userNum}
+	) t1
+	LEFT JOIN sys_region t2 ON t1.admin_service_distinct = t2.id
+	WHERE
+		t2.`level` = #{level}
+  </select>
+</mapper>

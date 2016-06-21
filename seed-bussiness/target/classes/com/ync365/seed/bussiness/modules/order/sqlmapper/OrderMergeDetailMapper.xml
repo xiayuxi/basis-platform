@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderMergeDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderMergeDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_info_id" property="orderInfoId" jdbcType="INTEGER" />
+    <result column="order_merge_info_id" property="orderMergeInfoId" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="order_merge_no" property="orderMergeNo" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_info_id, order_merge_info_id, order_no, order_merge_no, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_merge_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_merge_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeDetail" >
+    insert into order_merge_detail (id, order_info_id, order_merge_info_id, 
+      order_no, order_merge_no, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderInfoId,jdbcType=INTEGER}, #{orderMergeInfoId,jdbcType=INTEGER}, 
+      #{orderNo,jdbcType=CHAR}, #{orderMergeNo,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeDetail" >
+    insert into order_merge_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderInfoId != null" >
+        order_info_id,
+      </if>
+      <if test="orderMergeInfoId != null" >
+        order_merge_info_id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="orderMergeNo != null" >
+        order_merge_no,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderInfoId != null" >
+        #{orderInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="orderMergeInfoId != null" >
+        #{orderMergeInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderMergeNo != null" >
+        #{orderMergeNo,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeDetail" >
+    update order_merge_detail
+    <set >
+      <if test="orderInfoId != null" >
+        order_info_id = #{orderInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="orderMergeInfoId != null" >
+        order_merge_info_id = #{orderMergeInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderMergeNo != null" >
+        order_merge_no = #{orderMergeNo,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderMergeDetail" >
+    update order_merge_detail
+    set order_info_id = #{orderInfoId,jdbcType=INTEGER},
+      order_merge_info_id = #{orderMergeInfoId,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=CHAR},
+      order_merge_no = #{orderMergeNo,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

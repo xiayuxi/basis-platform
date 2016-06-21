@@ -1,0 +1,207 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+	
+	<!-- 弹框 js -->
+	<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+	<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+	
+	<!--验证js-->
+	<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+	<script type="text/javascript" src="${staticCtx}/validate/page/user/sysSsinfoAdd.js"></script>
+	
+	<script type="text/javascript">
+		//添加一个相关商铺
+		var i = 0;
+		//alert(i);
+		function addValueFun(data){  
+			i=1+i;
+			var str = "<div>"
+						+"<input type='text' readonly='readonly' name='shopNameType'  id = 'a_b_c_"+i+"'  />"
+						+"<input type='hidden'  name='popStoreNums["+i+"]'  id ='b_c_d_"+i+"' />"
+						+"<a href=' javascript:void(0)' onclick='binding_r_Fun("+i+");'>添加</a>&nbsp;&nbsp;&nbsp;&nbsp;"
+						+"<input type='button' value='删除' onclick='delValueFun(this)'/>"
+						+"<br /></div>";
+			$("#tags").append(str);
+		   
+		} 
+		//删除一个相关商铺
+		function delValueFun(obj){  
+			$(obj).parent().remove();
+		}
+	
+		$(function () { 
+			$('#backid').click(function(){
+					history.back();
+			 });
+		
+		});
+		
+		//添加
+		 function binding_r_Fun(f_a){
+			var ff = f_a;
+			
+			  art.dialog({
+				  title:"添加",
+				  width:900,
+				  height:400,
+				  padding:0,
+				  lock:true,
+				  content:$("#binding_t").html(),
+				  ok:function(){
+					  var acPopStoreNum = $("#proStoreNum_ttt").val();
+					  
+					  var vcPopStoreName = $("#popStoreName_ttt").val();
+					  
+					  $("#a_b_c_"+ff).attr("value",vcPopStoreName);
+					  $("#b_c_d_"+ff).attr("value",acPopStoreNum);
+				  },
+				  cancel:true
+			  }).show();
+		 }
+		
+		
+		 function selectFun(){
+			 var userNumOrMobileSearch = $("#userNumOrMobileSearch").val();
+			 $.ajax({ 
+			        type: "POST", 
+			       	url: "${ctx}/systwosinfo/selectStore", 
+			       	data:{"userNumOrMobileSearch":userNumOrMobileSearch},
+			        dataType:"json ", 
+			        success: function(data){ 
+						if(data != null ){
+							if(null != data.popStoreNum){
+								var tml = " <div><table ><tr><input type='hidden' id='proStoreNum_ttt' value='"+data.popStoreNum+"'  />"
+											+"<input type='hidden' id='popStoreName_ttt' value='"+data.popStoreName+"'  />"
+											+"<td>编号：'"+data.popStoreNum+"'</td>"
+											+"<td>姓名：'"+data.popStoreContact+"'</td> "
+											+"<td>手机号：'"+data.popStoreMobile+"'  </td>"
+											+"<td>店铺名称：'"+data.popStoreName+"'  </td>"
+											+"</tr></table><div>";
+								$("#store_t_id").html(tml);
+							}else{
+								$("#store_t_id").html("查询无返回结果，请重新输入查询！");
+							}
+						}
+			        } ,
+			        error:function(data){
+			        	alert("请求错误！");
+			        }
+			});
+		 }
+		 
+		 /* 验证 登录账号是否已经注册 */
+			function loginName_fun(){ 
+				var t_n = $('#userName_id').val();
+				var boolLoginName = false;
+				$.ajax({ 
+			        type: "GET", 
+			       	url: "${ctx}/systwosinfo/selectSsInfoByNameOrNum?userName="+t_n+"&userMobile="+'', 
+			        dataType:"json", 
+			        async:false,
+			        success: function(data){ 
+			        	if(data.success == true){
+			        		boolLoginName=true;
+			           	}
+			        } 
+				});
+				return boolLoginName;
+			}
+			 
+			 /* 验证手机号  是否注册 */
+			function mobile_fun(){ 
+				var t_n = $('#userMobile_id').val();
+					var boolMobile = false;
+					$.ajax({ 
+				        type: "GET", 
+				       	url: "${ctx}/systwosinfo/selectSsInfoByNameOrNum?userMobile="+t_n+"&userName="+'', 
+				        dataType:"json", 
+				        async:false,
+				        success: function(data){ 
+				        	if(data.success == true){
+				        		boolMobile=true;
+				           	}
+				        } 
+					});
+					return boolMobile;
+				}
+	</script>
+ </HEAD>
+
+<body>
+	<div style="margin-left: 2px">
+	<form action="${ctx}/systwosinfo/add" method="post" id="formId">
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+				添加SS：			    
+			    <tr>
+			       	<th> 用户名 ：</th>
+			       	<td> <input type="text" name="userName" id = "userName_id"/>
+			       	</td>
+			    </tr>
+			    <tr>
+			       	<th>姓名 ：</th>
+			       	<td> <input type="text" name="userRealName" /></td>
+			    </tr>
+			    <tr>
+			       <th>  手机号 ： </th>
+			       <td>
+			       		<input type="text" name="userMobile" id ="userMobile_id"/>
+			       	</td>
+			    </tr>
+			    <tr>
+			        <th>身份证号 ：</th>
+			        <td> <input type="text" name="userIdCard" /></td>
+			    </tr>
+			    <tr>
+					<td colspan="2">增加（减少）相关服务店铺&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type='button' value='添加一个可服务店铺' onclick='addValueFun()' class="btn"/>
+					</td>
+				</tr>
+			    <tr>
+			       	  <th>	服务店铺：</th>
+			       	  <td> 
+			       	  	
+			       	  	<div id="tags">
+				       	  <input type="text" readonly="readonly" name="shopNameType" id ="a_b_c_0" /> 
+				       	  	 <input type="hidden"  name="popStoreNums[0]" id ="b_c_d_0"  />
+				       	  	 <a href=" javascript:void(0)" onclick="binding_r_Fun(0);">添加</a>
+			       	  	</div>
+			       	  </td>
+			    </tr>
+			    <tr>
+			    	<td>
+						<div style="margin-left: 20px">
+						<@shiro.hasPermission name="ssi_user_create_save">
+							<input type="submit" class="btn btn-success" value="保存" />
+						</@shiro.hasPermission>
+							<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div style="display:none;" id="binding_t">
+		<td>
+			<!-- <input  type="radio"   name = "stalts" checked="checked" />通过店铺编号搜索
+			<input   type="radio"  name = "stalts"  /> -->
+			通过店铺编号/通过店铺管理员手机号搜索  
+		</td>
+			
+			<input type="text" name="userNumOrMobileSearch"  id = "userNumOrMobileSearch"/>
+			<input type="button" class="btn btn-success"  onclick = "selectFun();" value ="搜索" />
+		<div id = "store_t_id"></div>
+	</div>
+	
+</body>
+</html>

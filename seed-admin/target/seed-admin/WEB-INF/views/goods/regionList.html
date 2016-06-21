@@ -1,0 +1,127 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+</head>
+<body>
+	<div style=" margin:20px 0 10px 20px;">
+		地区名称：<input type="text" name="qName" id="qName"/>
+		 <button type="submit" class="btn btn-primary" id="btnSearch">查询
+	</div>
+	<div style="margin-left:20px">
+	    <table id="list"></table>
+	    <div id="pager"></div>
+	</div>
+</body>
+<script type="text/javascript">
+ 
+ 
+ $(function(){
+     
+     $("#list").jqGrid({
+           url:'${ctx}/region/grid',// 获取数据的url,action
+           datatype: "json",//后台返回的数据格式
+           mtype:"post",//提交的方式,默认是get
+           //width:1024,//这个宽度不能为百分比,
+           autowidth:true,//自动宽
+           colNames:['','地区名称','邮政编码','区域代码','级别','是否显示','经纬度'],
+           colModel:[
+					  {name:'id',index:'id', editable:true,align:true,hidden:true},
+                      {name:'name',index:'name', editable:true,sortable:true},
+                      {name:'code',index:'code', align:"center",editable:true},
+                      {name:'codeV',index:'codeV', align:"center",editable:true},
+                      {name:'level',index:'level', align:"center",editable:true},
+                      {name:'isShow',index:'isShow', align:"center",editable:true},
+                      {name:'points',index:'points', align:"center",editable:true}
+                  ],
+           postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+           //styleUI : 'Bootstrap',
+           //caption:"属性列表",//表名称
+           multiselect: false,//开启多选
+           rowNum:10,//每页显示的条数,此参数会被传递到后台
+           rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+           viewrecords: true,//定义是否显示总的数据条数
+           pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+           height : "auto",
+           rownumbers:true//添加左侧行号
+       });
+      // $("#list").jqGrid('navGrid','#pager', {edit:true,add:true,del:true,search:true,refresh:true,addtext:'添加'});  
+      //$("#list").jqGrid("navGrid","#pager",{view :true}); 
+      jQuery("#list").navGrid('#pager',{edit:false,add:false,del:false,search:false,refresh:false})
+     //自定义添加按钮
+     .navButtonAdd('#pager',{ 
+    	 caption:"新增", 
+    	 buttonicon:"ui-icon-add",
+    	 onClickButton: function(){  addFun();  },
+		 position:"last"
+		})
+
+	 //自定义编辑按钮
+     .navButtonAdd('#pager',{ 
+    	 caption:"编辑",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){ editFun(); }, 
+		 position:"last"
+		})
+	//自定义删除按钮
+     .navButtonAdd('#pager',{ 
+    	 caption:"删除",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){ delFun(); }, 
+		 position:"last"
+		});
+      
+      $("#btnSearch").click(function () {
+    	  var qName = $("#qName").val();
+    	  //alert(qName);
+    	　　　  $("#list").jqGrid('setGridParam',{ 
+              url:"${ctx}/region/grid", 
+              postData:{'qName':qName,}, //发送数据 
+              page:1 
+          	}).trigger("reloadGrid"); //重新载入 
+      });
+      
+ });
+
+ //添加
+ function addFun(){
+	 window.location.href = "${ctx}/region/addPage";
+ }
+//编辑
+ function editFun(){
+	var id=jQuery("#list").jqGrid('getGridParam','selrow');
+	var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+	
+	if(null == rowData || '' == rowData || rowData.length > 0){
+		alert("请选择需要编辑的行！")
+	}else{
+		var val= rowData.id;//获取每一行制定的列的数据
+	  	window.location.href="${ctx}/region/editPage?id="+val;
+	} 
+ }
+//删除
+/* function delFun(){
+	var id=jQuery("#list").jqGrid('getGridParam','selrow');
+	var rowData = $("#list").jqGrid('getRowData',id);//获得所选中数据信息
+	
+	if(null==rowData || ''==rowData || rowData.length>0){
+		alert("请选择要删除的行");
+		return ;
+	}else{
+		var val= rowData.featureId;//获取每一行制定的列的数据
+		window.location.href = "${ctx}/feature/delete?id="+val;
+	}
+} */
+
+
+</script>
+
+</html>

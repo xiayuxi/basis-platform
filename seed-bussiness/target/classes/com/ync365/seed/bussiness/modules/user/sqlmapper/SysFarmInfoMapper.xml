@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysFarmInfoMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysFarmInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_num" property="userNum" jdbcType="VARCHAR" />
+		<result column="farm_location" property="farmLocation"
+			jdbcType="VARCHAR" />
+		<result column="grow_kind" property="growKind" jdbcType="VARCHAR" />
+		<result column="farm_area" property="farmArea" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_num, farm_location, grow_kind, farm_area
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_farm_info
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from sys_farm_info
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysFarmInfo">
+		insert into sys_farm_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userNum != null">
+				user_num,
+			</if>
+			<if test="farmLocation != null">
+				farm_location,
+			</if>
+			<if test="growKind != null">
+				grow_kind,
+			</if>
+			<if test="farmArea != null">
+				farm_area,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="userNum != null">
+				#{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="farmLocation != null">
+				#{farmLocation,jdbcType=VARCHAR},
+			</if>
+			<if test="growKind != null">
+				#{growKind,jdbcType=VARCHAR},
+			</if>
+			<if test="farmArea != null">
+				#{farmArea,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysFarmInfo">
+		update sys_farm_info
+		<set>
+			<if test="userNum != null">
+				user_num = #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="farmLocation != null">
+				farm_location = #{farmLocation,jdbcType=VARCHAR},
+			</if>
+			<if test="growKind != null">
+				grow_kind = #{growKind,jdbcType=VARCHAR},
+			</if>
+			<if test="farmArea != null">
+				farm_area = #{farmArea,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectListByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_farm_info
+		<where>
+			<if test="userNum != null">
+			and	user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="farmLocation != null">
+			and	farm_location = #{farmLocation,jdbcType=VARCHAR}
+			</if>
+			<if test="growKind != null">
+			and	grow_kind = #{growKind,jdbcType=VARCHAR}
+			</if>
+			<if test="farmArea != null">
+			and	farm_area = #{farmArea,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<select id="selectCountByMap" resultType="java.lang.Integer"
+		parameterType="map">
+		select
+		count(1)
+		from sys_farm_info
+		<where>
+			<if test="userNum != null">
+			and	user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="farmLocation != null">
+			and	farm_location = #{farmLocation,jdbcType=VARCHAR}
+			</if>
+			<if test="growKind != null">
+			and	grow_kind = #{growKind,jdbcType=VARCHAR}
+			</if>
+			<if test="farmArea != null">
+			and	farm_area = #{farmArea,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+</mapper>

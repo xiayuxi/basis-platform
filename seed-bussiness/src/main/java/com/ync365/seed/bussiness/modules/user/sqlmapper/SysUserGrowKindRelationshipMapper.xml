@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysUserGrowKindRelationshipMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysUserGrowKindRelationship" >
+    <result column="user_num" property="userNum" jdbcType="VARCHAR" />
+    <result column="grow_kind" property="growKind" jdbcType="VARCHAR" />
+  </resultMap>
+   <sql id="Base_Column_List">
+	  user_num,grow_kind
+	</sql>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserGrowKindRelationship" >
+    insert into sys_user_grow_kind_relationship
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="growKind != null" >
+        grow_kind,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        #{userNum,jdbcType=VARCHAR},
+      </if>
+      <if test="growKind != null" >
+        #{growKind,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <delete id="deleteByUserNumm" parameterType="java.lang.String">
+		delete from
+		sys_user_grow_kind_relationship
+		where  user_num = #{userNum,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="update" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUserGrowKindRelationship">
+		update sys_user_grow_kind_relationship
+		<set>
+			<if test="userNum != null">
+				user_num= #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="growKind != null">
+				grow_kind= #{growKind,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_grow_kind_relationship
+		<where>
+			<if test="userNum != null">
+				user_num= #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="growKind != null">
+				grow_kind= #{growKind,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="selectDataByUserNum" parameterType="string" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_grow_kind_relationship
+		where user_num= #{userNum,jdbcType=VARCHAR}
+	</select>
+	<select id="selectGrowKindByUserNum" parameterType="string" resultType="string">
+		select
+			grow_kind
+		from sys_user_grow_kind_relationship
+		where user_num= #{userNum,jdbcType=VARCHAR}
+	</select>
+</mapper>

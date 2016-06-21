@@ -1,0 +1,225 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<!-- artDialog -->
+<script type="text/javascript"   src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+</head>
+<body>
+	<div idex = 99 style="margin: 20px 0 10px 20px;">
+		商品名称：<input type="text" name="name" id="name" />&nbsp;&nbsp;
+		商品副标题：<input type="text" name="subtitle" id="subtitle" />&nbsp;&nbsp;
+		所属分类： <select class="category1" name="categoryIds1" id = "category1" onchange="">
+		            <option value="">请选择</option>
+		            <#list catList as cat>
+		            	<option value="${cat.categoryId}">${cat.name}</option>
+		            </#list>
+		        </select>
+		        <select class="category2" name="categoryIds2" id = "category2">
+		            <option value="">请选择</option>
+		        </select>
+		        <select class="category3" name="categoryIds3" id = "category3">
+		            <option value="">请选择</option>
+		        </select>
+		 
+		<br/>
+		<br/>
+		 商品自编码：<input type="text" name="sn" id="sn" />&nbsp;&nbsp;
+		库存：           <input type="text" name="startQty" id="startQty" />- <input type="text" name="endQty" id="endQty" />&nbsp;&nbsp;
+		&nbsp;&nbsp;<button type="submit" class="btn btn-primary" id="btnSearch">查询
+	</div>
+	<div style=" margin:20px 0 10px 20px;">
+	    <table id="list"></table>
+	    <div id="pager"></div>
+	</div>
+</body>
+<script type="text/javascript">
+ 
+ 
+ $(function(){
+     
+     $("#list").jqGrid({
+           url:'${ctx}/sku/grid',// 获取数据的url,action
+           datatype: "json",//后台返回的数据格式
+           mtype:"post",//提交的方式,默认是get
+           //width:1024,//这个宽度不能为百分比,
+           autowidth:true,//自动宽
+           colNames:['skuId','商品自编码', '商品名称', '商品属性','状态','售价','库存'],
+           colModel:[
+                      {name:"skuId",hidden:true,align:"center",sortable:false},
+                      {name:'sn',index:'sn',align:"center", editable:true,sortable:true},
+                      {name:'goodsName',index:'goodsName', align:"center",width:100,editable:true},
+                      {name:'attrValue',index:'attrValue', align:"center",editable:true},
+                      {name:'status',index:'status', align:"center",sortable:false,editable:true,formatter:formatStatus},
+                      {name:'costPrice',index:'costPrice', align:"center",editable:true},       
+                      {name:'stockNum',index:'stockNum', align:"center",sortable:false,editable:true}
+                  ],
+           postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+           //styleUI : 'Bootstrap',
+           //caption:"类别列表",//表名称
+           multiselect: true,//开启多选
+           rowNum:10,//每页显示的条数,此参数会被传递到后台
+           rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+           viewrecords: true,//定义是否显示总的数据条数
+           pager: 'pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+           height : "auto",
+           rownumbers:true//添加左侧行号
+       });
+      // $("#list").jqGrid('navGrid','#pager', {edit:true,add:true,del:true,search:true,refresh:true,addtext:'添加'});  
+      $("#list").jqGrid("navGrid","#pager",{edit:false,add:false,del:false,search:false,refresh:true})
+      .navButtonAdd('#pager',{ 
+	    	 caption:"批量修改库存", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+	    		 stockEditFun2();  
+							},
+			position:"last"
+			}); 
+      
+      //一级分类
+      $(".category1").change(function(){
+    	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+    		  setHtml(data,".category2");
+    		  setHtml("",".category3");
+    	  });
+      });
+      
+      //二级分类联动三级
+      $(".category2").change(function(){
+    	   
+    	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+    		  setHtml(data,".category3");
+    	  });
+      });
+  	 
+      //查询按钮
+      $("#btnSearch").click(function () {
+	  		var name = $("#name").val();
+	  		var subtitle = $("#subtitle").val();
+	  		var category1 = $("#category1").val();
+	  		 
+	  		var category2 = $("#category2").val();
+	  		 
+	  		var category3 = $("#category3").val();
+	  		 
+	  		var sn = $("#sn").val();
+	  		var categoryId = "";
+	  		var startQty = $("#startQty").val();
+	  		var endQty = $("#endQty").val();
+	    	if(category3.length >  0  ){
+	    		categoryId = category3;
+	    	}else if( (category2.length > 0 ) && ( category3.length <= 0  ) ){
+	    		categoryId = category2;
+	    	}else if( ( category1.length > 0 ) && (category2.length <= 0 ) && (category3.length <= 0 ) ){
+	    		categoryId = category1 ;
+	    	}
+	    	if(startQty==""||endQty==""){
+	    	 	$("#list").jqGrid('setGridParam',{ 
+		             url:"${ctx}/sku/grid", 
+		             postData:{'name':name,'subtitle':subtitle,'categoryId':categoryId,'sn':sn,'startQty':startQty,'endQty':endQty}, //发送数据 
+		             page:1 
+		         	}).trigger("reloadGrid"); //重新载入 
+	    	}else if(startQty<endQty){
+			   	$("#list").jqGrid('setGridParam',{ 
+		             url:"${ctx}/sku/grid", 
+		             postData:{'name':name,'subtitle':subtitle,'categoryId':categoryId,'sn':sn,'startQty':startQty,'endQty':endQty}, //发送数据 
+		             page:1 
+		         	}).trigger("reloadGrid"); //重新载入 
+	  		}else{
+	  			alert("请输入正确的库存");
+	  		}
+		});
+   		
+  	  
+ });
+ 
+
+	//三级联动分类设值
+	function setHtml(data, selectId) {
+		var temp_html = "<option value=''>请选择</option>";
+		$.each(data, function(i, category1) {
+			temp_html += "<option value='"+category1.categoryId+"'>"
+					+ category1.name + "</option>";
+		});
+		$(selectId).html(temp_html);
+	}
+
+	function preView(skuid) {
+		return "<a target='_Blank' href='${ctx}/goodsview/sku/"+skuid+"'>预览</a>";
+	}
+	function formatStatus(cellvalue) {
+		if (cellvalue == 3) {
+			return "<font color=blue >已上架</font>";
+		}else if (cellvalue == 2) {
+			return "<font color=red>审核不通过</font>";
+		}else if (cellvalue == 0) {
+			return "<font color=blue>未审核</font>";
+		}else if (cellvalue == 1) {
+			return "<font color=green>已审核</font>";
+		}else {
+			return "<font color=red >已下架</font>";
+		}
+	}
+	//跳转修改库存页面
+	function stockEditFun() {
+
+		var id = jQuery("#list").jqGrid('getGridParam', 'selarrrow');
+		if(id <=0 ){
+			alert("请选择需要修改库存的商品记录！")
+			return ;
+		}else {
+			var ids = "";
+			for(var i=0;i<id.length;i++){
+     
+				var myrow = jQuery('#list').jqGrid('getRowData', id[i]);
+				ids +=myrow.skuId +",";
+			}
+			ids = ids.substr(0,ids.length-1);
+		        
+			window.location.href="${ctx}/sku/stockEditPage?skuIds=" + ids;
+		}
+	}
+
+	//弹出窗口修改库存
+	function stockEditFun2(){
+		var id = jQuery("#list").jqGrid('getGridParam', 'selarrrow');
+		if(id <=0 ){
+			alert("请选择需要修改库存的商品记录！");
+			return ;
+		}else {
+			var ids = "";
+			for(var i=0;i<id.length;i++){
+
+				var myrow = jQuery('#list').jqGrid('getRowData', id[i]);
+				ids += myrow.skuId + ",";
+			};
+			ids = ids.substr(0, ids.length - 1);
+			//alert(ids);  
+			art.dialog.open("${ctx}/sku/stockEditPage?skuIds="+ids,{
+				id: 'attr_dialog',
+				resize : false,
+				width : 700,
+				height : 400
+			});
+		}
+	}
+	//从区域对话框返回数据并且接收
+	function updrAttrValue(){
+		art.dialog({id:'attr_dialog'}).close();
+		window.location.href="list.html";
+	}
+	function closeStockEditPage(){
+		art.dialog({id:'attr_dialog'}).close();
+	}
+</script>
+
+</html>

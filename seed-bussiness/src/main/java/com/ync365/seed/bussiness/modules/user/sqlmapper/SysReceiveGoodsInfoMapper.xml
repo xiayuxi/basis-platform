@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysReceiveGoodsInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysReceiveGoodsInfo" >
+  	 <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_num" property="userNum" jdbcType="VARCHAR" />
+    <result column="sys_receive_goods_name" property="sysReceiveGoodsName" jdbcType="VARCHAR" />
+    <result column="sys_receive_goods_mobile" property="sysReceiveGoodsMobile" jdbcType="VARCHAR" />
+    <result column="sys_receive_goods_address" property="sysReceiveGoodsAddress" jdbcType="INTEGER" />
+    <result column="sys_receive_goods_address_detail" property="sysReceiveGoodsAddressDetail" jdbcType="VARCHAR" />
+    <result column="sys_receive_goods_is_default" property="sysReceiveGoodsIsDefault" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List">
+	  id,user_num, sys_receive_goods_name, sys_receive_goods_mobile,
+		sys_receive_goods_address, sys_receive_goods_address_detail,
+		sys_receive_goods_is_default
+	</sql>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysReceiveGoodsInfo" >
+    insert into sys_receive_goods_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+    	<if test="id != null" >
+        id,
+      </if>
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="sysReceiveGoodsName != null" >
+        sys_receive_goods_name,
+      </if>
+      <if test="sysReceiveGoodsMobile != null" >
+        sys_receive_goods_mobile,
+      </if>
+      <if test="sysReceiveGoodsAddress != null" >
+        sys_receive_goods_address,
+      </if>
+      <if test="sysReceiveGoodsAddressDetail != null" >
+        sys_receive_goods_address_detail,
+      </if>
+      <if test="sysReceiveGoodsIsDefault != null" >
+        sys_receive_goods_is_default,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    	<if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userNum != null" >
+        #{userNum,jdbcType=VARCHAR},
+      </if>
+      <if test="sysReceiveGoodsName != null" >
+        #{sysReceiveGoodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="sysReceiveGoodsMobile != null" >
+        #{sysReceiveGoodsMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="sysReceiveGoodsAddress != null" >
+        #{sysReceiveGoodsAddress,jdbcType=INTEGER},
+      </if>
+      <if test="sysReceiveGoodsAddressDetail != null" >
+        #{sysReceiveGoodsAddressDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="sysReceiveGoodsIsDefault != null" >
+        #{sysReceiveGoodsIsDefault,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysReceiveGoodsInfo">
+		update sys_receive_goods_info
+		<set>
+			<if test="sysReceiveGoodsName != null">
+				sys_receive_goods_name = #{sysReceiveGoodsName,jdbcType=VARCHAR},
+			</if>
+			<if test="sysReceiveGoodsMobile != null">
+				sys_receive_goods_mobile = #{sysReceiveGoodsMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="sysReceiveGoodsAddress != null">
+				sys_receive_goods_address =#{sysReceiveGoodsAddress,jdbcType=INTEGER},
+			</if>
+			<if test="sysReceiveGoodsAddressDetail != null">
+				sys_receive_goods_address_detail = #{sysReceiveGoodsAddressDetail,jdbcType=VARCHAR},
+			</if>
+			<if test="sysReceiveGoodsIsDefault != null">
+				sys_receive_goods_is_default =  #{sysReceiveGoodsIsDefault,jdbcType=BIT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+  
+  	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_receive_goods_info
+		where  id = #{id,jdbcType=INTEGER}
+	</select>
+	
+  	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_receive_goods_info
+		where  id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_receive_goods_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysReceiveGoodsName != null">
+				and sys_receive_goods_name = #{sysReceiveGoodsName,jdbcType=VARCHAR}
+			</if>
+			<if test="sysReceiveGoodsMobile != null">
+				and sys_receive_goods_mobile = #{sysReceiveGoodsMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="sysReceiveGoodsAddress != null">
+				and sys_receive_goods_address =#{sysReceiveGoodsAddress,jdbcType=INTEGER}
+			</if>
+			<if test="sysReceiveGoodsAddressDetail != null">
+				and sys_receive_goods_address_detail = #{sysReceiveGoodsAddressDetail,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+		<select id="selectPageCount" parameterType="map" resultType="int">
+		select
+		count(1)
+		from sys_receive_goods_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="sysReceiveGoodsName != null">
+				and sys_receive_goods_name = #{sysReceiveGoodsName,jdbcType=VARCHAR}
+			</if>
+			<if test="sysReceiveGoodsMobile != null">
+				and sys_receive_goods_mobile = #{sysReceiveGoodsMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="sysReceiveGoodsAddress != null">
+				and sys_receive_goods_address =#{sysReceiveGoodsAddress,jdbcType=INTEGER}
+			</if>
+			<if test="sysReceiveGoodsAddressDetail != null">
+				and sys_receive_goods_address_detail = #{sysReceiveGoodsAddressDetail,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

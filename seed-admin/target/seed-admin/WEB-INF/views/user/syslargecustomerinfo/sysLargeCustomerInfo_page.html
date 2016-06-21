@@ -1,0 +1,259 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js -->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+	<!-- 弹框 js -->
+	<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+	<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	<script type="text/javascript">
+
+		$(function () {
+			regionPlugin.init("${ctx}");
+			$("input[name=sysReceiveGoodsAddressId]").each(function(){
+				$(this).before(regionPlugin.getAllRegionString(this.value));
+			});
+			$("#registerLocationId").before(regionPlugin.getAllRegionString($("#registerLocationId").val()));
+			$('#backid').click(function(){
+					history.back();
+			 });
+			$('#submitForm').click(function(){
+				$("#formId").submit();
+			 });
+		
+		});
+		
+	</script>
+	<script type="text/javascript">
+		//拒绝输入拒绝原因弹框页面
+		 function bindingFun(stat){
+			$("#stat").attr("value",stat);
+			  art.dialog({
+				  title:"审核原因",
+				  width:600,
+				  height:300,
+				  padding:0,
+				  lock:true,
+				  content:$("#binding_r").html(),
+				  ok:function(){
+					  var content = $(this.DOM.content[0]);
+					  var t = $("#teee_id").val();
+					  if(t != ""){
+						  content.find("#binding_r_Form").submit();//提交
+					  }else{
+						  $("#span_idd").show();
+						  return false;
+					  }
+				  },
+				  cancel:true
+			  }).show();
+		 }
+	</script>
+</head>
+<body>
+	<div style="margin-left: 2px">
+	大客户信息：
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td >姓名：</td>
+			        <td>${userInfoBO.sysUserRealName!''}</td>
+			        <td >手机号：</td>
+			        <td>${userInfoBO.userMobile!''}</td>
+			    </tr> 
+			    <tr>
+			        <td >注册时间</td>
+			        <td>
+			        	<#if userInfoBO.createTime??>
+			        		${userInfoBO.createTime?string("yyyy-MM-dd HH:mm:ss")}
+			        	</#if>
+			        </td>
+			        <td >用户编号：</td>
+			        <td>${userInfoBO.userNum!''}</td>
+			    </tr>
+			    <tr>
+			        <td>生日：</td>
+			        <td>
+			        	<#if userInfoBO.sysUserBirthday??>
+			        		${userInfoBO.sysUserBirthday?string("yyyy-MM-dd")}
+			        	</#if>
+			        </td>
+			        <td>推荐人编号</td>
+			        <td>${userInfoBO.tjUserNum!''}</td>
+			    </tr>
+			    <tr>
+			        <td >收货地址：</td>
+			        <td>
+			        	<#if userInfoBO.sysReceiveGoodsInfos??>
+				        <#list userInfoBO.sysReceiveGoodsInfos as sysReceiveGoodsInfo>
+				        	<input type="hidden" name="sysReceiveGoodsAddressId" value="${sysReceiveGoodsInfo.sysReceiveGoodsAddress!''}"/>&nbsp;${sysReceiveGoodsInfo.sysReceiveGoodsAddressDetail!''}<br/>
+				        </#list>
+				        </#if>
+			        </td>
+			   
+			        <td >所在区域：</td>
+			        <td><input type="hidden" id="registerLocationId" value="${userInfoBO.registerLocation!''}"/></td>
+			    </tr>
+			    <tr>
+			        <td >推荐人电话</td>
+			        <td>${userInfoBO.tjUserMobile!''}</td>
+			   
+			        <td >农场面积</td>
+			        <td>${userInfoBO.sysUserFarmArea!''}亩</td>
+			    </tr>
+			    <tr>
+			        <td >种植种类</td>
+			        <td>
+			        <#if userInfoBO.sysUserGrowKinds??>
+				        <#list userInfoBO.sysUserGrowKinds as sysUserGrowKind>
+				        	${sysUserGrowKind!''}&nbsp;
+				        </#list>
+			        </#if>
+			        </td>
+			    
+			        <td >推荐人姓名</td>
+			        <td>${userInfoBO.tjUserRealName!''}</td>
+			    </tr>
+			</table>
+	</div>
+	<div style="margin-left: 2px">
+	绑定关系：
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>村站编号：</td>
+				<td>${userInfoBO.vsNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.vsName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.vsMobile!''}</td>
+			</tr>
+			<tr>
+				<td>LC编号：</td>
+				<td>${userInfoBO.lcNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.lcName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.lcMobile!''}</td>
+			</tr>
+			<tr>
+				<td>SE编号：</td>
+				<td>${userInfoBO.seNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.seName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.seMobile!''}</td>
+			</tr>
+			<tr>
+				<td>A+编号：</td>
+				<td>${userInfoBO.aNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.aName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.aMobile!''}</td>
+			</tr>
+		</table>
+	</div>
+	<div style="margin-left: 2px">
+	认证资料:
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<#if largeCustomerValueInfoBOList??>
+				<#list largeCustomerValueInfoBOList as valueTemp>
+					<tr>
+						<#if valueTemp.propertyType == 'pic'>
+							<th>
+							${valueTemp.propertyName!''}:
+							</th>
+							<td>	
+							<img width="60" height="60" src="${valueTemp.propertyValue!''}" />
+							</td>
+						</#if>
+						<#if valueTemp.propertyType == 'text'>
+							<th>
+							${valueTemp.propertyName!''}:
+							</th>
+							<td>	
+							${valueTemp.propertyValue!''}
+							</td>
+						</#if>
+						<#if valueTemp.propertyType == 'time'>
+							<th>
+							${valueTemp.propertyName!''}:
+							</th>
+							<td>	
+							${valueTemp.propertyValue!''}
+							</td>
+						</#if>
+					</tr> 
+				</#list>
+			</#if>
+		</table>
+     </div>
+     
+    <#if userInfoBO.state == 2 > 
+	     <div style="margin-left: 2px">
+		拒绝原因:
+			<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+				<tr>
+					<th>审核人</th>
+					<th>审核原因</th>
+					<th>审核时间</th>
+				</tr>
+					<#if sysAuthenInfoList??>
+						<#list sysAuthenInfoList as valueTemp>
+							</tr>
+								<td>
+									${valueTemp.authenAdminName!''}
+								</td>
+								<td>	
+									${valueTemp.authenReason!''}
+								</td>
+								<td>	
+									${valueTemp.authenTime?string("yyyy-MM-dd HH:mm:ss")}
+								</td>
+							</tr>
+						</#list>
+					</#if>
+			</table>
+	     </div>
+     </#if>
+     
+    <div style="margin-left: 2px">
+	    <table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>	
+				<@shiro.hasPermission name="lager_user_pass">
+					<#if userInfoBO.state != 1 >
+					<!-- <a href="${ctx}/syslargecust/updatePageTg?userNum=${userInfoBO.userNum!''}">通过</a> -->
+					<a href=" javascript:void(0)" onclick="bindingFun('2');">通过</a>
+					</#if>
+				</@shiro.hasPermission>
+				<@shiro.hasPermission name="lager_user_faile">
+					<#if userInfoBO.state != 2 >
+					<a href=" javascript:void(0)" onclick="bindingFun('1');">拒绝</a>
+					</#if>
+				</@shiro.hasPermission>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!--  拒绝 或 通过 弹框   页面-->
+	<div style="display:none;" id="binding_r">
+		<form action="${ctx}/syslargecust/updatePageFailOrTg" method="post" id="binding_r_Form">
+			<input type="hidden" name="userNum" id = "userNum_rc" value = "${userInfoBO.userNum!''}"/>
+			<input type="hidden" name="stat" id = "stat" />
+			审核原因：<input type="text" name="failInfo" id = "teee_id" />
+			<span style="display:none;" id ="span_idd"><font color="red">*审核原因不能为空</font></span>
+		</form>
+	</div>
+</body>
+
+</html>

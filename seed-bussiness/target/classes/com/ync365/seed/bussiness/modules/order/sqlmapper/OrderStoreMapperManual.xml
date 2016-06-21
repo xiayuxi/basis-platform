@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.order.dao.OrderStoreMapperManual">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderStore">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="order_sub_no" property="orderSubNo" jdbcType="CHAR" />
+		<result column="store_id" property="storeId" jdbcType="INTEGER" />
+		<result column="coupon_amount" property="couponAmount"
+			jdbcType="DECIMAL" />
+		<result column="actual_amount" property="actualAmount"
+			jdbcType="DECIMAL" />
+		<result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+		<result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, order_id, order_no, order_sub_no, store_id, coupon_amount,
+		actual_amount, total_amount,
+		save_amount, create_time
+	</sql>
+
+
+	<select id="selectOrderStoreList" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from order_store
+		where order_id = #{orderId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectOrderStoreListByOrderSubNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from order_store
+		where order_sub_no = #{orderSubNo}
+	</select>
+	<!-- 根据订单id和店铺id查询订单商户记录 -->	
+	<select id="getOrderStoreByOrderIdAndStoreId" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
+		SELECT * FROM order_store WHERE order_id=#{orderId,jdbcType=INTEGER}  AND store_id = #{storeId,jdbcType=INTEGER}
+	</select>
+
+</mapper>

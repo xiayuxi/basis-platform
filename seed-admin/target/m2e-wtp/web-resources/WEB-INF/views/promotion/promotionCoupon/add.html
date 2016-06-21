@@ -1,0 +1,198 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--  css  -->
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!--  js  -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+$(function(){	
+	$("#addOption").click(function(){
+		var customMoney = $("#custom").val();
+		//alert(isNaN(customMoney));
+		if(customMoney == null||customMoney == ''||isNaN(customMoney)){
+			alert("输入的面值不合法！");
+			return;
+		}		
+		//alert(customMoney);
+		var html = "<option value='" + customMoney + "'>"+ customMoney + "元</option>"
+		$("#couponAmount").append(html);
+	});
+	
+	$('#couponCount').bind('input propertychange', function() {
+	  var couponAmount = $("#couponAmount").val();//获取选择的面值
+	  var couponCount =  $('#couponCount').val();//获取发行量
+	   //alert(couponCount);
+	  //计算总额
+	  var totalCoupon = couponAmount*couponCount;	  
+	  $("#spanId").html(totalCoupon);
+		//把总额设置到隐藏域的input框里提交到后台
+	  $("#couponAllAmount").val(totalCoupon);
+	});
+});
+
+//提交表单之前进行数据校验
+function toVaild(){		
+	var promotionName = $("#promotionName").val();
+	var storeId = $("#storeId").val();
+	var couponAmount = $("#couponAmount").val();	
+	var grantStartTime = $("#grantStartTime").val().replace("-", "/").replace("-", "/");
+	var grantEndTime = $("#grantEndTime").val().replace("-", "/").replace("-", "/");
+	var startTime = $("#startTime").val().replace("-", "/").replace("-", "/");
+	var endTime = $("#endTime").val().replace("-", "/").replace("-", "/");	
+	var systemTime = new Date();		
+	var currentTime = systemTime.toLocaleString().replace("-", "/").replace("-", "/");		
+	if(promotionName==null||promotionName==""){
+		alert("请输入活动名称");
+		return false;	
+	}else if(storeId==null||storeId==""){
+		alert("请选择店铺");
+		return false;	
+	}else if(couponAmount==null||couponAmount==""){
+		alert("请选择红包面值");
+		return false;	
+	}else if(grantStartTime.length != 19){
+		alert("请选择发行开始时间");
+		return false;	
+	}else if(grantStartTime<currentTime){
+		alert("发行开始时间应该大于当前时间！");
+		return false;		
+	}else if(grantEndTime.length != 19){
+		alert("请选择发行结束时间");
+		return false;	
+	}else if(grantEndTime<grantStartTime){
+		alert("发行结束时间应大于开始时间！");
+		return false;	
+	}else if(startTime.length != 19){
+		alert("请选择使用开始时间");
+		return false;	
+	}else if(startTime<grantStartTime){
+		alert("红包使用开始时间应大于发行开始时间！");
+		return false;	
+	}else if(endTime.length != 19){
+		alert("请选择使用结束时间");
+		return false;	
+	}else if(endTime<startTime){
+		alert("红包使用结束时间应大于开始时间！");
+		return false;	
+	}else{
+		return true;//提交
+	}
+}
+</script>
+<style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        th{
+        	width: 150px;
+        }      
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 500px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+</style>  
+<body>
+	<form action="${ctx}/promotionCoupon/add"  method="post" onsubmit="return toVaild()">
+		<table class="table table-bordered table-hover definewidth m10"> 
+			<tr>
+				<th>活动名称：</th>
+				<td><input class="" type="text" id="promotionName"	name="promotionName" />
+					店铺名称：					
+					<select	name="storeId" id="storeId">
+						<option value="">--请选择店铺--</option>
+						<option value="-1">自营</option>
+						<#list popStoreList as popStore>
+							<option value="${popStore.id}">${popStore.popStoreName}</option>
+						</#list>
+					</select> 
+				</td>
+			</tr>
+			
+			<tr >
+				<th>红包类型：</th>
+				<td>
+					<input class="" type="radio" id="couponChannel1" name="couponChannel" checked="checked" value="1"/>注册发放
+					<input class="" type="radio" id="couponChannel2" name="couponChannel" value="3"/>线上发放
+                </td>				
+			</tr>		
+		
+			<tr>				
+				<th>参与商品：</th>
+				<td>
+					<input class="" type="radio" id="couponType"	name="couponType" value="0" checked="checked"/>全部商品
+					<input class="" type="radio" id="couponType"	name="couponType" value="1"/>部分商品
+				</td>
+			</tr>
+			<tr>
+				<th>订单金额：</th>
+				<td>
+					<input class="" type="text" id="limitedAmount" name="limitedAmount"/>元&nbsp;&nbsp;&nbsp;&nbsp;备注：适用于全部商品参与
+				</td>
+			</tr>
+			<tr>
+			<th >红包面值：</th>
+			<td>
+				<select name="couponAmount" id="couponAmount">
+						<option value="">--请选择--</option>
+						<option value="5">5元</option>
+						<option value="10">10元</option>
+						<option value="20">20元</option>
+						<option value="50">50元</option>
+						<option value="100">100元</option>
+						<option value="200">200元</option>
+				</select>	
+				自定义<input class="" id="custom" /><input type="button" id="addOption" value="添加"/>
+			</td>
+			</tr>
+			<tr>
+				<th>发行量：</th>
+				<td>
+				<input class="" id="couponCount" type="text" name="couponCount" />张
+				总额：<span id="spanId" style="color:red">0</span>元	
+					<input type="hidden" name="couponAllAmount" id="couponAllAmount"/>				
+				</td>				
+			</tr>
+			<tr>
+				<th >发行时间：</th>
+				<td>
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="grantStartTime" name="grantStartTime"  />至<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+					type="text" id="grantEndTime" name="grantEndTime" />
+				</td>
+			</tr>
+			<tr>
+				<th>使用时间：</th>
+				<td>
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="startTime" name="startTime"  />至<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+					type="text" id="endTime" name="endTime" />
+				</td>
+			</tr>
+			<tr>
+				<th>使用说明：</th>
+				<td>
+					<textarea rows="2" cols="40" id="remark" name="remark"></textarea>
+				</td>
+			</tr>
+			<tr>				 
+				<td colspan="2"><input type="submit" style="margin-left: 260px" name="submit" class="btn btn-primary" value="提交"></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

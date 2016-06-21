@@ -1,0 +1,178 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	<script type="text/javascript">
+
+		$(function () {
+			regionPlugin.init("${ctx}");
+			$("input[name=sysReceiveGoodsAddressId]").each(function(){
+				$(this).before(regionPlugin.getAllRegionString(this.value));
+			});
+			$("#registerLocationId").before(regionPlugin.getAllRegionString($("#registerLocationId").val()));
+			$('#backid').click(function(){
+					history.back();
+			 });
+			$('#submitForm').click(function(){
+				$("#formId").submit();
+			 });
+		
+		});
+		
+	</script>
+ </HEAD>
+
+<body>
+	<div style="margin-left: 2px">
+	US信息：
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td >姓名：</td>
+			        <td>${userInfoBO.sysUserRealName!''}</td>
+			        <td >手机号：</td>
+			        <td>${userInfoBO.userMobile!''}</td>
+			    </tr> 
+			    <tr>
+			        <td>用户名</td>
+			        <td>${userInfoBO.userLoginName!''}</td>
+			        <td >用户编号：</td>
+			        <td>${userInfoBO.userNum!''}</td>
+			    </tr>
+			    <tr>
+			        <td>生日：</td>
+			        <td>
+			        	<#if userInfoBO.sysUserBirthday??>
+			        		${userInfoBO.sysUserBirthday?string("yyyy-MM-dd")}
+			        	</#if>
+			        </td>
+			        <td>推荐人编号</td>
+			        <td>${userInfoBO.tjUserNum!''}</td>
+			    </tr>
+			    <tr>
+			        <td >收货地址：</td>
+			        <td>
+			        	<#if userInfoBO.sysReceiveGoodsInfos??>
+				        <#list userInfoBO.sysReceiveGoodsInfos as sysReceiveGoodsInfo>
+				        	<input type="hidden" name="sysReceiveGoodsAddressId" value="${sysReceiveGoodsInfo.sysReceiveGoodsAddress!''}"/>&nbsp;${sysReceiveGoodsInfo.sysReceiveGoodsAddressDetail!''}<br/>
+				        </#list>
+				        </#if>
+			        </td>
+			   
+			        <td >所在区域：</td>
+			        <td><input type="hidden" id="registerLocationId" value="${userInfoBO.registerLocation!''}"/></td>
+			    </tr>
+			    <tr>
+			        <td >推荐人电话</td>
+			        <td>${userInfoBO.tjUserMobile!''}</td>
+			   
+			        <td >农场面积</td>
+			        <td>${userInfoBO.sysUserFarmArea!''}亩</td>
+			    </tr>
+			    <tr>
+			    	<td >注册时间</td>
+			        <td>
+			        	<#if userInfoBO.createTime??>
+			        		${userInfoBO.createTime?string("yyyy-MM-dd HH:mm:ss")}
+			        	</#if>
+			        </td>
+			        <td >推荐人姓名</td>
+			        <td>${userInfoBO.tjUserRealName!''}</td>
+			    </tr>
+			    <tr>
+			    	<td >种植种类</td>
+			        <td colspan="3">
+			        <#if userInfoBO.sysUserGrowKinds??>
+				        <#list userInfoBO.sysUserGrowKinds as sysUserGrowKind>
+				        	${sysUserGrowKind!''}&nbsp;
+				        </#list>
+			        </#if>
+			        </td>
+			    </tr>
+			</table>
+	</div>
+	<div style="margin-left: 2px">
+	绑定关系：
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>村站编号：</td>
+				<td>${userInfoBO.vsNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.vsName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.vsMobile!''}</td>
+			</tr>
+			<tr>
+				<td>LC编号：</td>
+				<td>${userInfoBO.lcNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.lcName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.lcMobile!''}</td>
+			</tr>
+			<tr>
+				<td>SE编号：</td>
+				<td>${userInfoBO.seNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.seName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.seMobile!''}</td>
+			</tr>
+			<tr>
+				<td>A+编号：</td>
+				<td>${userInfoBO.aNum!''}</td>
+				<td>联系人：</td>
+				<td>${userInfoBO.aName!''}</td>
+				<td>手机号：</td>
+				<td>${userInfoBO.aMobile!''}</td>
+			</tr>
+		</table>
+	</div>
+	<div style="margin-left: 2px">
+		交易订单:
+			<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+				<tr>
+					<th>订单号</th>
+					<th>下单时间</th>						
+					<th>下单金额</th>
+					<th>成交金额</th>
+					<!-- <th>下单人</th> -->
+				</tr>
+					<#if OrderInfoBOList??>
+						<#list OrderInfoBOList as valueTemp>
+							</tr>
+								<td>
+									${valueTemp.orderNo!''}
+								</td>
+								<td>	
+									${valueTemp.createTime?string("yyyy-MM-dd HH:mm:ss")}
+								</td>
+								<td>	
+									${valueTemp.totalAmount!''}
+								</td>
+								<td>	
+									${valueTemp.actualAmount!''}
+								</td>
+								<!-- <td>	
+									${valueTemp.username!''}
+								</td> -->
+							</tr>
+					</#list>
+				</#if>
+		</table>
+	 </div>
+	<div style="margin-left: 20px">
+		<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+	</div>
+	
+
+</body>
+</html>

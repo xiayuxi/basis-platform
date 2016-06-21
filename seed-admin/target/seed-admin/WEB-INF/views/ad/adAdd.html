@@ -1,0 +1,171 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<!-- jquery-form.js -->
+ 
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+ 
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.fileupload.js"></script>
+
+<script type="text/javascript">
+
+var list = [{"fileBtnId":"lbtp4","imgId":"carouselPicture4_img","urlId":"carouselPicture4_url"}];
+/* function submitUpload(){
+	var option = {
+		url : "${ctx}/upload/uploadPic?type=3",
+		type : "post",
+		dateType : "json",
+		success : function(responseText) {
+			var jsonObj = $.parseJSON(responseText);
+			$("#imgsImgSrc").attr("src", jsonObj.realPath);
+			$("#path").val(jsonObj.relativePath);
+			$("#uuid").val(jsonObj.uuid);
+		},
+		error : function() {
+			alert("系统错误");
+		}
+	};
+	//ajax方式提交表单，页面不会跳转（由jQuery-form提供）
+	$("#adFormAdd").ajaxSubmit(option);
+	 
+} */
+
+//图片上传
+function fileUpload(fileBtnId,imgId,urlId){
+	$('#'+fileBtnId).fileupload({        
+		dataType: 'json',        
+		done: function (e,data) {
+			
+			$('#'+urlId).val(data.result.url);
+			$('#'+imgId).attr('src', "${imgYunServer}" + data.result.url);
+			$('#path').val("${imgYunServer}" + data.result.url);
+		}
+	});
+}
+
+$(function(){
+	 for(var index = 0,l = list.length;index<l;index++){
+			fileUpload(list[index].fileBtnId,list[index].imgId,list[index].urlId);
+	 }
+});
+
+//图片是否关联url时的隐藏与显示url
+function closeUrl(obj){
+	$(".uuu").hide();
+	$("#url").val("");
+}
+function openUrl(obj){
+	$(".uuu").show();
+}
+
+$(function () {       
+	$('#backid').click(function(){
+		window.location.href="list.html";
+	});
+
+});
+</script>
+<body>
+<div style="margin-left: 20px">
+	<form id="adFormAdd" action="${ctx}/ad/add" method="post" enctype="multipart/form-data"  >
+		<h3>广告位</h3><br>
+		<table>
+<!-- 			<tr>
+				<td>目标栏目：</td>
+				<td>
+					<select id="subject" name="subject">
+						<option value="">请选择</option>
+						<option value="1">商城首页</option>
+						<option value="2">商城栏目</option>
+					</select>		
+				</td>
+			</tr> -->
+			<tr>
+				<td>目标页面：</td>
+				<td>
+					<select name="page" id="page">
+						<option value="">请选择</option>
+						<option value="1">商城首页</option>
+						<option value="2">化肥栏目页</option>
+						<option value="3">农药栏目页</option>
+					</select>		
+				</td>
+			</tr>
+			<tr>
+				<td>目标广告位</td>
+				<td>
+					<select  name="adPosition" id="adPosition" > 
+						<option value="">请选择</option>
+					
+			            <#list aPList as value>
+							<option value="${value.id}">${value.name} &nbsp;&nbsp;高*宽:${value.height}*${value.width}</option>
+						</#list>
+			        </select>	
+				</td>
+			</tr>
+		</table><br>
+		<h3>广告</h3><br>
+		<table>
+			<tr>
+				<td>广告名称</td>
+				<td>
+					<input type="text" name="title" id="title"></input>
+				</td>
+			</tr>
+		  	<tr>
+				<th>投放时间：</th>
+				<td>
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+					type="text" id="beginDate" name="beginDate"/>
+					——
+					<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+					type="text" id="endDate" name="endDate" />
+				</td>
+			</tr>
+			<tr><td>图片上传：</td>
+
+				 
+				 <td>
+	            	<div id="product5">
+						<input id="carouselPicture4_url"  name="carouselPicture4"  type="hidden" value="">
+	                    <img id="carouselPicture4_img" src="" alt="" width="200px" height="200px">
+	                    <input id="path" name="path" type="hidden">
+					</div>
+					<a href="javascript:;" >
+						<input upImg="true"  id="lbtp4"   name="uploaderImage" type="file"  data-url="${ctx}/upload/upImg" multiple="multiple" /> 
+					</a>
+				</td>
+				 
+			</tr>
+			<tr><td>是否链接：</td>
+				<td><input  type="radio" id="hasUrl" name="hasUrl" value="1" checked="checked" onclick="openUrl(this)"/>图片有链接
+				    <input type="radio" id="hasUrl"  name="hasUrl" value="0" onclick="closeUrl(this)"/>图片无链接
+				</td>
+			</tr>
+			<tr class="uuu">
+				<td>点击链接</td>
+				<td>
+					<input type="text" id="url" name="url">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit"  class="btn btn-primary" value="完成">
+					<button type="button" class="btn btn-success" name="backid" id="backid">取消</button>
+				</td>
+			</tr>
+		</table>
+
+	</form>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js"></script>
+<script type="text/javascript" src="${staticCtx}/validate/page/ad/adAdd.js"></script>

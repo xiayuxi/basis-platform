@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderPromotionMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderPromotion" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="store_id" property="storeId" jdbcType="INTEGER" />
+    <result column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+    <result column="promotion_type" property="promotionType" jdbcType="INTEGER" />
+    <result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, order_id, store_id, promotion_id, promotion_type, save_amount, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_promotion
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_promotion
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderPromotion" useGeneratedKeys="true" keyProperty="id">
+    insert into order_promotion (ID, order_id, store_id, 
+      promotion_id, promotion_type, save_amount, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{storeId,jdbcType=INTEGER}, 
+      #{promotionId,jdbcType=INTEGER}, #{promotionType,jdbcType=INTEGER}, #{saveAmount,jdbcType=DECIMAL}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderPromotion" >
+    insert into order_promotion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="storeId != null" >
+        store_id,
+      </if>
+      <if test="promotionId != null" >
+        promotion_id,
+      </if>
+      <if test="promotionType != null" >
+        promotion_type,
+      </if>
+      <if test="saveAmount != null" >
+        save_amount,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="storeId != null" >
+        #{storeId,jdbcType=INTEGER},
+      </if>
+      <if test="promotionId != null" >
+        #{promotionId,jdbcType=INTEGER},
+      </if>
+      <if test="promotionType != null" >
+        #{promotionType,jdbcType=INTEGER},
+      </if>
+      <if test="saveAmount != null" >
+        #{saveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderPromotion" >
+    update order_promotion
+    <set >
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="storeId != null" >
+        store_id = #{storeId,jdbcType=INTEGER},
+      </if>
+      <if test="promotionId != null" >
+        promotion_id = #{promotionId,jdbcType=INTEGER},
+      </if>
+      <if test="promotionType != null" >
+        promotion_type = #{promotionType,jdbcType=INTEGER},
+      </if>
+      <if test="saveAmount != null" >
+        save_amount = #{saveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderPromotion" >
+    update order_promotion
+    set order_id = #{orderId,jdbcType=INTEGER},
+      store_id = #{storeId,jdbcType=INTEGER},
+      promotion_id = #{promotionId,jdbcType=INTEGER},
+      promotion_type = #{promotionType,jdbcType=INTEGER},
+      save_amount = #{saveAmount,jdbcType=DECIMAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

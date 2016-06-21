@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopStoreSeRelationshipMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreSeRelationship">
+		<id column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+		<result column="se_num" property="seNum" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		pop_store_num, se_num
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store_se_relationship
+		where pop_store_num =
+		#{popStoreNum,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		sys_pop_store_se_relationship
+		where pop_store_num =
+		#{popStoreNum,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreSeRelationship">
+		insert into sys_pop_store_se_relationship
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="popStoreNum != null">
+				pop_store_num,
+			</if>
+			<if test="seNum != null">
+				se_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="popStoreNum != null">
+				#{popStoreNum,jdbcType=VARCHAR},
+			</if>
+			<if test="seNum != null">
+				#{seNum,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreSeRelationship">
+		update sys_pop_store_se_relationship
+		<set>
+			<if test="seNum != null">
+				se_num = #{seNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num = #{popStoreNum,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</update>
+	<select id="selectSeRelationshipByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store_se_relationship
+		<where>
+			<if test="seNum != null">
+				and	se_num = #{seNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null">
+				and	pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="selectCountByMap" resultType="java.lang.Integer"
+		parameterType="map">
+		select
+		count(1)
+		from sys_pop_store_se_relationship
+		<where>
+			<if test="seNum != null">
+			and	se_num = #{seNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

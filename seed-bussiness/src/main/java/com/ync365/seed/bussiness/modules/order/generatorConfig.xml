@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+
+<generatorConfiguration>
+	<classPathEntry
+            location="/Users/ivan/.m2/repository/mysql/mysql-connector-java/5.1.36/mysql-connector-java-5.1.36.jar"/>
+    <context id="mysqlGenerator">
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+		
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://192.168.98.201/seed" userId="root"
+                        password="ync365.com"/>
+        <javaTypeResolver>  
+            <property name="forceBigDecimals" value="false"/>  
+        </javaTypeResolver>
+                        
+        <!-- 生成模型的包名和位置-->  
+        <javaModelGenerator targetPackage="com.ync365.seed.bussiness.modules.order.entity" targetProject="seed-bussiness/src/main/java">  
+            <property name="enableSubPackages" value="true"/>  
+            <property name="trimStrings" value="true"/>  
+        </javaModelGenerator> 
+        
+        <!-- 生成映射文件的包名和位置-->  
+        <sqlMapGenerator targetPackage="com.ync365.seed.bussiness.modules.order.sqlmapper" targetProject="seed-bussiness/src/main/java">  
+            <property name="enableSubPackages" value="true"/>  
+        </sqlMapGenerator>  
+        
+        <!-- 生成DAO的包名和位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.ync365.seed.bussiness.modules.order.dao" targetProject="seed-bussiness/src/main/java">  
+            <property name="enableSubPackages" value="true"/>  
+        </javaClientGenerator>  
+		<table tableName="order_expense" domainObjectName="OrderExpense" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		
+	<!-- 	<table tableName="order_goods_expense " domainObjectName="OrderGoodsExpense" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_expense" domainObjectName="OrderExpense" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="user_coupon_log" domainObjectName="UserCouponLog" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="user_coupon" domainObjectName="UserCoupon" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_goods_expense_info " domainObjectName="OrderGoodsExpenseInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_merge_detail" domainObjectName="OrderMergeDetail" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_address" domainObjectName="OrderAddress" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_change_info" domainObjectName="OrderChangeInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_contact" domainObjectName="OrderContact" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_coupon" domainObjectName="OrderCoupon" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_engineer" domainObjectName="OrderEngineer" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_goods" domainObjectName="OrderGoods" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_goods_change_info" domainObjectName="OrderGoodsChangeInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_goods_sub" domainObjectName="OrderGoodsSub" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_info" domainObjectName="OrderInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_merge_info" domainObjectName="OrderMergeInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_opt_log" domainObjectName="OrderOptLog" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_pay" domainObjectName="OrderPay" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_promotion" domainObjectName="OrderPromotion" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_shipping_info" domainObjectName="OrderShippingInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_store" domainObjectName="OrderStore" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_sub_info" domainObjectName="OrderSubInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="order_user" domainObjectName="OrderUser" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ -->
+    </context>
+</generatorConfiguration>

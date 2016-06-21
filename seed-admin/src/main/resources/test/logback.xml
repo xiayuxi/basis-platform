@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+	<!-- appender -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss:SSS}[%-5p][%logger][%-4L] - %m%n</pattern>
+			<charset>utf-8</charset>
+		</encoder>
+	</appender>
+	<appender name="rollingFile"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/opt/log/seed-admin/seed-admin.log</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>/opt/log/seed-admin/seed-admin-%d{yyyyMMdd-HH}.log
+			</FileNamePattern>
+			<maxHistory>365</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<ImmediateFlush>true</ImmediateFlush>
+			<charset>utf-8</charset>
+			<Pattern>[%d{yyyyMMdd HH:mm:ss.SSS}] [%-5level] [%-30logger{0}][%-3L]
+				[SeqId:%X{SeqId}] - %m%n</Pattern>
+		</encoder>
+	</appender>
+	<logger name="com.ync365.seed.bussiness.modules" level="DEBUG"/>
+	<!-- root 默认日志配置 -->
+	<root level="DEBUG">
+		<appender-ref ref="console" />
+		<appender-ref ref="rollingFile" />
+	</root>
+</configuration>

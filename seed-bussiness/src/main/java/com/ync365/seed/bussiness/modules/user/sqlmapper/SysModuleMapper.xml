@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysModuleMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysModule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="module_name" property="moduleName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="module_order" property="moduleOrder" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, module_name, description, url, parent_id, module_order
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_module
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_module
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysModule" >
+    insert into sys_module
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="moduleName != null" >
+        module_name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="moduleOrder != null" >
+        module_order,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="moduleName != null" >
+        #{moduleName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="moduleOrder != null" >
+        #{moduleOrder,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysModule" >
+    update sys_module
+    <set >
+      <if test="moduleName != null" >
+        module_name = #{moduleName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="moduleOrder != null" >
+        module_order = #{moduleOrder,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysModule" >
+    update sys_module
+    set module_name = #{moduleName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      module_order = #{moduleOrder,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  	<!-- 查询对象list  用map传递参数 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List"></include>
+		from
+		sys_module 
+		<where>
+			<if test="moduleName != null and moduleName !=''" >
+		       and module_name = #{moduleName,jdbcType=VARCHAR}
+		    </if>
+		    <if test="description != null" >
+		        and description = #{description,jdbcType=VARCHAR}
+		    </if>
+		    <if test="url != null" >
+		       and url = #{url,jdbcType=VARCHAR}
+		    </if>
+		    <if test="parentId != null" >
+		       and parent_id = #{parentId,jdbcType=INTEGER}
+		    </if>
+		    <if test="moduleOrder != null" >
+		       and module_order = #{moduleOrder,jdbcType=INTEGER}
+		    </if>
+			
+		</where>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	<!-- 按条件查询交易记录数 -->
+	<select id="selectPageCount" resultType="Integer" parameterType="map">
+		select count(1)
+		from sys_module
+		<where>
+			<if test="moduleName != null and moduleName !=''" >
+		       and module_name = #{moduleName,jdbcType=VARCHAR}
+		    </if>
+		    <if test="description != null" >
+		        and description = #{description,jdbcType=VARCHAR}
+		    </if>
+		    <if test="url != null" >
+		       and url = #{url,jdbcType=VARCHAR}
+		    </if>
+		    <if test="parentId != null" >
+		       and parent_id = #{parentId,jdbcType=INTEGER}
+		    </if>
+		    <if test="moduleOrder != null" >
+		       and module_order = #{moduleOrder,jdbcType=INTEGER}
+		    </if>
+		</where>
+	</select>
+	
+	
+	<select id="selectSysModuleByAdminNum" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select a.* from sys_module a 
+			LEFT JOIN sys_role_module b on a.id = b.module_id
+			LEFT JOIN sys_role c on b.role_id = c.id
+			LEFT JOIN sys_user_role d on c.id = d.role_id
+			LEFT JOIN sys_admin e on d.user_num = e.admin_num
+			where e.admin_num = #{adminNum,jdbcType=VARCHAR}
+	</select>
+	
+</mapper>

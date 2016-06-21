@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.ync365.seed.bussiness.modules.promotion.dao.PromotionGiftGoodsDao" >
+	
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGiftGoods" >
+	<result column="id" property="id" />
+	<result column="promotion_id" property="promotionId" />
+	<result column="goods_id" property="goodsId" />
+	<result column="sku_id" property="skuId" />
+	<result column="count" property="count" />
+	<result column="is_delete" property="isDelete" />
+  </resultMap>
+  
+  <select id="find" resultMap="BaseResultMap" parameterType="String" >
+    select id,promotion_id,goods_id,sku_id,count,is_delete
+    from promotion_gift_goods
+    where
+			id = #{ id}
+	  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap" >
+    select id,promotion_id,goods_id,sku_id,count,is_delete
+    from promotion_gift_goods
+  </select>
+  
+  <delete id="delete" parameterType="String" >
+    delete from promotion_gift_goods
+    where 
+			id = #{ id}
+	  </delete>
+  
+  <insert id="create" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGiftGoods" >
+    insert into promotion_gift_goods (id,promotion_id,goods_id,sku_id,count,is_delete)
+    values (
+			#{ id, javaType=int, jdbcType=INTEGER},
+				#{ promotionId, javaType=int, jdbcType=INTEGER},
+				#{ goodsId, javaType=int, jdbcType=INTEGER},
+				#{ skuId, javaType=int, jdbcType=INTEGER},
+				#{ count, javaType=int, jdbcType=INTEGER},
+				#{ isDelete, javaType=int, jdbcType=INTEGER}
+	    )
+  </insert>
+
+  <update id="update" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGiftGoods" >
+    update promotion_gift_goods
+    set
+			promotion_id = #{ promotionId, javaType=int, jdbcType=INTEGER},
+				goods_id = #{ goodsId, javaType=int, jdbcType=INTEGER},
+				sku_id = #{ skuId, javaType=int, jdbcType=INTEGER},
+				count = #{ count, javaType=int, jdbcType=INTEGER},
+				is_delete = #{ isDelete, javaType=int, jdbcType=INTEGER}
+	    where 
+			id = #{ id}
+	  </update>
+
+ <select id="listForPage" resultMap="BaseResultMap"  parameterType="hashmap">
+    select id,promotion_id,goods_id,sku_id,count,is_delete
+    from promotion_gift_goods
+  </select>
+
+
+<delete id="deletes">
+		delete from promotion_gift_goods
+		where id in
+		<foreach collection="array" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}   
+	    </foreach>
+	</delete>
+
+
+<!--codegen-->
+
+</mapper>

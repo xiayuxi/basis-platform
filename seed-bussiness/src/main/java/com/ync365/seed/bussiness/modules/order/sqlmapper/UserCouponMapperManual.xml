@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.order.dao.UserCouponMapperManual">
+	 <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.UserCoupon" >
+    <id column="user_coupon_id" property="userCouponId" jdbcType="INTEGER" />
+    <result column="coupon_id" property="couponId" jdbcType="INTEGER" />
+    <result column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+    <result column="couponNo" property="couponno" jdbcType="CHAR" />
+    <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL" />
+    <result column="user_num" property="userNum" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="is_lock" property="isLock" jdbcType="INTEGER" />
+    <result column="is_valid" property="isValid" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    user_coupon_id, coupon_id, promotion_id, couponNo, coupon_amount, user_num, status, 
+    is_lock, is_valid, create_time, version
+  </sql>
+	<!-- 根据user_num,coupon_id列表查询对应的用户红包列表 -->
+	<select id="selectUserCouponList" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from user_coupon
+		<where>
+			<if test="userNum != null and userNum != '' and userNum != 'null'  ">
+				and user_num = #{userNum}
+			</if>
+			<if test="couponList != null and couponList.size > 0 ">
+				and coupon_id in
+				<foreach item="item" index="index" collection="couponList"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<!-- 更新用户红包 -->
+	<update id="updateUserCoupon" parameterType="map">
+		update
+		user_coupon
+		set is_lock = #{isLock},status = #{status}
+		where
+		user_coupon_id =
+		#{userCouponId} and version = #{version} and status =
+		#{status}
+	</update>
+
+
+	<!-- 查询可用红包 ken -->
+	<select id="selectValidUserCouponList"
+		resultType="com.ync365.seed.bussiness.modules.order.bo.UserCouponBO"
+		parameterType="hashmap">
+		SELECT
+		t1.user_coupon_id AS userCouponId,
+		t1.coupon_id AS couponId,
+		t1.promotion_id AS promotionId,
+		t1.coupon_amount AS couponAmount,
+		t1.user_num AS userNum,
+		t1.status AS STATUS,
+		t1.is_lock AS isLock,
+		t1.is_valid AS isValid,
+		t1.create_time AS createTime,
+		t1.version AS
+		VERSION,
+		t2.remark AS remark ,
+		t3.valid_start AS validStart,
+		t3.valid_end AS validEnd,
+		t2.promotion_name as promotionName,
+		t4.limited_amount as limitedAmount,
+		t3.description as description,
+		t1.couponNo as
+		couponNo
+		FROM
+		user_coupon AS t1
+		LEFT JOIN promotion AS t2
+		ON
+		t1.promotion_id =
+		t2.promotion_id
+		INNER JOIN coupon AS t3
+		ON
+		t1.coupon_id
+		= t3.coupon_id
+		left join promotion_coupon as t4 on
+		t4.promotion_id =
+		t1.promotion_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null">
+				AND t1.status = #{status}
+			</if>
+			<if test="isLock != null">
+				AND t1.is_lock = #{isLock}
+			</if>
+			<if test="isValid != null">
+				AND t1.is_valid = #{isValid}
+			</if>
+			<if test="currentDate != null and currentDate != '' ">
+				AND #{currentDate} BETWEEN t3.valid_start AND
+				t3.valid_end
+			</if>
+		</where>
+	</select>
+<!-- 查询可用红包 ken -->
+	<select id="selectValidUserCouponListByPage"
+		resultType="com.ync365.seed.bussiness.modules.order.bo.UserCouponBO"
+		parameterType="map">
+		SELECT
+		t1.user_coupon_id AS userCouponId,
+		t1.coupon_id AS couponId,
+		t1.promotion_id AS promotionId,
+		t1.coupon_amount AS couponAmount,
+		t1.user_num AS userNum,
+		t1.status AS STATUS,
+		t1.is_lock AS isLock,
+		t1.is_valid AS isValid,
+		t1.create_time AS createTime,
+		t1.version AS
+		VERSION,
+		t2.remark AS remark ,
+		t3.valid_start AS validStart,
+		t3.valid_end AS validEnd,
+		t2.promotion_name as promotionName,
+		t4.limited_amount as limitedAmount,
+		t3.description as description,
+		t1.couponNo as
+		couponNo
+		FROM
+		user_coupon AS t1
+		LEFT JOIN promotion AS t2
+		ON
+		t1.promotion_id =
+		t2.promotion_id
+		INNER JOIN coupon AS t3
+		ON
+		t1.coupon_id
+		= t3.coupon_id
+		left join promotion_coupon as t4 on
+		t4.promotion_id =
+		t1.promotion_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null">
+				AND t1.status = #{status}
+			</if>
+			<if test="isLock != null">
+				AND t1.is_lock = #{isLock}
+			</if>
+			<if test="isValid != null">
+				AND t1.is_valid = #{isValid}
+			</if>
+			<if test="currentDate != null and currentDate != '' ">
+				AND #{currentDate} BETWEEN t3.valid_start AND
+				t3.valid_end
+			</if>
+		</where>
+		limit
+			#{startIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+		
+	</select>
+	<!-- 查询可用红包数量 ken -->
+	<select id="selectValidUserCouponCount" resultType="int"
+		parameterType="hashmap">
+		SELECT
+		count(1)
+		FROM
+		user_coupon AS t1
+		LEFT JOIN promotion AS t2
+		ON
+		t1.promotion_id = t2.promotion_id
+		INNER JOIN coupon AS t3
+		ON
+		t1.coupon_id = t3.coupon_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null">
+				AND t1.status = #{status}
+			</if>
+			<if test="isLock != null">
+				AND t1.is_lock = #{isLock}
+			</if>
+			<if test="isValid != null">
+				AND t1.is_valid = #{isValid}
+			</if>
+			<if test="currentDate != null and currentDate != '' ">
+				AND #{currentDate} BETWEEN t3.valid_start AND
+				t3.valid_end
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询不可用红包 ken -->
+	<select id="selectInvalidUserCouponList"
+		resultType="com.ync365.seed.bussiness.modules.order.bo.UserCouponBO"
+		parameterType="hashmap">
+		SELECT
+		t1.user_coupon_id AS userCouponId,
+		t1.coupon_id AS couponId,
+		t1.promotion_id AS promotionId,
+		t1.coupon_amount AS couponAmount,
+		t1.user_num AS userNum,
+		t1.status AS STATUS,
+		t1.is_lock AS isLock,
+		t1.is_valid AS isValid,
+		t1.create_time AS createTime,
+		t1.version AS
+		VERSION,
+		t2.remark AS remark,
+		t3.valid_start AS validStart,
+		t3.valid_end
+		AS validEnd,
+		t2.promotion_name as promotionName,
+		t4.limited_amount as
+		limitedAmount,
+		t3.description as description,
+		t1.couponNo as
+		couponNo
+		FROM
+		user_coupon AS
+		t1
+		LEFT JOIN promotion AS
+		t2
+		ON
+		t1.promotion_id =
+		t2.promotion_id
+		INNER JOIN
+		coupon AS t3
+		ON
+		t1.coupon_id
+		= t3.coupon_id
+		left
+		join promotion_coupon as
+		t4 on
+		t4.promotion_id =
+		t1.promotion_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null">
+				AND t1.status = #{status}
+			</if>
+			<if test="isLock != null">
+				AND t1.is_lock = #{isLock}
+			</if>
+			<if test="isValid != null">
+				AND (t1.is_valid = #{isValid}
+				  OR #{currentDate} > t3.valid_end)
+			</if>
+		</where>
+	</select>
+<!-- 查询不可用红包 ken -->
+	<select id="selectInvalidUserCouponListByPage"
+		resultType="com.ync365.seed.bussiness.modules.order.bo.UserCouponBO"
+		parameterType="map">
+		SELECT
+		t1.user_coupon_id AS userCouponId,
+		t1.coupon_id AS couponId,
+		t1.promotion_id AS promotionId,
+		t1.coupon_amount AS couponAmount,
+		t1.user_num AS userNum,
+		t1.status AS STATUS,
+		t1.is_lock AS isLock,
+		t1.is_valid AS isValid,
+		t1.create_time AS createTime,
+		t1.version AS
+		VERSION,
+		t2.remark AS remark,
+		t3.valid_start AS validStart,
+		t3.valid_end
+		AS validEnd,
+		t2.promotion_name as promotionName,
+		t4.limited_amount as
+		limitedAmount,
+		t3.description as description,
+		t1.couponNo as
+		couponNo
+		FROM
+		user_coupon AS
+		t1
+		LEFT JOIN promotion AS
+		t2
+		ON
+		t1.promotion_id =
+		t2.promotion_id
+		INNER JOIN
+		coupon AS t3
+		ON
+		t1.coupon_id
+		= t3.coupon_id
+		left
+		join promotion_coupon as
+		t4 on
+		t4.promotion_id =
+		t1.promotion_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null">
+				AND t1.status = #{status}
+			</if>
+			<if test="isLock != null">
+				AND t1.is_lock = #{isLock}
+			</if>
+			<if test="isValid != null">
+				AND (t1.is_valid = #{isValid}
+				  OR #{currentDate} > t3.valid_end)
+			</if>
+		</where>
+	</select>
+	<!-- 查询不可用红包数量 ken -->
+	<select id="selectInvalidUserCouponCount" resultType="int"
+		parameterType="hashmap">
+		SELECT
+		count(1)
+		FROM
+		user_coupon AS t1
+		LEFT JOIN promotion AS t2
+		ON
+		t1.promotion_id = t2.promotion_id
+		INNER JOIN coupon AS t3
+		ON
+		t1.coupon_id = t3.coupon_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null">
+				AND t1.status = #{status}
+			</if>
+			<if test="isLock != null">
+				AND t1.is_lock = #{isLock}
+			</if>
+			<if test="isValid != null">
+				AND (t1.is_valid = #{isValid}
+				OR #{currentDate} > t3.valid_end)
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询已使用红包 ken -->
+	<select id="selectUsedUserCouponList"
+		resultType="com.ync365.seed.bussiness.modules.order.bo.UserCouponBO"
+		parameterType="hashmap">
+		SELECT
+		t1.user_coupon_id AS userCouponId,
+		t1.coupon_id AS couponId,
+		t1.promotion_id AS promotionId,
+		t1.coupon_amount AS couponAmount,
+		t1.user_num AS userNum,
+		t1.status AS STATUS,
+		t1.is_lock AS isLock,
+		t1.is_valid AS isValid,
+		t1.create_time AS createTime,
+		t1.version AS
+		VERSION,
+		t2.remark AS remark,
+		t3.valid_start AS validStart,
+		t3.valid_end
+		AS validEnd,
+		t2.promotion_name as promotionName,
+		t4.limited_amount as
+		limitedAmount,
+		t3.description as description,
+		t1.couponNo as
+		couponNo
+		FROM
+		user_coupon AS t1
+		LEFT JOIN
+		promotion AS
+		t2
+		ON
+		t1.promotion_id =
+		t2.promotion_id
+		INNER JOIN coupon AS
+		t3
+		ON
+		t1.coupon_id
+		= t3.coupon_id
+		left
+		join promotion_coupon as t4 on
+		t4.promotion_id =
+		t1.promotion_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null and isLock != null">
+				AND (t1.status = #{status} OR t1.is_lock = #{isLock} )
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询已使用红包 ken -->
+	<select id="selectUsedUserCouponListByPage"
+		resultType="com.ync365.seed.bussiness.modules.order.bo.UserCouponBO"
+		parameterType="hashmap">
+		SELECT
+		t1.user_coupon_id AS userCouponId,
+		t1.coupon_id AS couponId,
+		t1.promotion_id AS promotionId,
+		t1.coupon_amount AS couponAmount,
+		t1.user_num AS userNum,
+		t1.status AS STATUS,
+		t1.is_lock AS isLock,
+		t1.is_valid AS isValid,
+		t1.create_time AS createTime,
+		t1.version AS
+		VERSION,
+		t2.remark AS remark,
+		t3.valid_start AS validStart,
+		t3.valid_end
+		AS validEnd,
+		t2.promotion_name as promotionName,
+		t4.limited_amount as
+		limitedAmount,
+		t3.description as description,
+		t1.couponNo as
+		couponNo
+		FROM
+		user_coupon AS t1
+		LEFT JOIN
+		promotion AS
+		t2
+		ON
+		t1.promotion_id =
+		t2.promotion_id
+		INNER JOIN coupon AS
+		t3
+		ON
+		t1.coupon_id
+		= t3.coupon_id
+		left
+		join promotion_coupon as t4 on
+		t4.promotion_id =
+		t1.promotion_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null and isLock != null">
+				AND (t1.status = #{status} OR t1.is_lock = #{isLock} )
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询已使用红包 ken -->
+	<select id="selectUsedUserCouponCount" resultType="int"
+		parameterType="hashmap">
+		SELECT
+		count(*)
+		FROM
+		user_coupon AS t1
+		LEFT JOIN promotion AS
+		t2
+		ON
+		t1.promotion_id = t2.promotion_id
+		<where>
+			<if test="userNum != null and userNum != '' ">
+				t1.user_num = #{userNum}
+			</if>
+			<if test="status != null and isLock != null">
+				AND (t1.status = #{status} OR t1.is_lock = #{isLock} )
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据订单查询用户使用的红包 -->
+	<select id="selectUserCouponListByOrderNo" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		b.user_coupon_id, b.coupon_id, b.promotion_id,
+		b.coupon_amount,
+		b.user_num, b.status, b.is_lock, b.is_valid,
+		b.create_time, b.version,b.couponNo
+		from order_coupon a left join user_coupon b on
+		a.user_coupon_id=b.user_coupon_id
+		where a.order_no = #{orderNo}
+	</select>
+	<!-- 根据用户编号查询参加的 -->
+	<select id="selectPromotionIdByUserNum" resultType="Integer" parameterType="map">
+		select
+		distinct(promotion_id)
+		from user_coupon
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum ,jdbcType=CHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

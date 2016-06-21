@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.ad.dao.ArticleDao" >
+ <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.ad.entity.Article" >
+    <id column="article_id" property="articleId" jdbcType="INTEGER" />
+    <result column="category_id" property="categoryId" jdbcType="SMALLINT" />
+    <result column="expert_id" property="expertId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="tags" property="tags" jdbcType="VARCHAR" />
+    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="article_type" property="articleType" jdbcType="BIT" />
+    <result column="is_show" property="isShow" jdbcType="BIT" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="file_url" property="fileUrl" jdbcType="VARCHAR" />
+    <result column="open_type" property="openType" jdbcType="BIT" />
+    <result column="link" property="link" jdbcType="VARCHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="visit_num" property="visitNum" jdbcType="INTEGER" />
+    <result column="hot" property="hot" jdbcType="INTEGER" />
+    <result column="article_img" property="articleImg" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="big_img" property="bigImg" jdbcType="VARCHAR" />
+    <result column="small_img" property="smallImg" jdbcType="VARCHAR" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    article_id, category_id, expert_id, title, author, tags, keywords, article_type, 
+    is_show, add_time, file_url, open_type, link, brief, description, visit_num, hot, 
+    article_img, source, big_img, small_img,is_del,seq
+  </sql>
+ 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from article
+    where 
+    	is_del = 0 and article_id = #{articleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from article
+    where article_id = #{articleId,jdbcType=INTEGER}
+  </delete>
+  <update id="deleteByArticleId" parameterType="java.lang.Integer">
+  	update article
+  	set is_del = 1
+  	where article_id = #{articleId,jdbcType=INTEGER}
+  </update>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Article" >
+    insert into article (article_id, category_id, expert_id, 
+      title, author, tags, 
+      keywords, article_type, is_show, 
+      add_time, file_url, open_type, 
+      link, brief, description, 
+      visit_num, hot, article_img, 
+      source, big_img, small_img,is_del,seq
+      )
+    values (#{articleId,jdbcType=INTEGER}, #{categoryId,jdbcType=SMALLINT}, #{expertId,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{tags,jdbcType=VARCHAR}, 
+      #{keywords,jdbcType=VARCHAR}, #{articleType,jdbcType=BIT}, #{isShow,jdbcType=BIT}, 
+      #{addTime,jdbcType=TIMESTAMP}, #{fileUrl,jdbcType=VARCHAR}, #{openType,jdbcType=BIT}, 
+      #{link,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{visitNum,jdbcType=INTEGER}, #{hot,jdbcType=INTEGER}, #{articleImg,jdbcType=VARCHAR}, 
+      #{source,jdbcType=VARCHAR}, #{bigImg,jdbcType=VARCHAR}, #{smallImg,jdbcType=VARCHAR},
+      #{isDel,jdbcType=INTEGER}, #{seq,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="articleId"
+  parameterType="com.ync365.seed.bussiness.modules.ad.entity.Article" >
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="articleId != null" >
+        article_id,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="expertId != null" >
+        expert_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="tags != null" >
+        tags,
+      </if>
+      <if test="keywords != null" >
+        keywords,
+      </if>
+      <if test="articleType != null" >
+        article_type,
+      </if>
+      <if test="isShow != null" >
+        is_show,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="fileUrl != null" >
+        file_url,
+      </if>
+      <if test="openType != null" >
+        open_type,
+      </if>
+      <if test="link != null" >
+        link,
+      </if>
+      <if test="brief != null" >
+        brief,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="visitNum != null" >
+        visit_num,
+      </if>
+      <if test="hot != null" >
+        hot,
+      </if>
+      <if test="articleImg != null" >
+        article_img,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="bigImg != null" >
+        big_img,
+      </if>
+      <if test="smallImg != null" >
+        small_img,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="isDel != null" >
+        seq,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="articleId != null" >
+        #{articleId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=SMALLINT},
+      </if>
+      <if test="expertId != null" >
+        #{expertId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="tags != null" >
+        #{tags,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null" >
+        #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="articleType != null" >
+        #{articleType,jdbcType=BIT},
+      </if>
+      <if test="isShow != null" >
+        #{isShow,jdbcType=BIT},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileUrl != null" >
+        #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="openType != null" >
+        #{openType,jdbcType=BIT},
+      </if>
+      <if test="link != null" >
+        #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="visitNum != null" >
+        #{visitNum,jdbcType=INTEGER},
+      </if>
+      <if test="hot != null" >
+        #{hot,jdbcType=INTEGER},
+      </if>
+      <if test="articleImg != null" >
+        #{articleImg,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="bigImg != null" >
+        #{bigImg,jdbcType=VARCHAR},
+      </if>
+      <if test="smallImg != null" >
+        #{smallImg,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        #{isDel,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Article" >
+     update article
+    <set >
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=SMALLINT},
+      </if>
+      <if test="expertId != null" >
+        expert_id = #{expertId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="tags != null" >
+        tags = #{tags,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null" >
+        keywords = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="articleType != null" >
+        article_type = #{articleType,jdbcType=BIT},
+      </if>
+      <if test="isShow != null" >
+        is_show = #{isShow,jdbcType=BIT},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileUrl != null" >
+        file_url = #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="openType != null" >
+        open_type = #{openType,jdbcType=BIT},
+      </if>
+      <if test="link != null" >
+        link = #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="visitNum != null" >
+        visit_num = #{visitNum,jdbcType=INTEGER},
+      </if>
+      <if test="hot != null" >
+        hot = #{hot,jdbcType=INTEGER},
+      </if>
+      <if test="articleImg != null" >
+        article_img = #{articleImg,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="bigImg != null" >
+        big_img = #{bigImg,jdbcType=VARCHAR},
+      </if>
+      <if test="smallImg != null" >
+        small_img = #{smallImg,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where article_id = #{articleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Article" >
+     update article
+    set category_id = #{categoryId,jdbcType=SMALLINT},
+      expert_id = #{expertId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      tags = #{tags,jdbcType=VARCHAR},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      article_type = #{articleType,jdbcType=BIT},
+      is_show = #{isShow,jdbcType=BIT},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      file_url = #{fileUrl,jdbcType=VARCHAR},
+      open_type = #{openType,jdbcType=BIT},
+      link = #{link,jdbcType=VARCHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      visit_num = #{visitNum,jdbcType=INTEGER},
+      hot = #{hot,jdbcType=INTEGER},
+      article_img = #{articleImg,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
+      big_img = #{bigImg,jdbcType=VARCHAR},
+      small_img = #{smallImg,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=DECIMAL}
+    where article_id = #{articleId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 根据显示条数，栏目查询对应的文章记录 -->
+  <select id="selectArticlePageList"  resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+			article
+		<where>
+			is_del = 0
+			<if test="name != null and name !='null' and name != ''">
+				and name like '%${name}%'
+			</if>
+		</where>
+		<if test="startIndex != null  and pageSize != null ">
+			limit #{startIndex}  ,   #{pageSize}
+		</if>
+  </select>
+  
+  <select id="selectArticleList" resultMap="BaseResultMap" parameterType="map">
+  		select
+		<include refid="Base_Column_List" />
+		from
+			article
+		<where>
+			is_del = 0
+			 <if test="categoryId != null  ">
+			 	and category_id = #{categoryId}
+			 </if>
+		</where>
+		limit #{pageSize}
+		
+  </select>
+  
+  <select id="countByArticleCategory" resultType="Integer" parameterType="java.lang.Integer">
+  		select count(1)
+		from article 
+		where is_del = 0 and category_id = #{id}
+
+  </select>
+  
+</mapper>

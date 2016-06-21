@@ -1,0 +1,60 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+
+
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" media="screen" type="text/css"
+	href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+
+<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+	
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<title>Insert title here</title>
+</head>
+		<div class="selectList">
+	        <select class="category1" name="categoryIds[0]">
+	            <option>请选择</option>
+	        </select><br>
+	        <select class="category2" name="categoryIds[1]">
+	            <option>请选择</option>
+	        </select><br>
+	        <select class="category3" name="categoryIds[2]">
+	            <option>请选择</option>
+	        </select>
+	    </div>
+
+<!-- 类别三级联动 -->
+
+<script type="text/javascript">
+var areaJson = {};
+$(function(){
+	$.getJSON("${ctx}/category/getree",function(data){
+        areaJson =data;
+        setHtml(0,".category1");
+    });
+	$(".category1").change(function(){
+		setHtml(this.value,".category2");
+		setHtml("<option value=''>请选择</option>",".category3")
+	});
+	$(".category2").change(function(){
+		setHtml(this.value,".category3")
+	});
+});
+function setHtml(parentId,selectId){
+	var temp_html = "<option value=''>请选择</option>";
+	$.each(areaJson,function(i,category1){
+    	if(category1.pId==parentId){
+            temp_html+="<option value='"+category1.id+"'>"+category1.name+"</option>";
+    	}
+    });
+	$(selectId).html(temp_html);
+}
+ </script>

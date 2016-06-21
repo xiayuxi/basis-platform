@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ync365.seed</groupId>
+		<artifactId>seed-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../seed-parent/</relativePath>
+	</parent>
+	<artifactId>seed-service-impl</artifactId>
+	<packaging>jar</packaging>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.ync365.seed</groupId>
+			<artifactId>seed-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ync365.seed</groupId>
+			<artifactId>seed-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ync365.seed</groupId>
+			<artifactId>seed-bussiness</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- source attach plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- enforcer, 规则统一定义在parent -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	<!-- <repositories> <repository> <id>release</id> <url>http://192.168.98.68:8081/nexus/content/groups/public/</url> 
+		</repository> </repositories> -->
+</project>

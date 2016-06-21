@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopStoreCategoryRelationshipMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreCategoryRelationship" >
+    <result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	  pop_store_num,category_id
+	</sql>
+  
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStoreCategoryRelationship" >
+    insert into sys_pop_store_category_relationship
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="popStoreNum != null" >
+        pop_store_num,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="popStoreNum != null" >
+        #{popStoreNum,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store_category_relationship
+		<where>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="categoryId != null">
+				and category_id = #{categoryId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<select id="selectPageCount" parameterType="map" resultType="int">
+		select
+		count(1)
+		from sys_pop_store_category_relationship
+		<where>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="categoryId != null">
+				and category_id = #{categoryId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		sys_pop_store_category_relationship
+		where  pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteByPopstoreNumAndCategoryId" parameterType="map">
+		DELETE  FROM sys_pop_store_category_relationship   
+			where  pop_store_num=#{popStoreNum,jdbcType=VARCHAR}
+			and category_id=#{categoryId,jdbcType=VARCHAR}
+	</delete>
+</mapper>

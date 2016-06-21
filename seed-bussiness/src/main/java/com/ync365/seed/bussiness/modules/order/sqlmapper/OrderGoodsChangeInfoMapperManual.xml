@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderGoodsChangeInfoMapperManual" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsChangeInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_goods_id" property="orderGoodsId" jdbcType="INTEGER" />
+    <result column="after_goods_price" property="afterGoodsPrice" jdbcType="DECIMAL" />
+    <result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+    <result column="change_num" property="changeNum" jdbcType="CHAR" />
+    <result column="change_name" property="changeName" jdbcType="VARCHAR" />
+    <result column="change_time" property="changeTime" jdbcType="TIMESTAMP" />
+    <result column="audit_num" property="auditNum" jdbcType="CHAR" />
+    <result column="audit_name" property="auditName" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_goods_id, after_goods_price, audit_status, change_num, change_name, change_time, 
+    audit_num, audit_name, audit_time
+  </sql>
+  
+  <!-- 获取商品单价的改价记录 -->
+  <select id="getOrderGoodsChangeLogsByOrderGoodsId" parameterType="Integer" resultMap="BaseResultMap">
+  	SELECT * FROM order_goods_change_info  WHERE order_goods_id = #{id,jdbcType=INTEGER} ORDER BY change_time 
+  </select> 
+  
+  <!-- 修改审核状态 -->
+   <update id="updateStatusByOrderGoodsId" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsChangeInfo" >
+    update order_goods_change_info
+    <set >      
+      <if test="auditStatus != null" >
+        audit_status = #{auditStatus,jdbcType=INTEGER},
+      </if>     
+      <if test="auditNum != null" >
+        audit_num = #{auditNum,jdbcType=CHAR},
+      </if>
+      <if test="auditName != null" >
+        audit_name = #{auditName,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+   WHERE order_goods_id= #{orderGoodsId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

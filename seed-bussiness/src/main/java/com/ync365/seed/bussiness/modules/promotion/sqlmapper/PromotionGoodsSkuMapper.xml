@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.promotion.dao.PromotionGoodsSkuMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGoodsSku" >
+    <id column="promotion_goods_sku_id" property="promotionGoodsSkuId" jdbcType="INTEGER" />
+    <result column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="promotion_price" property="promotionPrice" jdbcType="DECIMAL" />
+    <result column="discount" property="discount" jdbcType="DECIMAL" />
+    <result column="village_expense" property="villageExpense" jdbcType="DECIMAL" />
+    <result column="platform_expense" property="platformExpense" jdbcType="DECIMAL" />
+    <result column="a_expense" property="aExpense" jdbcType="DECIMAL" />
+    <result column="manpowerCosts" property="manpowercosts" jdbcType="DECIMAL" />
+    <result column="lc_expense" property="lcExpense" jdbcType="DECIMAL" />
+    <result column="integral_expense" property="integralExpense" jdbcType="DECIMAL" />
+    <result column="engineer_expense" property="engineerExpense" jdbcType="DECIMAL" />
+    <result column="promotion_amount" property="promotionAmount" jdbcType="DECIMAL" />
+    <result column="create_user_num" property="createUserNum" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user_num" property="updateUserNum" jdbcType="CHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    promotion_goods_sku_id, promotion_id, goods_id, sku_id, promotion_price, discount, 
+    village_expense, platform_expense, a_expense, manpowerCosts, lc_expense, integral_expense, 
+    engineer_expense, promotion_amount, create_user_num, create_time, update_user_num, 
+    update_time, is_delete
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from promotion_goods_sku
+    where promotion_goods_sku_id = #{promotionGoodsSkuId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from promotion_goods_sku
+    where promotion_goods_sku_id = #{promotionGoodsSkuId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGoodsSku" >
+    insert into promotion_goods_sku (promotion_goods_sku_id, promotion_id, 
+      goods_id, sku_id, promotion_price, 
+      discount, village_expense, platform_expense, 
+      a_expense, manpowerCosts, lc_expense, 
+      integral_expense, engineer_expense, promotion_amount, 
+      create_user_num, create_time, update_user_num, 
+      update_time, is_delete)
+    values (#{promotionGoodsSkuId,jdbcType=INTEGER}, #{promotionId,jdbcType=INTEGER}, 
+      #{goodsId,jdbcType=INTEGER}, #{skuId,jdbcType=INTEGER}, #{promotionPrice,jdbcType=DECIMAL}, 
+      #{discount,jdbcType=DECIMAL}, #{villageExpense,jdbcType=DECIMAL}, #{platformExpense,jdbcType=DECIMAL}, 
+      #{aExpense,jdbcType=DECIMAL}, #{manpowercosts,jdbcType=DECIMAL}, #{lcExpense,jdbcType=DECIMAL}, 
+      #{integralExpense,jdbcType=DECIMAL}, #{engineerExpense,jdbcType=DECIMAL}, #{promotionAmount,jdbcType=DECIMAL}, 
+      #{createUserNum,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateUserNum,jdbcType=CHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGoodsSku" >
+    insert into promotion_goods_sku
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="promotionGoodsSkuId != null" >
+        promotion_goods_sku_id,
+      </if>
+      <if test="promotionId != null" >
+        promotion_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="promotionPrice != null" >
+        promotion_price,
+      </if>
+      <if test="discount != null" >
+        discount,
+      </if>
+      <if test="villageExpense != null" >
+        village_expense,
+      </if>
+      <if test="platformExpense != null" >
+        platform_expense,
+      </if>
+      <if test="aExpense != null" >
+        a_expense,
+      </if>
+      <if test="manpowercosts != null" >
+        manpowerCosts,
+      </if>
+      <if test="lcExpense != null" >
+        lc_expense,
+      </if>
+      <if test="integralExpense != null" >
+        integral_expense,
+      </if>
+      <if test="engineerExpense != null" >
+        engineer_expense,
+      </if>
+      <if test="promotionAmount != null" >
+        promotion_amount,
+      </if>
+      <if test="createUserNum != null" >
+        create_user_num,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUserNum != null" >
+        update_user_num,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="promotionGoodsSkuId != null" >
+        #{promotionGoodsSkuId,jdbcType=INTEGER},
+      </if>
+      <if test="promotionId != null" >
+        #{promotionId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="promotionPrice != null" >
+        #{promotionPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null" >
+        #{discount,jdbcType=DECIMAL},
+      </if>
+      <if test="villageExpense != null" >
+        #{villageExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="platformExpense != null" >
+        #{platformExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="aExpense != null" >
+        #{aExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="manpowercosts != null" >
+        #{manpowercosts,jdbcType=DECIMAL},
+      </if>
+      <if test="lcExpense != null" >
+        #{lcExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="integralExpense != null" >
+        #{integralExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="engineerExpense != null" >
+        #{engineerExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="promotionAmount != null" >
+        #{promotionAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="createUserNum != null" >
+        #{createUserNum,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserNum != null" >
+        #{updateUserNum,jdbcType=CHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGoodsSku" >
+    update promotion_goods_sku
+    <set >
+      <if test="promotionId != null" >
+        promotion_id = #{promotionId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        sku_id = #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="promotionPrice != null" >
+        promotion_price = #{promotionPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null" >
+        discount = #{discount,jdbcType=DECIMAL},
+      </if>
+      <if test="villageExpense != null" >
+        village_expense = #{villageExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="platformExpense != null" >
+        platform_expense = #{platformExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="aExpense != null" >
+        a_expense = #{aExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="manpowercosts != null" >
+        manpowerCosts = #{manpowercosts,jdbcType=DECIMAL},
+      </if>
+      <if test="lcExpense != null" >
+        lc_expense = #{lcExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="integralExpense != null" >
+        integral_expense = #{integralExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="engineerExpense != null" >
+        engineer_expense = #{engineerExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="promotionAmount != null" >
+        promotion_amount = #{promotionAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="createUserNum != null" >
+        create_user_num = #{createUserNum,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserNum != null" >
+        update_user_num = #{updateUserNum,jdbcType=CHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=INTEGER},
+      </if>
+    </set>
+    where promotion_goods_sku_id = #{promotionGoodsSkuId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGoodsSku" >
+    update promotion_goods_sku
+    set promotion_id = #{promotionId,jdbcType=INTEGER},
+      goods_id = #{goodsId,jdbcType=INTEGER},
+      sku_id = #{skuId,jdbcType=INTEGER},
+      promotion_price = #{promotionPrice,jdbcType=DECIMAL},
+      discount = #{discount,jdbcType=DECIMAL},
+      village_expense = #{villageExpense,jdbcType=DECIMAL},
+      platform_expense = #{platformExpense,jdbcType=DECIMAL},
+      a_expense = #{aExpense,jdbcType=DECIMAL},
+      manpowerCosts = #{manpowercosts,jdbcType=DECIMAL},
+      lc_expense = #{lcExpense,jdbcType=DECIMAL},
+      integral_expense = #{integralExpense,jdbcType=DECIMAL},
+      engineer_expense = #{engineerExpense,jdbcType=DECIMAL},
+      promotion_amount = #{promotionAmount,jdbcType=DECIMAL},
+      create_user_num = #{createUserNum,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user_num = #{updateUserNum,jdbcType=CHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=INTEGER}
+    where promotion_goods_sku_id = #{promotionGoodsSkuId,jdbcType=INTEGER}
+  </update>
+</mapper>

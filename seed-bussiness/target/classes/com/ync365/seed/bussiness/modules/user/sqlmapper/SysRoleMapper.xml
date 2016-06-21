@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysRole" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="is_del" property="isDel" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, role_name, description,is_del
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysRole" keyProperty="id" useGeneratedKeys="true" >
+    insert into sys_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roleName != null" >
+        role_name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="isDel != null">
+		is_del,
+		</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+		#{isDel,jdbcType=BIT},
+		</if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysRole" >
+    update sys_role
+    <set >
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+		<if test="isDel != null">
+			is_del = #{isDel,jdbcType=BIT},
+		</if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysRole" >
+    update sys_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <!-- 查找list -->
+	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List"></include>
+		from
+		sys_role 
+		<where>
+			<if test="roleName != null and roleName !=''" >
+		        and role_name = #{roleName,jdbcType=VARCHAR}
+		   	</if>
+		    <if test="description != null and description !=''" >
+		        and description = #{description,jdbcType=VARCHAR}
+		    </if>
+			<if test="isDel != null">
+				and is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</where>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	<!-- 按条件查询交易记录数 -->
+	<select id="selectPageCount" resultType="Integer" parameterType="map">
+		select count(1) 
+		 from sys_role
+		<where>
+			<if test="roleName != null and roleName !=''" >
+		        and role_name = #{roleName,jdbcType=VARCHAR}
+		   	</if>
+		    <if test="description != null and description !=''" >
+		        and description = #{description,jdbcType=VARCHAR}
+		    </if>
+		    <if test="isDel != null">
+				and is_del = #{isDel,jdbcType=BIT}
+			</if>
+			
+		</where>
+	</select>
+	
+	
+	<select id="selectSysRoleByAdminNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select a.* from sys_role a 
+			LEFT JOIN sys_user_role b on a.id = b.role_id
+			LEFT JOIN sys_admin c on b.user_num = c.admin_num
+			where c.admin_num = #{adminNum,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectRoleAllByParam" parameterType="map" resultMap="BaseResultMap">
+		 select 
+		    <include refid="Base_Column_List" />
+		    from sys_role
+	</select>
+</mapper>

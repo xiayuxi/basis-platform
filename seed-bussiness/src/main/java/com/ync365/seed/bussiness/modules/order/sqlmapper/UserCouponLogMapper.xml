@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.UserCouponLogMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.UserCouponLog" >
+    <id column="user_coupon_log_id" property="userCouponLogId" jdbcType="INTEGER" />
+    <result column="user_coupon_id" property="userCouponId" jdbcType="INTEGER" />
+    <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="user_num" property="userNum" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    user_coupon_log_id, user_coupon_id, coupon_amount, order_id, user_num, status, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_coupon_log
+    where user_coupon_log_id = #{userCouponLogId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_coupon_log
+    where user_coupon_log_id = #{userCouponLogId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.UserCouponLog" >
+    insert into user_coupon_log (user_coupon_log_id, user_coupon_id, coupon_amount, 
+      order_id, user_num, status, 
+      create_time)
+    values (#{userCouponLogId,jdbcType=INTEGER}, #{userCouponId,jdbcType=INTEGER}, #{couponAmount,jdbcType=DECIMAL}, 
+      #{orderId,jdbcType=INTEGER}, #{userNum,jdbcType=CHAR}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.UserCouponLog" >
+    insert into user_coupon_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userCouponLogId != null" >
+        user_coupon_log_id,
+      </if>
+      <if test="userCouponId != null" >
+        user_coupon_id,
+      </if>
+      <if test="couponAmount != null" >
+        coupon_amount,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userCouponLogId != null" >
+        #{userCouponLogId,jdbcType=INTEGER},
+      </if>
+      <if test="userCouponId != null" >
+        #{userCouponId,jdbcType=INTEGER},
+      </if>
+      <if test="couponAmount != null" >
+        #{couponAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="userNum != null" >
+        #{userNum,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.UserCouponLog" >
+    update user_coupon_log
+    <set >
+      <if test="userCouponId != null" >
+        user_coupon_id = #{userCouponId,jdbcType=INTEGER},
+      </if>
+      <if test="couponAmount != null" >
+        coupon_amount = #{couponAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="userNum != null" >
+        user_num = #{userNum,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_coupon_log_id = #{userCouponLogId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.UserCouponLog" >
+    update user_coupon_log
+    set user_coupon_id = #{userCouponId,jdbcType=INTEGER},
+      coupon_amount = #{couponAmount,jdbcType=DECIMAL},
+      order_id = #{orderId,jdbcType=INTEGER},
+      user_num = #{userNum,jdbcType=CHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where user_coupon_log_id = #{userCouponLogId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,1228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderMapperManual">
+	<resultMap id="OrderInfoResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderManual">
+		<id column="id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="pay_fee" property="payFee" jdbcType="DECIMAL" />
+		<result column="order_status" property="status" jdbcType="INTEGER" />
+		<result column="has_sub" property="hasSub" jdbcType="INTEGER" />
+		<result column="username" property="bookOrderUserName"
+			jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="pay_way" property="payWay" jdbcType="INTEGER" />
+		<collection property="subList" resultMap="subOrderList" />
+		<collection property="goodsList" resultMap="orderGoodsList" />
+	</resultMap>
+	<resultMap id="orderGoodsList"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderGoods">
+		<id column="ogid" property="id" jdbcType="INTEGER" />
+		<result column="goods_name" property="goodsName" jdbcType="CHAR" />
+		<result column="sku_id" property="skuId" jdbcType="INTEGER" />
+		<result column="goods_url" property="goodsUrl" jdbcType="VARCHAR" />
+		<result column="goods_count" property="goodsCount" jdbcType="INTEGER" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="subOrderList"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderSubManual">
+		<id property="id" column="sid" jdbcType="INTEGER" />
+		<result column="sorder_sub_no" property="orderSubNo" jdbcType="CHAR" />
+		<result column="sorder_status" property="status" jdbcType="INTEGER" />
+		<result column="spay_fee" property="payFee" jdbcType="DECIMAL" />
+		<collection property="goodsList" resultMap="subOrderGoods" />
+	</resultMap>
+	<resultMap id="subOrderGoods"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderGoods">
+		<id column="sogid" property="id" jdbcType="INTEGER" />
+		<result column="sgoods_name" property="goodsName" jdbcType="CHAR" />
+		<result column="ssku_id" property="skuId" jdbcType="INTEGER" />
+		<result column="sgoods_url" property="goodsUrl" jdbcType="VARCHAR" />
+		<result column="sgoods_count" property="goodsCount" jdbcType="INTEGER" />
+		<result column="sgoods_price" property="goodsPrice" jdbcType="DECIMAL" />
+	</resultMap>
+
+	<resultMap id="OrderListResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderListInfoManual">
+		<result column="id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="username" property="userName" jdbcType="CHAR" />
+		<result column="user_num" property="userNum" jdbcType="CHAR" />
+		<result column="user_tel" property="userTel" jdbcType="CHAR" />
+		<result column="pay_fee" property="payFee" jdbcType="DECIMAL" />
+		<result column="deal_fee" property="dealFee" jdbcType="DECIMAL" />
+		<result column="deal_time" property="dealTime" jdbcType="TIMESTAMP" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="order_status" property="status" jdbcType="INTEGER" />
+		<result column="order_type" property="orderType" jdbcType="INTEGER" />
+		<result column="order_source" property="source" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="RecOrderInfoResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderManual">
+		<id column="id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="pay_fee" property="payFee" jdbcType="DECIMAL" />
+		<result column="order_status" property="status" jdbcType="INTEGER" />
+		<result column="username" property="bookOrderUserName"
+			jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="pay_way" property="payWay" jdbcType="INTEGER" />
+		<result column="order_type" property="orderType" jdbcType="INTEGER" />
+		<collection property="goodsList" resultMap="orderGoodsList" />
+	</resultMap>
+	<sql id="OrderInfo_Column_List">
+		order_id, order_no, user_num, username, create_time,
+		order_status, has_sub,
+		pay_status,
+		goods_amount, express_fee, integral,
+		integral_money, bouns_fee, back_fee, pay_type,
+		pay_fee, pay_time,
+		signin_time, remark, supply_id, supply_type,
+		flow_no, order_source,
+		order_type, is_del, is_rec_del, del_time, rec_del_time, is_sub_del,
+		all_sub_del,
+		pay_way, is_change_fee, before_change_fee,
+		after_change_fee, weight,
+		delively_no,
+		stock_no, prepared_no
+	</sql>
+	<sql id="OrderSubInfo_Column_List">
+		id, order_sub_no, order_id, order_no, user_num, username,
+		created_time,
+		order_status,
+		goods_amount, express_fee, integral,
+		integral_money, bouns_fee, back_fee,
+		signin_time,
+		remark, supply_id,
+		is_del, is_rec_del, del_time, rec_del_time, weight,
+		delively_no,
+		stock_no, prepared_no
+	</sql>
+	<select id="selectRecOrder" parameterType="map"
+		resultMap="RecOrderInfoResultMap">
+		select * from
+		((select
+		oi.id as id,
+		oi.order_no as order_no,
+		oi.actual_amount as pay_fee,
+		oi.order_status as order_status,
+		ou.username as username,
+		oi.create_time as create_time,
+		oi.pay_way as
+		pay_way,
+		0 as order_type,
+		og.id as ogid,
+		og.goods_name as goods_name,
+		og.sku_id as sku_id,
+		og.goods_url as goods_url,
+		og.goods_count as goods_count,
+		og.goods_price as goods_price from
+		(select * from order_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+		</where>
+		)oi
+		left join order_user ou on ou.id = oi.id
+		left join order_goods og on
+		oi.id = og.order_id
+		<where>
+			oi.has_sub = 0
+			<if test="isDel != null">
+				and oi.is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null">
+				and oi.is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)
+		union
+		(select osi.id as id,
+		osi.order_sub_no as order_no,
+		osi.actual_amount as pay_fee,
+		osi.order_status as order_status,
+		ou.username as username,
+		osi.create_time as create_time,
+		1 as order_type,
+		osi.pay_way as
+		pay_way,
+		og.id as ogid,
+		og.goods_name as goods_name,
+		og.sku_id as sku_id,
+		og.goods_url as goods_usl,
+		og.goods_count as goods_count,
+		og.goods_price as goods_price from
+		(select * from order_sub_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+		</where>
+		)osi
+		left join order_user ou on ou.id = osi.order_info_id
+		left join
+		order_goods_sub ogs on osi.id = ogs.order_sub_id
+		left join order_goods
+		og on ogs.order_goods_id = og.id
+		<where>
+			<if test="isDel != null">
+				and osi.is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null">
+				and osi.is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)
+		)temp
+		<where>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test="searchInfo != null">
+				and ( goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or order_no
+				=#{searchInfo,jdbcType=CHAR})
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+	<select id="countRecSelectList" resultType="Long" parameterType="map">
+		select count(*) from
+		((select
+		oi.id as id,
+		oi.order_no as order_no,
+		oi.actual_amount as pay_fee,
+		oi.order_status as order_status,
+		ou.username as username,
+		oi.create_time as create_time,
+		oi.pay_way as
+		pay_way,
+		og.id as ogid,
+		og.goods_name as goods_name,
+		og.sku_id as sku_id,
+		og.goods_url as goods_usl,
+		og.goods_count as goods_count,
+		og.goods_price as goods_price from
+		(select * from order_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+		</where>
+		)oi
+		left join order_user ou on ou.id = oi.id
+		left join order_goods og on
+		oi.id = og.order_id
+		<where>
+			oi.has_sub = 0
+			<if test="isDel != null">
+				and oi.is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null">
+				and oi.is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)
+		union
+		(select osi.id as id,
+		osi.order_sub_no as order_no,
+		osi.actual_amount as pay_fee,
+		osi.order_status as order_status,
+		ou.username as username,
+		osi.create_time as create_time,
+		osi.pay_way as
+		pay_way,
+		og.id as ogid,
+		og.goods_name as goods_name,
+		og.sku_id as sku_id,
+		og.goods_url as goods_usl,
+		og.goods_count as goods_count,
+		og.goods_price as goods_price from
+		(select * from order_sub_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+		</where>
+		)osi
+		left join order_user ou on ou.id = osi.order_info_id
+		left join
+		order_goods_sub ogs on osi.id = ogs.order_sub_id
+		left join order_goods
+		og on ogs.order_goods_id = og.id
+		<where>
+			<if test="isDel != null">
+				and osi.is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null">
+				and osi.is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)
+		)temp
+		<where>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test="searchInfo != null">
+				and ( goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or order_no
+				=#{searchInfo,jdbcType=CHAR})
+			</if>
+		</where>
+	</select>
+	<select id="selectSearchOrder" parameterType="map" resultType="Integer">
+		select
+		oi.id as id
+		from
+		(select *
+		from
+		order_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		order by create_time desc
+		<if test="startIndex != null and pageSize != null ">
+			limit
+			#{startIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+		</if>
+		) oi
+		left
+		join order_user ou on
+		ou.id = oi.id
+		left join
+		(select * from
+		order_sub_info
+		<where>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)osi on
+		ou.id = osi.order_info_id
+		and oi.has_sub = 1
+		left join
+		order_goods_sub
+		ogs on ogs.order_sub_id =
+		osi.id
+		left join order_goods
+		og1 on og1.id =
+		ogs.order_goods_id
+		left
+		join order_goods og on oi.id =
+		og.order_id and
+		oi.has_sub = 0
+		<where>
+			<if test="searchInfo != null">
+				and (og1.goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or og.goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or oi.order_no
+				=#{searchInfo,jdbcType=CHAR}
+				or osi.order_sub_no =
+				#{searchInfo,jdbcType=CHAR})
+			</if>
+		</where>
+		order by oi.create_time desc
+	</select>
+	<select id="selectSearchOrderList" parameterType="map"
+		resultMap="OrderInfoResultMap">
+		select
+		oi.id as id,
+		oi.order_no as order_no,
+		oi.actual_amount as pay_fee,
+		oi.order_status as order_status,
+		oi.has_sub as has_sub,
+		ou.username as
+		username,
+		oi.create_time as create_time,
+		oi.pay_way as pay_way,
+		osi.id as
+		sid,
+		osi.order_sub_no as sorder_sub_no,
+		osi.order_status as
+		sorder_status,
+		osi.actual_amount as spay_fee,
+		osi.order_info_id as
+		sorder_id,
+		ogs.id as
+		orgid,
+		og1.id as sogid,
+		og1.sku_id as ssku_id,
+		og1.goods_name as
+		sgoods_name,
+		og1.goods_url as sgoods_url,
+		og1.goods_count as
+		sgoods_count,
+		og1.goods_price as sgoods_price,
+		og1.order_id as
+		sgorder_id,
+		og.goods_name as goods_name,
+		og.id as ogid,
+		og.sku_id as
+		sku_id,
+		og.goods_url as goods_url,
+		og.goods_count as
+		goods_count,
+		og.goods_price as goods_price,
+		og.order_id as gorder_id
+		from
+		(select *
+		from
+		order_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+			<if test="orderIdList != null and orderIdList.size > 0">
+				and id in
+				<foreach item="item" index="index" collection="orderIdList"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		order by create_time desc
+		<if test="startIndex != null and pageSize != null ">
+			limit
+			#{startIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+		</if>
+		) oi
+		left
+		join order_user ou on
+		ou.id = oi.id
+		left join
+		(select * from
+		order_sub_info
+		<where>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)osi on
+		ou.id = osi.order_info_id
+		and oi.has_sub = 1
+		left join
+		order_goods_sub
+		ogs on ogs.order_sub_id =
+		osi.id
+		left join order_goods
+		og1 on og1.id =
+		ogs.order_goods_id
+		left
+		join order_goods og on oi.id =
+		og.order_id and
+		oi.has_sub = 0
+		<where>
+			<if test="searchInfo != null">
+				and (og1.goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or og.goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or oi.order_no
+				=#{searchInfo,jdbcType=CHAR}
+				or osi.order_sub_no =
+				#{searchInfo,jdbcType=CHAR})
+			</if>
+		</where>
+		order by oi.create_time desc
+	</select>
+	<select id="selectOrder" parameterType="map" resultMap="OrderInfoResultMap">
+		select
+		oi.id as id,
+		oi.order_no as order_no,
+		oi.actual_amount as pay_fee,
+		oi.order_status as order_status,
+		oi.has_sub as has_sub,
+		ou.username as
+		username,
+		oi.create_time as create_time,
+		oi.pay_way as pay_way,
+		osi.id as
+		sid,
+		osi.order_sub_no as sorder_sub_no,
+		osi.order_status as
+		sorder_status,
+		osi.actual_amount as spay_fee,
+		osi.order_info_id as
+		sorder_id,
+		ogs.id as
+		orgid,
+		og1.id as sogid,
+		og1.sku_id as ssku_id,
+		og1.goods_name as
+		sgoods_name,
+		og1.goods_url as sgoods_url,
+		og1.goods_count as
+		sgoods_count,
+		og1.goods_price as sgoods_price,
+		og1.order_id as
+		sgorder_id,
+		og.goods_name as goods_name,
+		og.id as ogid,
+		og.sku_id as
+		sku_id,
+		og.goods_url as goods_url,
+		og.goods_count as
+		goods_count,
+		og.goods_price as goods_price,
+		og.order_id as gorder_id
+		from
+		(select *
+		from
+		order_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+			<if test="orderIdList != null and orderIdList.size > 0">
+				and id in
+				<foreach item="item" index="index" collection="orderIdList"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		order by create_time desc
+		<if test="startIndex != null and pageSize != null ">
+			limit
+			#{startIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+		</if>
+		) oi
+		left
+		join order_user ou on
+		ou.id = oi.id
+		left join
+		(select * from
+		order_sub_info
+		<where>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)osi on
+		ou.id = osi.order_info_id
+		and oi.has_sub = 1
+		left join
+		order_goods_sub
+		ogs on ogs.order_sub_id =
+		osi.id
+		left join order_goods
+		og1 on og1.id =
+		ogs.order_goods_id
+		left
+		join order_goods og on oi.id =
+		og.order_id and
+		oi.has_sub = 0
+		order by oi.create_time desc
+	</select>
+	<select id="countSelectList" resultType="Long" parameterType="map">
+		select
+		count(distinct(oi.id))
+		from
+		(select *
+		from
+		order_info
+		<where>
+			<if test="userNum != null">
+				and user_num = #{userNum,jdbcType=CHAR}
+			</if>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="orderIdList != null and orderIdList.size > 0">
+				and id in
+				<foreach item="item" index="index" collection="orderIdList"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		) oi
+		left
+		join order_user ou on
+		ou.id = oi.id
+		left join
+		(select * from
+		order_sub_info
+		<where>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=CHAR}
+			</if>
+			<if test=" isDel != null">
+				and is_del = #{isDel,jdbcType=INTEGER}
+			</if>
+			<if test="isRecDel != null ">
+				and is_rec_del = #{isRecDel,jdbcType=INTEGER}
+			</if>
+		</where>
+		)osi on
+		ou.id = osi.order_info_id
+		and oi.has_sub = 1
+		left join
+		order_goods_sub
+		ogs on ogs.order_sub_id =
+		osi.id
+		left join order_goods
+		og1 on og1.id =
+		ogs.order_goods_id
+		left
+		join order_goods og on oi.id =
+		og.order_id and
+		oi.has_sub = 0
+		<where>
+
+			<if test="searchInfo != null">
+				and (og1.goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or og.goods_name like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or oi.order_no like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%')
+				or osi.order_sub_no like
+				CONCAT('%',#{searchInfo,jdbcType=CHAR},'%'))
+			</if>
+		</where>
+	</select>
+	<select id="orderAllListByPageInfo" resultMap="OrderListResultMap"
+		parameterType="map">
+		select
+		temp.id,
+		order_no,username,user_tel,pay_fee,deal_fee,create_time,order_status,temp.orderType,user_num
+		from (
+
+		(SELECT
+		osi.id ,osi.order_sub_no AS
+		order_no,ou.username,ou.user_tel,osi.actual_amount AS pay_fee,
+		osi.total_amount AS deal_fee,osi.create_time AS create_time,
+		osi.order_status,oi.order_source,1 as
+		orderType,oi.pay_way,oi.user_num
+		FROM
+		(select * from
+		order_sub_info
+		where
+		1=1
+		<if test="userList != null and userList.size > 0">
+			and user_num in
+			<foreach item="item" index="index" collection="userList"
+				open="(" separator="," close=")">
+				#{item.userNum}
+			</foreach>
+		</if>
+		) osi
+		LEFT JOIN order_info oi ON osi.order_info_id = oi.id
+		left join
+		order_user ou on ou.id = oi.id
+		)
+
+		UNION
+		(SELECT oi.id,oi.order_no,
+		ou.username,ou.user_tel,
+		oi.actual_amount AS pay_Fee,
+		oi.total_amount AS
+		deal_Fee,
+		oi.create_time,oi.order_status,
+		oi.order_source,0 as
+		orderType,oi.pay_way,oi.user_num
+		FROM
+		(SELECT * FROM order_info
+		WHERE
+		has_sub = 0
+		<if test="userList != null and userList.size > 0">
+			and user_num in
+			<foreach item="item" index="index" collection="userList"
+				open="(" separator="," close=")">
+				#{item.userNum}
+			</foreach>
+		</if>
+		)oi
+		LEFT JOIN order_user ou ON ou.id = oi.id
+		))temp
+		where
+		1=1
+		<if test="orderNo != null and orderNo !=''">
+			and temp.order_no = #{orderNo}
+		</if>
+		<if
+			test="status != null  and status!='' and  (status2 == null or status2 =='')">
+			and order_status = #{status}
+		</if>
+		<if
+			test="status2 != null and status != null and status2 != '' and status != ''">
+			and (order_status = #{status2} or order_status =
+			#{status})
+		</if>
+		<if test="orderSource != null">
+			and order_source = #{orderSource}
+		</if>
+		<if test="payWay != null">
+			and pay_way = #{payWay}
+		</if>
+		<if test="beginTime != null ">
+			and <![CDATA[create_time >= #{beginTime}]]>
+		</if>
+		<if test="endTime != null">
+			and <![CDATA[create_time  <= #{endTime}]]>
+		</if>
+		<if test="userTel != null and userTel != ''">
+			and user_tel = #{userTel,jdbcType=CHAR}
+		</if>
+		<if test="userName != null and userName != ''">
+			and username = #{userName,jdbcType=CHAR}
+		</if>
+		order by create_time desc
+		limit
+		#{startIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+
+	<select id="orderListByOrderID" resultMap="OrderListResultMap"
+		parameterType="map">
+		select
+		temp.id,
+		order_no,username,user_tel,pay_fee,deal_fee,create_time,order_status,order_source
+		from (
+		SELECT oi.id,oi.order_no,
+		ou.username,ou.user_tel,oi.actual_amount AS
+		pay_Fee,
+		oi.total_amount AS
+		deal_Fee,
+		oi.create_time,oi.order_status, oi.order_source,oi.user_num
+		FROM
+		(SELECT * FROM order_info
+		<where>
+			and id in
+			<foreach item="item" index="index" collection="orderIdList"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+		)oi
+		left join order_user ou on ou.id=oi.id
+		)temp
+		order by create_time
+		desc
+	</select>
+	<select id="countOrderListByOrderID" resultType="Long"
+		parameterType="map">
+		select
+		count(*)
+		from (
+		SELECT oi.id,oi.order_no,
+		ou.username,ou.user_tel,oi.actual_amount AS
+		pay_Fee,
+		oi.total_amount AS
+		deal_Fee,
+		oi.create_time,oi.order_status, oi.order_source
+		FROM
+		(SELECT *
+		FROM order_info
+		<where>
+			and id in
+			<foreach item="item" index="index" collection="orderIdList"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+		)oi
+		left join order_user ou on ou.id=oi.id
+		)temp
+		order by create_time
+		desc
+	</select>
+
+	<select id="countOrderListInfo" resultType="Long" parameterType="map">
+		select
+		count(*)
+		from (
+
+		(SELECT
+		oi.id ,osi.order_sub_no AS
+		order_no,ou.username,ou.user_tel,osi.actual_amount AS pay_fee,
+		osi.total_amount AS deal_fee,osi.create_time AS create_time,
+		osi.order_status,oi.order_source,1 as
+		orderType,oi.pay_way,oi.user_num
+		FROM
+		(select * from
+		order_sub_info
+		where
+		1=1
+		<if test="userList != null and userList.size > 0">
+			and user_num in
+			<foreach item="item" index="index" collection="userList"
+				open="(" separator="," close=")">
+				#{item.userNum}
+			</foreach>
+		</if>
+		) osi
+		LEFT JOIN order_info oi ON osi.order_info_id = oi.id
+		left join
+		order_user ou on ou.id = oi.id
+		)
+
+		UNION
+		(SELECT oi.id,oi.order_no,
+		ou.username,ou.user_tel,
+		oi.actual_amount AS pay_Fee,
+		oi.total_amount AS
+		deal_Fee,
+		oi.create_time,oi.order_status,
+		oi.order_source,0 as
+		orderType,oi.pay_way,oi.user_num
+		FROM
+		(SELECT * FROM order_info
+		WHERE
+		has_sub = 0
+		<if test="userList != null and userList.size > 0">
+			and user_num in
+			<foreach item="item" index="index" collection="userList"
+				open="(" separator="," close=")">
+				#{item.userNum}
+			</foreach>
+		</if>
+		)oi
+		LEFT JOIN order_user ou ON ou.id = oi.id
+		))temp
+		where
+		1=1
+		<if test="orderNo != null and orderNo != ''">
+			and temp.order_no = #{orderNo}
+		</if>
+		<if
+			test="status != null and status != '' and (status2 == null or status2 == '')">
+			and order_status = #{status}
+		</if>
+		<if
+			test="status2 != null and status != null and status != '' and status2 != ''">
+			and (order_status = #{status2} or order_status =
+			#{status})
+		</if>
+		<if test="orderSource != null">
+			and order_source = #{orderSource}
+		</if>
+		<if test="payWay != null">
+			and pay_way = #{payWay}
+		</if>
+		<if test="beginTime != null ">
+			and <![CDATA[create_time >= #{beginTime}]]>
+		</if>
+		<if test="endTime != null">
+			and <![CDATA[create_time  <= #{endTime}]]>
+		</if>
+		<if test="userTel != null and userTel != ''">
+			and user_tel = #{userTel,jdbcType=CHAR}
+		</if>
+		<if test="userName != null and userName != ''">
+			and username = #{userName,jdbcType=CHAR}
+		</if>
+	</select>
+	<update id="delOrder" parameterType="map">
+		update order_info
+		<set>
+			<if test="isDel!= null"> is_del =
+				#{isDel,jdbcType=INTEGER},
+			</if>
+			<if test="isRecDel != null"> is_rec_del
+				= #{isRecDel,jdbcType=INTEGER},
+			</if>
+		</set>
+		<where>
+			<if test="orderId != null">
+				and id = #{orderId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</update>
+	<update id="delSubOrder" parameterType="map">
+		update order_sub_info
+		<set>
+			<if test="isDel!= null"> is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+			<if test="isRecDel != null"> is_rec_del = #{isRecDel,jdbcType=INTEGER},
+			</if>
+		</set>
+		<where>
+			<if test="id != null">
+				and id = #{id,jdbcType=INTEGER}
+			</if>
+		</where>
+	</update>
+	<update id="updateOrderStatusByOrderId" parameterType="map">
+		update order_info
+		<set>
+			<if test="toStatus != null">
+				order_status = #{toStatus,jdbcType=INTEGER}
+			</if>
+		</set>
+		<where>
+			<if test="orderId != null">
+				and id = #{orderId,jdbcType=INTEGER}
+			</if>
+			<if test="orderInfoBefStatus">
+				and order_status =
+				#{orderInfoBefStatus,jdbcType=INTEGER}
+			</if>
+
+		</where>
+	</update>
+	<update id="updateSubOrderStatusByOrderId" parameterType="map">
+		update order_sub_info
+		<set>
+			order_status = #{toStatus,jdbcType=INTEGER},
+		</set>
+		<where>
+			<if test="orderId != null">
+				and id = #{orderId,jdbcType=INTEGER}
+			</if>
+			<if test="orderInfoBefStatus">
+				and order_status =
+				#{orderInfoBefStatus,jdbcType=INTEGER}
+			</if>
+		</where>
+	</update>
+	<!-- 根据子订单ID查询兄弟子订单中未删除的记录数 -->
+	<select id="countUnDelSubNumBySubOrderId" resultType="Integer"
+		parameterType="map">
+		select count(*) from order_sub_info where order_info_id
+		=
+		(select order_info_id from order_sub_info where
+		id =
+		#{subId,jdbcType=INTEGER}
+		) and
+		is_del=#{isDel,jdbcType=INTEGER}
+	</select>
+	<!-- create by sunyifan 获取不同状态的订单数量 -->
+	<select id="orderTypeNum" resultType="Integer" parameterType="map">
+		select count(*) from order_info
+		<where>
+			<if test="userList != null and userList.size > 0">
+				and user_num in
+				<foreach item="item" index="index" collection="userList"
+					open="(" separator="," close=")">
+					#{item.userNum}
+				</foreach>
+			</if>
+			<if test="orderStatus != null">
+				and order_status = #{orderStatus,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<select id="selectManagerListByPageInfo" resultMap="OrderListResultMap"
+		parameterType="map">
+		SELECT
+		*
+		FROM
+		((select osi.id AS id,
+		os.order_sub_no AS order_no,
+		ou.username AS username,
+		ou.user_tel AS user_tel,
+		os.actual_amount AS
+		pay_fee,
+		os.actual_amount AS deal_fee,
+		CASE
+		WHEN
+		oi.order_status &lt;
+		#{noPay}
+		THEN
+		oi.create_time
+		WHEN oi.order_status &gt;=
+		#{noPay} THEN
+		osi.create_time
+		END
+		create_time,
+		CASE
+		WHEN oi.order_status &lt;
+		#{noPay}
+		THEN
+		oi.order_status
+		WHEN oi.order_status &gt;= #{noPay} THEN
+		osi.order_status
+		END order_status,
+		oi.order_source AS order_source,
+		osi.signin_time AS
+		deal_time,
+		oi.user_num AS user_num,
+		1 as order_type
+		FROM
+		(
+		SELECT
+		*
+		FROM
+		order_store
+		WHERE
+		order_sub_no IS
+		NOT NULL
+		<if test="storeId != null">
+			and store_id = #{storeId}
+		</if>
+		)os
+		LEFT JOIN order_sub_info osi ON osi.order_sub_no = os.order_sub_no
+		AND os.order_sub_no is not NULL
+		LEFT JOIN order_info oi ON
+		osi.order_info_id = oi.id
+		LEFT JOIN order_user ou ON os.order_id =
+		ou.id )
+		UNION
+		(select oi.id AS id,
+		oi.order_no AS order_no,
+		ou.username AS
+		username,
+		ou.user_tel AS user_tel,
+		oi.actual_amount AS pay_fee,
+		oi.actual_amount AS deal_fee,
+		oi.create_time AS create_time,
+		oi.order_status AS order_status,
+		oi.order_source AS order_source,
+		oi.signin_time AS deal_time,
+		oi.user_num AS user_num,
+		0 as order_type
+		FROM
+		(
+		SELECT
+		*
+		FROM
+		order_store
+		WHERE
+		order_sub_no IS NULL
+		<if test="storeId != null">
+			and store_id = #{storeId}
+		</if>
+		)os
+		LEFT JOIN order_info oi ON oi.order_no = os.order_no
+		LEFT JOIN
+		order_user ou ON os.order_id = ou.id ))test
+		<where>
+			<if test="orderNo != null and orderNo !='' ">
+				and order_no = #{orderNo}
+			</if>
+			<if test="status != null and status != ''">
+				and order_status = #{status}
+			</if>
+			<if test="orderSource != null and orderSource!='' ">
+				and order_source = #{orderSource}
+			</if>
+			<if test="payWay != null ">
+				and pay_way = #{payWay}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test="userTel != null and userTel != ''">
+				and user_tel = #{userTel,jdbcType=CHAR}
+			</if>
+			<if test="userName != null and userName !=''">
+				and username = #{userName,jdbcType=CHAR}
+			</if>
+		</where>
+		order by create_time desc
+		limit
+		#{startIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+	<select id="countManagerListByPageInfo" resultType="Long"
+		parameterType="map">
+		SELECT
+		count(*)
+		FROM
+		((select osi.id AS id,
+		os.order_sub_no AS order_no,
+		ou.username AS username,
+		ou.user_tel AS user_tel,
+		osi.total_amount AS
+		total_amount,
+		osi.actual_amount AS actual_amount,
+		CASE
+		WHEN
+		oi.order_status =
+		#{noPay}
+		THEN
+		oi.create_time
+		WHEN oi.order_status !=
+		#{noPay} THEN
+		osi.create_time
+		END
+		create_time,
+		CASE
+		WHEN oi.order_status =
+		#{noPay} THEN
+		oi.order_status
+		WHEN oi.order_status != #{noPay} THEN
+		osi.order_status
+		END order_status,
+		oi.order_source AS order_source,
+		osi.signin_time AS deal_time,
+		oi.user_num AS user_num
+		FROM
+		(
+		SELECT
+		*
+		FROM
+		order_store
+		WHERE
+		order_sub_no IS
+		NOT NULL
+		<if test="storeId != null">
+			and store_id = #{storeId}
+		</if>
+		)os
+		LEFT JOIN order_sub_info osi ON osi.order_sub_no = os.order_sub_no
+		AND os.order_sub_no != NULL
+		LEFT JOIN order_info oi ON
+		osi.order_info_id = oi.id
+		LEFT JOIN order_user ou ON os.order_id =
+		ou.id )
+		UNION
+		(select oi.id AS id,
+		oi.order_no AS order_no,
+		ou.username AS
+		username,
+		ou.user_tel AS user_tel,
+		oi.total_amount AS total_amount,
+		oi.actual_amount AS actual_amount,
+		oi.create_time AS create_time,
+		oi.order_status AS order_status,
+		oi.order_source AS order_source,
+		oi.signin_time AS deal_time,
+		oi.user_num AS user_num
+		FROM
+		(
+		SELECT
+		*
+		FROM
+		order_store
+		WHERE
+		order_sub_no IS NULL
+		<if test="storeId != null">
+			and store_id = #{storeId}
+		</if>
+		)os
+		LEFT JOIN order_info oi ON oi.order_no = os.order_no
+		LEFT JOIN
+		order_user ou ON os.order_id = ou.id ))test
+		<where>
+			<if test="orderNo != null and orderNo != ''">
+				and order_no = #{orderNo}
+			</if>
+			<if test="status != null and status !=''">
+				and order_status = #{status}
+			</if>
+			<if test="orderSource != null">
+				and order_source = #{orderSource}
+			</if>
+			<if test="payWay != null">
+				and pay_way = #{payWay}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test="userTel != null and userTel != ''">
+				and user_tel = #{userTel,jdbcType=CHAR}
+			</if>
+			<if test="userName != null and userName != ''">
+				and username = #{userName,jdbcType=CHAR}
+			</if>
+		</where>
+	</select>
+	<select id="getOrderNoByMainOrderId" parameterType="map"
+		resultType="String">
+		select case when order_sub_no is null then order_no
+		when order_sub_no is not null then order_sub_no end order_no from
+		order_store where order_id = #{orderId,jdbcType=INTEGER}
+	</select>
+</mapper>

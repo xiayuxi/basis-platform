@@ -1,0 +1,371 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+	<!-- 地址联动js  -->
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	
+	<!--验证js-->
+	<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+	<script type="text/javascript" src="${staticCtx}/validate/page/user/sysAdminEdit.js"></script>
+	
+	<script type="text/javascript">
+	var regionNum_ = 1;
+	var regionNum_a_ =1;
+		$(function () { 
+			regionPlugin.init("${ctx}");
+			regionPlugin.regionInit();
+			regionPlugin.regionInitParam({
+				provinceId:"address_provinceId",
+				cityId:"address_cityId",
+				countyId:"address_countyId",
+				townId:"address_townId",
+				villageId:"address_villageId"
+			});
+			
+			
+			/*返回按钮  */
+			$('#backid').click(function(){
+					history.back();
+			 });
+			
+			/* 编辑 功能中  角色 初始化   */
+			 var checkTexttt=$('#mySelect').find("option:selected").text();
+			 if(checkTexttt=="SE"){
+				$("#binding_t_2").show();
+				$("#binding_t_1").show();
+				$("#binding_t_3").hide();
+				$("#roleType_id").val("2");	
+			 }else if(checkTexttt == "A+"){
+				$("#binding_t_1").hide();
+				$("#binding_t_2").hide();
+				$("#binding_t_3").show();
+				$("#roleType_id").val("3");	
+			 }else{
+				$("#binding_t_1").hide();
+				$("#binding_t_2").hide();
+				$("#binding_t_3").hide();
+				$("#roleType_id").val("1");	
+			}
+			
+			 /* 编辑时保存原有数据   begin*/
+				var old_t = $('#adminLoginName_id').val();
+				$("#id_old_1").val(old_t);
+				var old_n = $('#adminMobile_id').val();
+				$("#id_old_2").val(old_n);
+			/* end */	
+			
+			 /*  搜素条件 中 角色初始化 */
+			$('#mySelect').change(function(){ 
+				 var checkText=$(this).find("option:selected").text()
+				 if(checkText=="SE"){
+					$("#binding_t_2").show();
+					$("#binding_t_1").show();
+					$("#binding_t_3").hide();
+					$("#roleType_id").val("2");	
+				 }else if(checkText == "A+"){
+					$("#binding_t_1").hide();
+					$("#binding_t_2").hide();
+					$("#binding_t_3").show();
+					$("#roleType_id").val("3");	
+				 }else{
+					$("#binding_t_1").hide();
+					$("#binding_t_2").hide();
+					$("#binding_t_3").hide();
+					$("#roleType_id").val("1");	
+				}
+				
+			});
+			
+			$("input[type='checkbox']").click(function () { 
+				
+				if ($(this).is(":checked")) {
+					var al = $("#admin_num_hidden").val();
+					$("#aAiAdminNum_tid_tt").val(al);
+				}else{
+					$("#aAiAdminNum_tid_tt").val("");
+				}
+			});
+			
+			/* se 角色时  服务区域回显  */
+			<#if sysAdminServiceList??>
+	    		<#list sysAdminServiceList as serviceDistinct>
+		    		regionPlugin.regionInitParam({
+		    			provinceId:'provinceRegion_${serviceDistinct_index}',
+		    			cityId:'cityId_${serviceDistinct_index}',
+		    			countyId:'countyId_${serviceDistinct_index}',
+		    			
+		    			defaultCountyId:'${serviceDistinct.adminServiceDistinct}'
+					});
+	    		</#list>
+	    		regionNum_ = ${sysAdminServiceList?size};
+    		</#if>
+			
+    		/*  A+ 角色时 服务区域回显 */
+    		<#if sysAdminServiceListA??>
+	    		<#list sysAdminServiceListA as serviceDistinct>
+		    		regionPlugin.regionInitParam({
+		    			provinceId:'provinceRegion_idd_${serviceDistinct_index}',
+		    			cityId:'cityRegion_idd_${serviceDistinct_index}',
+		    			
+		    			defaultCityId:'${serviceDistinct.adminServiceDistinct}'
+					});
+	    		</#list>
+	    		regionNum_a_ = ${sysAdminServiceListA?size};
+			</#if>
+    		
+		});
+		/* 关联A+ 查询方法 */
+		function selectFun(){
+			 var aAdminNumSearch = $("#aAiAdminNum_tid").val();
+			 $.ajax({ 
+			        type: "POST", 
+			       	url: "${ctx}/admin/selectAiInfo", 
+			       	data:{"aAdminNum":aAdminNumSearch},
+			        dataType:"json", 
+			        success: function(data){ 
+						if(data != null ){
+							if(null != data.adminNum ){
+							var tml = " 请核实A+组长的信息： 编号：'"+data.adminNum+"' 电话：'"+data.mobile+"'"
+									+"<input type='hidden' id='admin_num_hidden' value='"+data.adminNum+"'/>";
+								$("#tags").html(tml);
+								$("#tags_id").show();
+							}else{
+								$("#tags").html("无此A+信息，请重新输入查询！");
+								$("#tags_id").hide();
+								$('#aAiAdminNum_tid_tt').val('');
+							}
+						}
+			        } ,
+			        error:function(data){
+			        	alert("请求错误！");
+			        }
+			});
+		 }
+		/* 多 服务区域添加   */
+		function addServiceDistinct( tt_i){
+			var temp_t = tt_i;
+			if(!regionNum_ ){				
+				regionNum_ = $("#serviceDistinctDiv").find("select").length;				
+			}
+			if(3 == temp_t){
+				$("#serviceDistinctDiv").append('<div><select id="provinceRegion_'+regionNum_+'"></select>'+
+						'<select id="cityId_'+regionNum_+'"></select>'+
+						'<select id="countyId_'+regionNum_+'" name="adminServiceDistincts['+regionNum_+']"></select><a onclick="$(this).parent().remove()">删除</a><br/></div>');
+				regionPlugin.regionInitParam({
+	    			provinceId:'provinceRegion_'+regionNum_,
+	    			cityId:'cityId_'+regionNum_,
+	    			countyId:'countyId_'+regionNum_,
+				});
+				regionNum_++;
+			}
+			if(2 == temp_t){
+				$("#serviceDistinctDiv_a").append('<div><select id="provinceRegion_idd_'+regionNum_a_+'"></select>'+
+						'<select id="cityRegion_idd_'+regionNum_a_+'" name="adminServiceDistinctsA['+regionNum_a_+']"></select><a onclick="$(this).parent().remove()">删除</a><br/></div>');
+				regionPlugin.regionInitParam({
+	    			provinceId:'provinceRegion_idd_'+regionNum_a_,
+	    			cityId:'cityRegion_idd_'+regionNum_a_,
+				});
+			regionNum_a_++;
+			}
+		}
+		
+		
+		/* 校验登录号 原使用登录名可以使用  */
+		 function adminLogin_fun(){ 
+				var t_n = $('#adminLoginName_id').val();
+				var new_t = $('#id_old_1').val();
+				var boolLoginName = false;
+				if(t_n == new_t){
+					boolLoginName=true;
+          		}else{
+          			$.ajax({ 
+				        type: "GET", 
+				       	url: "${ctx}/admin/selectAdminByNameOrNum?str="+t_n+"&pho="+'', 
+				        dataType:"json", 
+				        async:false,
+				        success: function(data){ 
+				        	if(data.success == true){
+				        		boolLoginName=true;
+				           	}
+				        } 
+					});
+          		}
+				return boolLoginName;
+			}
+			 
+			 /* 校验手机号  原使用手机号可以通过 */
+			function adminMobile_fun(){
+					var t_n_r = $('#adminMobile_id').val();
+					var new_n = $('#id_old_2').val();
+					var boolMobile = false;
+					if(t_n_r == new_n){
+						boolMobile=true;
+	           		}else{
+	           			$.ajax({ 
+					        type: "GET", 
+					       	url: "${ctx}/admin/selectAdminByNameOrNum?pho="+t_n_r+"&str"+'', 
+					        dataType:"json", 
+					        async:false,
+					        success: function(data){ 
+					        	if(data.success == true){
+					        		boolMobile=true;
+					           	}
+					        }
+						});
+	           		}
+					return boolMobile;
+				}
+			/*A+负责人为空*/
+			function textName_fun(){ 
+					var t_n = $('#aAiAdminNum_tid_tt').val();
+					var boolMobile = false;
+					if('' != t_n){
+						boolMobile=true;
+					}
+					return boolMobile;
+			} 
+	</script>
+ </HEAD>
+
+<body>
+	<div style="margin-left: 2px">
+	<form action="${ctx}/admin/editPage" method="post" id="formId">
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+				<input type="hidden" name="adminNum" value="${sysAdmin.adminNum!''}"/>
+				添加：			    
+			    <tr>
+			       	<th> 用户账号 ：</th>
+			       	<td> <input type="text" name="adminLoginName" value="${sysAdmin.adminLoginName!''}" id = "adminLoginName_id"/>
+			       		<input type= "hidden" id = "id_old_1"/><!-- 无实际意义 存放原 用户账号  -->
+			       	</td>
+			    </tr>
+			   
+			    <tr>
+			       	<th>联系电话 ：</th>
+			       	<td> <input type="text" name="adminMobile" value="${sysAdmin.adminMobile!''}" id ="adminMobile_id"/>
+			       		<input type= "hidden" id = "id_old_2"/> <!-- 无实际意义 存放原 电话号码  -->
+			       	</td>
+			    </tr>
+			    <tr>
+			       <th>  角色名称： </th>
+			       <td>
+			       		<input type = "hidden" name = "roleType" id = "roleType_id"/>
+				       	<select name="listRole[0].id"  id = "mySelect" >
+							<option value="" >--请选择--</option>
+							<#if listsysRole??>
+								<#if sysRolelist??>
+									<#if sysRolelist?size==0>
+										<#list listsysRole as value>
+											<option value="${value.id!''}" >${value.roleName!''}</option>
+										</#list>
+									<#else>
+										<#list listsysRole as value>
+											<#list sysRolelist as temp>
+												<option value="${value.id!''}" <#if value.id==temp.id> selected="selected" </#if>>${value.roleName!''}</option>
+											</#list>
+										</#list>
+									</#if>
+								</#if>
+							</#if>
+				   		</select>
+			       </td>
+			    </tr>
+			    
+			    <tr>
+			       	<th>账号编号 ：</th>
+			       	<td>${sysAdmin.adminNum!''}</td>
+			    </tr>
+			    <tr>
+			       	<th>账号创建时间 ：</th>
+			       	<td>${sysAdmin.createTime?string('yyyy-MM-dd HH:mm:ss')}</td>
+			    </tr>
+			    <tr>
+			        <th>最后登录时间：</th>
+			        <td> ${sysAdmin.updateTime?string('yyyy-MM-dd HH:mm:ss')}</td>
+			    </tr>
+			    
+			    
+				 <tr  style="display:none;" id = "binding_t_1">
+			        <th>服务区域：</th>
+			        <td> 
+			        	<div id="serviceDistinctDiv">
+			        		<div>
+				        	<#if sysAdminServiceList??>
+				        		<#list sysAdminServiceList as serviceDistinct>
+				        			<div>
+				        			<select id="provinceRegion_${serviceDistinct_index}"></select>
+				        			<select id="cityId_${serviceDistinct_index}"></select>
+				        			<select id="countyId_${serviceDistinct_index}"  name="adminServiceDistincts[${serviceDistinct_index}]"></select>
+				        			<br/>
+				        			<a onclick="$(this).parent().remove()">删除</a>
+				        			</div>
+				        		</#list>
+			        		</#if>
+							<br/>
+							</div>
+						</div>
+						<button type="button" onclick="addServiceDistinct(3)">新增服务区域</button>
+			        </td>
+			    </tr>
+			    
+			    <tr  style="display:none;" id = "binding_t_3">
+			        <th>服务区域：</th>
+			        <td> 
+			        	<div id="serviceDistinctDiv_a">
+			        		<div>
+				        	<#if sysAdminServiceListA??>
+				        		<#list sysAdminServiceListA as serviceDistinct>
+				        			<div>
+				        			<select id="provinceRegion_idd_${serviceDistinct_index}"></select>
+				        			<select id="cityRegion_idd_${serviceDistinct_index}" name="adminServiceDistinctsA[${serviceDistinct_index}]"></select>
+				        			<br/>
+				        			<a onclick="$(this).parent().remove()">删除</a>
+				        			</div>
+				        		</#list>
+			        		</#if>
+							<br/>
+							</div>
+						</div>
+						<button type="button" onclick="addServiceDistinct(2)">新增服务区域</button>
+			        </td>
+			    </tr>
+			    
+			    <tr  style="display:none;" id = "binding_t_2">
+			        <th>输入你所在A+的编号 ：</th>
+			        <td> 
+			        	 <input type="text"  id = "aAiAdminNum_tid" name="a_text_name" value="${sysAdminRocred.adminNum!''}"/>
+			        	 <a href=" javascript:void(0)" onclick="selectFun();">添加</a>  
+			        	 <input type="hidden" name="aAiAdminNum" id = "aAiAdminNum_tid_tt" value="${sysAdminRocred.adminNum!''}"/>
+			        	 <div id = "tags">
+			        	 	<#if sysAdminRocred.adminNum??>
+			        	 	请核实A+组长的信息： 编号：${sysAdminRocred.adminNum!''}  电话：${sysAdminRocred.adminMobile!''}
+			        	 	 <input type= "checkbox" checked="checked" />
+			        	 	 </#if>
+			        	 </div>
+			        	 <div id = "tags_id" style="display:none;" > <input type= "checkbox" id = "checkbox_rtt"/></div>
+			        </td>
+			    </tr>
+			    
+			    <tr>
+			    	<td colspan="2">
+						<div style="margin-left: 20px">
+							<input type="submit" class="btn btn-success" value="保存" />
+							<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

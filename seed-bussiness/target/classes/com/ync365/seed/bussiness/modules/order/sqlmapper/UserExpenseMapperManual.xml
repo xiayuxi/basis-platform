@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.order.dao.UserExpenseMapperManual">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.UserExpense">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_num" property="userNum" jdbcType="CHAR" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="order_type" property="orderType" jdbcType="INTEGER" />
+		<result column="expense" property="expense" jdbcType="DECIMAL" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="settle_time" property="settleTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_num, order_id, order_no, order_type, expense,
+		status,
+		create_time, settle_time
+	</sql>
+	<select id="getUserExpenseListPageByUserNum" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from user_expense
+		<where>
+			<if test="userNum != null and userNum != ''">
+				and user_num = #{userNum}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test="orderNo != null and orderNo != ''">
+				and order_no = #{orderNo}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+		limit
+		#{startIndex} , #{pageSize}
+	</select>
+	<select id="getSumExpenseByStatus" resultType="DECIMAL"
+		parameterType="map">
+		select
+		sum(expense)
+		from user_expense
+		<where>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="userNum != null">
+				and user_num = #{userNum}
+			</if>
+		</where>
+	</select>
+	<select id="selectUserExpenseStatusByOrderId" parameterType="map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_expense
+		<where>
+			order_id = #{orderId}
+			and order_type =#{orderType}
+		</where>
+	</select>
+	<select id="getUserExpenseCountPageByUserNum" resultType="Long"
+		parameterType="map">
+		select
+		count(*)
+		from user_expense
+		<where>
+			<if test="userNum != null and userNum != ''">
+				and user_num = #{userNum}
+			</if>
+			<if test="beginTime != null ">
+				and <![CDATA[create_time >= #{beginTime}]]>
+			</if>
+			<if test="endTime != null">
+				and <![CDATA[create_time  <= #{endTime}]]>
+			</if>
+			<if test="orderNo != null and orderNo != ''">
+				and order_no = #{orderNo}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+	</select>
+</mapper>

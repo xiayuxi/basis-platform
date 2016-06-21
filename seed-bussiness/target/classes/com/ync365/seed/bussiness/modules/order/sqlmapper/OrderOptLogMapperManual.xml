@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.order.dao.OrderOptLogMapperManual">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderOptLog">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="order_type" property="orderType" jdbcType="INTEGER" />
+		<result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+		<result column="del_status" property="delStatus" jdbcType="INTEGER" />
+		<result column="opt_num" property="optNum" jdbcType="VARCHAR" />
+		<result column="opt_time" property="optTime" jdbcType="TIMESTAMP" />
+		<result column="opt_name" property="optName" jdbcType="VARCHAR" />
+		<result column="change_id" property="changeId" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, order_id, order_no, order_type, order_status, del_status, opt_num,
+		opt_time,
+		opt_name, change_id
+	</sql>
+
+
+	 <!--cretae 通过订单id查询订单操作记录 -->
+   <select id="getOrderLogListByIdType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_opt_log
+    <where>
+    <if test = "orderId != null">
+	    and  order_id = #{orderId,jdbcType=INTEGER}
+    </if>
+    <if test ="orderType != null">
+    	and order_type = #{orderType,jdbcType=INTEGER}
+    </if>
+    </where>
+    order by opt_time asc
+  </select> 
+</mapper>

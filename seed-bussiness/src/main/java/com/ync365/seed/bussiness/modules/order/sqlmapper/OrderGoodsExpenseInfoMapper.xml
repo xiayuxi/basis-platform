@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderGoodsExpenseInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsExpenseInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_goods_id" property="orderGoodsId" jdbcType="INTEGER" />
+    <result column="village_expense" property="villageExpense" jdbcType="DECIMAL" />
+    <result column="platform_expense" property="platformExpense" jdbcType="DECIMAL" />
+    <result column="lc_expense" property="lcExpense" jdbcType="DECIMAL" />
+    <result column="integral_expense" property="integralExpense" jdbcType="DECIMAL" />
+    <result column="plan_expense" property="planExpense" jdbcType="DECIMAL" />
+    <result column="se_expense" property="seExpense" jdbcType="DECIMAL" />
+    <result column="a_expense" property="aExpense" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_goods_id, village_expense, platform_expense, lc_expense, integral_expense, 
+    plan_expense, se_expense, a_expense, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_goods_expense_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_goods_expense_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsExpenseInfo" >
+    insert into order_goods_expense_info (id, order_goods_id, village_expense, 
+      platform_expense, lc_expense, integral_expense, 
+      plan_expense, se_expense, a_expense, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{orderGoodsId,jdbcType=INTEGER}, #{villageExpense,jdbcType=DECIMAL}, 
+      #{platformExpense,jdbcType=DECIMAL}, #{lcExpense,jdbcType=DECIMAL}, #{integralExpense,jdbcType=DECIMAL}, 
+      #{planExpense,jdbcType=DECIMAL}, #{seExpense,jdbcType=DECIMAL}, #{aExpense,jdbcType=DECIMAL}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsExpenseInfo" >
+    insert into order_goods_expense_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderGoodsId != null" >
+        order_goods_id,
+      </if>
+      <if test="villageExpense != null" >
+        village_expense,
+      </if>
+      <if test="platformExpense != null" >
+        platform_expense,
+      </if>
+      <if test="lcExpense != null" >
+        lc_expense,
+      </if>
+      <if test="integralExpense != null" >
+        integral_expense,
+      </if>
+      <if test="planExpense != null" >
+        plan_expense,
+      </if>
+      <if test="seExpense != null" >
+        se_expense,
+      </if>
+      <if test="aExpense != null" >
+        a_expense,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderGoodsId != null" >
+        #{orderGoodsId,jdbcType=INTEGER},
+      </if>
+      <if test="villageExpense != null" >
+        #{villageExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="platformExpense != null" >
+        #{platformExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="lcExpense != null" >
+        #{lcExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="integralExpense != null" >
+        #{integralExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="planExpense != null" >
+        #{planExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="seExpense != null" >
+        #{seExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="aExpense != null" >
+        #{aExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsExpenseInfo" >
+    update order_goods_expense_info
+    <set >
+      <if test="orderGoodsId != null" >
+        order_goods_id = #{orderGoodsId,jdbcType=INTEGER},
+      </if>
+      <if test="villageExpense != null" >
+        village_expense = #{villageExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="platformExpense != null" >
+        platform_expense = #{platformExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="lcExpense != null" >
+        lc_expense = #{lcExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="integralExpense != null" >
+        integral_expense = #{integralExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="planExpense != null" >
+        plan_expense = #{planExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="seExpense != null" >
+        se_expense = #{seExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="aExpense != null" >
+        a_expense = #{aExpense,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsExpenseInfo" >
+    update order_goods_expense_info
+    set order_goods_id = #{orderGoodsId,jdbcType=INTEGER},
+      village_expense = #{villageExpense,jdbcType=DECIMAL},
+      platform_expense = #{platformExpense,jdbcType=DECIMAL},
+      lc_expense = #{lcExpense,jdbcType=DECIMAL},
+      integral_expense = #{integralExpense,jdbcType=DECIMAL},
+      plan_expense = #{planExpense,jdbcType=DECIMAL},
+      se_expense = #{seExpense,jdbcType=DECIMAL},
+      a_expense = #{aExpense,jdbcType=DECIMAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

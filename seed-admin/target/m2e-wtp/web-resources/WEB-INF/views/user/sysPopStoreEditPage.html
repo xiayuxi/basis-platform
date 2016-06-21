@@ -1,0 +1,386 @@
+<#assign ctx="${request.contextPath}" /> 
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+	<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+	<script type="text/javascript" src="${staticCtx}/fileupload/jquery.ui.widget.js"></script>
+	<script type="text/javascript" src="${staticCtx}/fileupload/jquery.iframe-transport.js"></script>
+	<script type="text/javascript" src="${staticCtx}/fileupload/jquery.fileupload.js"></script>
+	
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	
+	<!--验证js-->
+	<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+ 	<script type="text/javascript" src="${staticCtx}/validate/page/user/sysPopStorePageValidate.js"></script>
+	
+	
+	<script type="text/javascript">
+		var rootPath = '${ctx}';
+		var popStoreNum = '${popStoreBO.popStoreNum!''}'
+		
+		$(function () {       
+			regionPlugin.init("${ctx}");
+			regionPlugin.regionInitParam({
+				defaultVillageId:'${popStoreBO.popStoreAddress!''}'
+			});
+			$('#backid').click(function(){
+					history.back();
+			 });
+			$('#submitForm').click(function(){
+				$("#formId").submit();
+			 });
+		});
+	</script>
+	<script type="text/javascript">
+	var list = [{"fileBtnId":"lbtp4","imgId":"carouselPicture4_img","urlId":"carouselPicture4_url"}];
+	
+	//图片上传
+	function fileUpload(fileBtnId,imgId,urlId){
+		$('#'+fileBtnId).fileupload({        
+			dataType: 'json',        
+			done: function (e,data) {
+				$('#'+urlId).val(data.result.url);
+				$('#'+imgId).attr('src', "${imgYunServer}" + data.result.url);
+				$('#logo').val("${imgYunServer}" + data.result.url);
+			}
+		});
+	}
+
+	$(function(){
+		 for(var index = 0,l = list.length;index<l;index++){
+				fileUpload(list[index].fileBtnId,list[index].imgId,list[index].urlId);
+		 }
+	});
+	</script>
+ </HEAD>
+
+<body>
+	<br />
+	<div style="margin-left: 2px">
+		<form action="${ctx}/sysPopStore/edit" method="post" id="formId">
+			<input type="hidden" id="popStoreNum" name="popStoreNum" value="${popStoreBO.popStoreNum!'' }" />
+        	<input type="hidden" id="popStorePrincipaNum" name="popStorePrincipaNum" value="${popStoreBO.popStorePrincipaNum!''}">
+        	<input type="hidden" id="popStorePrincipalMobileHide" >
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			    	<td><span>供应商信息</span></td>
+			    </tr>
+			    <tr>
+			        <td>编号</td>
+			        <td>${popStoreBO.popStoreNum!''}</td>
+			    </tr>
+			    <tr>
+			        <td>店铺名称：</td>
+			        <td>
+			        	<input name="popStoreName" value="${popStoreBO.popStoreName!''}" />
+			        </td>
+			    </tr>
+			    <tr>
+			        <td>店铺联系人：</td>
+			        <td>
+			        	<input name="popStoreContact" value="${popStoreBO.popStoreContact!''}"/>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td>联系电话：</td>
+			        <td>
+			        	<input name="popStoreMobile" value="${popStoreBO.popStoreMobile!''}" />
+			        </td>
+			    </tr>
+			    <tr>
+			        <td>入驻商类型：</td>
+			        <td>${popStoreBO.popStoreType!''}</td>
+			    </tr>
+			    <tr>
+			        <td>商城域名：</td>
+			        <td>
+			        	<input name="popStoreDomain" value="${popStoreBO.popStoreDomain!''}"/><br />
+			        	.ync365.com
+			        </td>
+			  	</tr>
+			    <tr>
+			  		<td>供应商账号：</td>
+			  		<td>
+			  			<input name="popLoginName" value="${popStoreBO.popLoginName!''}" />
+			  		</td>
+			    </tr>
+			    <tr>
+			        <td>供应品类：</td>
+			        <td>
+			        	<div id="categoryCheckBoxDiv">
+							<#list categorys as category>
+				        		${category.name!'' }&nbsp;<input type="checkbox" name="categorys[${category_index }]" checked="checked" value="${category.categoryId!'' }"  categoryName="${category.name!''}" />
+				        	</#list>
+				    	</div>
+				    	<a href="javascript:void(0);" onclick="searchPopCategory();">添加</a>
+				    </td>
+			    </tr>
+			    <tr>
+			        <td>供应品牌</td>
+			        <td>
+			        	<div id="brandCheckBoxDiv">
+							<#list brands as brand>
+								${brand.chName!'' }&nbsp;<input type="checkbox" name="brands[${brand_index }]" checked="checked" value="${brand.brandId!'' }" brandName="${brand.chName!'' }">
+				        	</#list>
+			        	</div>
+			        	<a href="javascript:void(0);" onclick="searchPopBrand();">添加</a>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td>负责人：</td>
+			        <td>
+			        	<input name="popStorePrincipal" value="${popStoreBO.popStorePrincipal!''}" id="popStorePrincipal"/><br />
+			        	<a href="javascript:void(0);" onclick="searchpopStorePrincipal();">搜索</a>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td>负责人电话：</td>
+			        <td><span id="popStorePrincipalMobile">${popStoreBO.popStorePrincipalMobile!''}</span></td>
+			    </tr>
+			    <tr>
+			        <td>地址：</td>
+			        <td colspan="3">
+		         		<select id="provinceRegion">
+						</select>
+						<select id="cityRegion">
+						</select>
+						<select id="countyRegion">
+						</select>
+						<select id="townRegion">
+						</select>
+						<select id="villageRegion" name="popStoreAddress"></select>
+			         </td>
+			    </tr>
+			    <tr>
+			    	 <td>详细地址：</td>
+			   		 <td>
+			         		<input name="popStoreAddressDetail" id="popStoreAddressDetail" value="${popStoreBO.popStoreAddressDetail!''}">
+			         </td>
+			    </tr>
+			    
+			    <#assign logoPath="${popStoreBO.logoPath!''}" /> 
+			    <#if logoPath==''>
+				<tr>
+			    	 <td>添加logo：</td>
+			   		 <td>
+			         	<div id="product5">
+			   				<input id="carouselPicture4_url"  name="carouselPicture4"  type="hidden" value="">
+		                    <img id="carouselPicture4_img" src="" alt="" width="200px" height="200px">
+		                    <input id="logo" name="logoPath" type="hidden">
+		                    <input type="hidden" id="uuid" name="uuid" />
+						</div>
+						<a href="javascript:;" >
+							<input upImg="true"  id="lbtp4"   name="uploaderImage" type="file"  data-url="${ctx}/upload/upPopStoreLogo" multiple="multiple" /> 
+						</a>
+			         </td>
+			    </tr>
+			    <#else>
+			    	<tr>
+			    		<td>店铺logo：</td>
+			   		 	<!-- <td><img alt="" src="${logoPath }" height="170px" width="100px"></td> -->
+			   		 	
+			   		 	<td>
+			         	<div id="product5">
+			   				<input id="carouselPicture4_url"  name="carouselPicture4"  type="hidden" value="">
+		                    <img id="carouselPicture4_img" src="${logoPath }" alt="" width="200px" height="200px">
+		                    <input id="logo" name="logoPath" type="hidden">
+		                    <input type="hidden" id="uuid" name="uuid" />
+						</div>
+						<a href="javascript:;" >
+							<input upImg="true"  id="lbtp4"   name="uploaderImage" type="file"  data-url="${ctx}/upload/upPopStoreLogo" multiple="multiple" /> 
+						</a>
+			         </td>
+			        </tr>
+			    </#if>
+			</table>
+		</form>
+	</div>
+	
+	<div style="margin-left: 50px">
+		<input type="submit" class="btn btn-success" value="保存" name="submitForm" id="submitForm"/>
+		<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+	</div>
+	
+	<!-- 搜索SE用户窗体 -->
+	<div style="display:none;" id="searchSEDiv">
+			通过 编号/手机号 搜索SE<br>
+			<input name="seInfo" value="" type="text" id="seInfo"/>
+			<input type="button" title="搜索" value="搜索" onclick="searchSEObject(this)"/>
+			<div id="SeInfoDiv">
+			</div>
+	</div>
+	
+	<!-- 添加供应品类 -->
+	<div style="display:none;" id="searchCategoryDiv">
+			输入供应品类名称
+			<br/>
+			<input name="seInfo" value="" type="text" id="seInfo"/>
+			<input type="button" title="搜索" value="搜索" onclick="searchSEObject(this)"/>
+			<div id="">
+			</div>
+	</div>
+	
+	<!-- 添加供应品牌 -->
+	<div style="display:none;" id="searchBrandDiv">
+			输入供应品牌名称<br>
+			<input name="chName" type="text" id="chName"/>
+			<input type="button" title="搜索" value="搜索" onclick="serchBrand(this)"/>
+			<div id="brandName">
+			</div>
+	</div>
+</body>
+<script>
+
+	//搜索供应品类弹窗
+	function searchPopCategory(object){
+		 art.dialog.open(
+			 "${ctx}/sysPopStore/openAddCategoryPage",
+			 	{id:'attr_dialog',
+				resize:false,
+				width:500,
+				height:300,
+				lock:true,
+				ok:function(){
+					var category3Text = this.iframe.contentWindow.$(".category3 option:selected").text();
+					var category3Id = this.iframe.contentWindow.$(".category3").val();
+					var category2Text = this.iframe.contentWindow.$(".category2 option:selected").text();
+					var category2Id = this.iframe.contentWindow.$(".category2").val();
+					if(undefined!=category3Text && ''!=category3Text && '请选择'!=category3Text) {
+						addCategoryInPage(category3Id,category3Text);
+					} else if (undefined!=category2Text && ''!=category2Text  && '请选择'!=category2Text){
+						addCategoryInPage(category2Id,category2Text);
+					}
+					
+				},
+		});
+	}
+	
+	//搜索供应品牌弹窗
+	function searchPopBrand(object){
+		 $(brandName).html("");
+		 art.dialog({
+			  title:"添加供应品牌",
+			  width:400,
+			  height:300,
+			  padding:0,
+			  lock:true,
+			  content:$("#searchBrandDiv").html(),
+			  ok:function(){
+			  },
+			  cancel:true
+		  }).show();
+	}
+	
+	//搜索负责人窗体
+	function searchpopStorePrincipal() {
+		 $(SeInfoDiv).html("");
+		 art.dialog({
+			  title:"搜索负责人",
+			  width:400,
+			  height:300,
+			  lock:true,
+			  padding:0,
+			  content:$("#searchSEDiv").html(),
+			  ok:function(){
+				  var userName = $("#userName").html();
+				  var userMobile = $("#userMobile").html();
+				  $("#popStorePrincipal").val(userName);
+				  $("#popStorePrincipalMobile").html(userMobile);
+				  popStorePrincipaNum = $("#popStorePrincipaNum").val();
+			  },
+			  cancel:true
+		  }).show();		
+	}
+	
+	 //搜索负责人方法
+	 function searchSEObject(object) {
+		 var userNum = $(object).parent().find("#seInfo")[0].value;
+		 $.get("${ctx}/sysadmininfo/searchSeObject?userNum="+userNum,function(data){
+			 if(data) {
+			 	var adminServiceArea = '';
+				for (var i = 0; i < data.sysAdminServiceList.length; i++) {
+					adminServiceArea += "<br />&nbsp;&nbsp;&nbsp;&nbsp;" +　data.sysAdminServiceList[i];
+				}
+				$(SeInfoDiv).empty();
+				$("#popStorePrincipaNum").val(data.adminNum);
+				$("#popStorePrincipalMobileHide").html(data.mobile);
+				$(SeInfoDiv).append("编号："+data.adminNum+"<br/>姓名：<span id='userName'>"+data.name+"</span><br/>手机号：<span id='userMobile'>"+data.mobile+"</span><br/>服务区域："+ adminServiceArea +"<br>");
+			 } else {
+				 $(SeInfoDiv).html("没有找搜索到该用户！");
+			 }
+		});
+	 }
+		
+	 //搜索品牌方法
+	 function serchBrand(object) {
+		 var chName = $(object).parent().find("#chName")[0].value;
+		 if (''!=chName) {
+			 $.get("${ctx}/sysPopStore/searchBrand/"+chName+"",function(data){ 
+				 $(brandName).html("");
+				 console.log(data);
+				 var appendValue="品牌名称:&nbsp;&nbsp;&nbsp;&nbsp; "+data.chName+"<a href=\"javascript:void(0);\" onclick=\'addBrandInPage(\""+data.brandId+"\",\""+data.chName+"\")\'"+">添加</a>";
+				 if(data.chName!=null) {
+				 	$(brandName).append(appendValue);
+				 }
+			});
+		 }
+	 }
+
+	 //添加品牌复选框至页面
+	 /* function addBrandInPage(brandId,brandChName) {
+		 var brandIndex = $("input[name*='brands']");
+		 var brandCheckBox = brandChName +'&nbsp;<input type="checkbox" name="brands['+brandIndex.length+']" checked="checked" value='+brandId+'>';
+		 $("#brandCheckBoxDiv").append(brandCheckBox);
+	 } */
+	//添加品牌复选框至页面
+	 function addBrandInPage(brandId,brandChName) {
+		 var isSame = true;
+		 var brandCheckboxs = $("input[name*='brands']");
+		 $(brandCheckboxs).each(function(i,d){
+			
+			 console.log(brandChName + "----" + $(d).attr("brandName"));
+			 if (brandChName == $(d).attr("brandName")) {
+				 isSame = false;
+			 }
+		 });
+		 if(!isSame){
+			 return false;
+		 }
+		 var brandCheckBox = brandChName +'&nbsp;<input type="checkbox" name="brands['+brandCheckboxs.length+']" checked="checked" value='+brandId+' brandName='+ brandChName +'>';
+		 $("#brandCheckBoxDiv").append(brandCheckBox);
+	 }
+	 
+	 
+	//添加品类复选框至页面
+	/* function addCategoryInPage(categoryId,categoryName) {
+		 var categoryIndex = $("input[name*='categorys']");
+		 var categoryCheckBox = categoryName +'&nbsp;<input type="checkbox" name="categorys['+categoryIndex.length+']" checked="checked" value='+categoryId+'>';
+		 $("#categoryCheckBoxDiv").append(categoryCheckBox);
+	} */
+	//添加品类复选框至页面
+	function addCategoryInPage(categoryId,categoryName) {
+		 var isSame = true;
+		 var categoryCheckboxs = $("input[name*='categorys']");
+		 $(categoryCheckboxs).each(function(i,d){
+			 console.log(categoryName +"------"+ $(d).attr("categoryName"));
+			 if (categoryName == $(d).attr("categoryName")) {
+				 isSame = false;
+			 }
+		 });
+		 if(!isSame){
+			 return false;
+		 }
+		 var categoryCheckBox = categoryName +'&nbsp;<input type="checkbox" name="categorys['+categoryCheckboxs.length+']" checked="checked" value='+categoryId+' categoryName='+categoryName+'>';
+		 $("#categoryCheckBoxDiv").append(categoryCheckBox);
+	}
+</script>
+</html>

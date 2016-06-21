@@ -1,0 +1,271 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<!--  My97DatePicker -->
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+</head>
+
+<body>
+	<div idex = 99 style="margin: 20px 0 10px 20px;">
+		商品名称：<input type="text" name="name" id="name"  value="商品编号或商品关键字" 
+	      style="color:#ddd" onfocus="if (this.value=='商品编号或商品关键字')this.value=''" onblur="if (this.value=='')this.value='商品编号或商品关键字'">
+		
+		上架时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+		             type="text" name="beginDate" id="beginDate"/> -
+		      <input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+		             type="text" name="endDate" id="endDate"/>					
+		所属分类： <select class="category1" name="categoryIds1" id = "category1" onchange="">
+		            <option value="">请选择</option>
+		            <#list catList as cat>
+		            	<option value="${cat.categoryId}">${cat.name}</option>
+		            </#list>
+		        </select>
+		        <select class="category2" name="categoryIds2" id = "category2">
+		            <option value="">请选择</option>
+		        </select>
+		        <select class="category3" name="categoryIds3" id = "category3">
+		            <option value="">请选择</option>
+		        </select>
+		<br/>
+	      店铺名称：<input type="text" name="storeName" id="storeName"  value="请输入店铺编号或关键字" 
+	      style="color:#ddd" onfocus="if (this.value=='请输入店铺编号或关键字')this.value=''" onblur="if (this.value=='')this.value='请输入店铺编号或关键字'">
+	     上架人：<input type="text" name="releaseUser" id="releaseUser" />
+	     品牌：<input type="text" name="brandName" id="brandName"/> 
+	 	 <button type="submit" class="btn btn-primary" id="btnSearch">查询
+	</div>
+	<div style="margin-left:20px">
+		    <table id="list"></table>
+		    <div id="pager"></div>
+	</div>
+</body>
+
+<script type="text/javascript">
+$(function(){
+	//全部
+    $("#list").jqGrid({
+    	url:'${ctx}/goodsAudit/recycleBinGrid',// 获取数据的url,action
+        datatype: "json",//后台返回的数据格式
+        mtype:"post",//提交的方式,默认是get
+        //width:1024,//这个宽度不能为百分比,
+        autowidth:true,//自动宽
+        colNames:['goodsId','商品编号', '商品名称','售价','结算价','库存','上架人','状态','上架时间'],
+        colModel:[
+                   {name:"goodsId",hidden:true,align:"center",sortable:false},
+                   {name:'code',index:'code', align:"center",editable:true},       
+                   {name:'name',index:'name', align:"center",editable:true},       
+                   {name:'costPrice',index:'costPrice', align:"center",editable:true},       
+                   {name:'countPrice',index:'countPrice', align:"center",editable:true},       
+                   {name:'minStockNum',index:'minStockNum', align:"center",width:100,editable:true},
+                   {name:'releaseUser',index:'releaseUser', align:"center",width:100,editable:true},
+                   {name:'status',index:'status', align:"center",sortable:false,editable:true,formatter:formatStatus},
+                   {name:'releaseTime',index:'releaseTime', align:"center",width:100,editable:true, formatter:'date' ,
+                 	  formatoptions:{srcformat:'u',newformat:'Y-m-d'}},
+               ],
+        postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+        //styleUI : 'Bootstrap',
+        //caption:"类别列表",//表名称
+        multiselect: false,//开启多选
+        rowNum:10,//每页显示的条数,此参数会被传递到后台
+        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+        viewrecords: true,//定义是否显示总的数据条数
+        pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+        height : "auto",
+        rownumbers:true//添加左侧行号
+    });  
+    jQuery("#list").navGrid('#pager',{edit:false,add:false,del:false,search:false,refresh:false})
+    	//恢复
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"恢复", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+	    		 recoverFun();  
+							},
+			position:"last"
+			})
+			
+		//审核不通过;  
+    
+     //搜索栏部分类别三级联动
+    $(".category1").change(function(){
+   	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+   		  setHtml(data,".category2");
+   	  });
+    });
+    
+    $(".category2").change(function(){
+   	   
+   	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+   		  setHtml(data,".category3");
+   	  });
+    });
+});
+
+//审核通过
+function recoverFun(){
+	 var id = jQuery(list).jqGrid('getGridParam', 'selrow'); 
+	 var rowData = $(list).jqGrid('getRowData', id);//获取选中所有数据
+		if (null == rowData || '' == rowData || rowData.length > 0) {
+			alert("请选择需要恢复的商品！")
+		} else {
+			var val = rowData.goodsId;//获取每一行制定的列的数据
+			var postData = {
+				goodsId : val
+			};
+			//alert(status);
+			$.post("${ctx}/goodsAudit/recover", postData, function(data) {
+				alert(data);
+				if (data.success) {
+					alert("恢复成功");
+					window.location.href="recycleBinList";
+				} else {
+					alert("恢复失败");
+				}
+			}, 'JSON')
+		};
+		
+}
+
+//操作（预览，修改，复制，下架，删除）
+function formatOperating(cellValue){
+	return "<a target='_Blank' href='${ctx}/goodsview/sku/"+cellValue+"'>查看</a>"+"&nbsp;&nbsp;<a href='${ctx}/goodsAudit/recover?goodsId="+cellValue+"'>恢复</a>"
+}
+
+function copyGoods(rowData){
+	alert(rowData.goodsId);
+	
+	if(null == rowData || '' == rowData || rowData.length > 0){
+		alert("请选择需要编辑的行！")
+	}else{
+		var val= rowData.brandId;//获取每一行制定的列的数据
+	  	window.location.href="${ctx}/goodsAudit/copyGoods?id="+val;
+	} 
+}
+
+/**
+ * 状态
+ */
+function formatStatus(cellvalue){
+ if(cellvalue == 1 ){
+	 return "<font color=blue >已审核</font>";
+ }else{
+	 return "<font color=green >未审核</font>";
+ }
+}
+ 
+ //上架
+ function addFun(){
+	var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+	var rowData = $("#list").jqGrid('getRowData', id);//获取选中所有数据
+	if (null == rowData || '' == rowData || rowData.length > 0) {
+		alert("请选择需要上架的商品！")
+	} else {
+		var val = rowData.skuId;//获取每一行制定的列的数据
+		//alert(val);
+		var postData = {
+			skuId : val,
+			status : 3
+		};
+		$.post("${ctx}/sku/grounding", postData, function(data) {
+			 
+			if (data.success) {
+				alert("上架成功");
+				window.location.href=window.location.href;
+			} else {
+				alert("上架失败");
+			}
+		}, 'JSON')
+	}
+ }
+
+ //下架
+function undercarriageFun() {
+	var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+	var rowData = $("#list").jqGrid('getRowData', id);//获取选中所有数据
+	if (null == rowData || '' == rowData || rowData.length > 0) {
+		alert("请选择需要下架的商品！")
+	} else {
+		var val = rowData.skuId;//获取每一行制定的列的数据
+		var postData = {
+			skuId : val,
+			status : 4
+		};
+		$.post("${ctx}/sku/grounding", postData, function(data) {
+			//alert(data);
+			if (data.success) {
+				alert("下架成功");
+				window.location.href=window.location.href;
+			} else {
+				alert("下架失败");
+			}
+		}, 'JSON')
+	}
+  }
+ 
+//所属分类设置内容的函数
+function setHtml(data,selectId){
+	var temp_html = "<option value=''>请选择</option>";
+	$.each(data,function(i,category1){
+          temp_html+="<option value='"+category1.categoryId+"'>"+category1.name+"</option>";
+    });
+	$(selectId).html(temp_html);
+}
+//查询操作
+$("#btnSearch").click(function () {
+		if($("#name").val()=="商品编号或商品关键字"){
+			var name = "";
+		}else{
+			var name = $("#name").val();
+		}
+		var category1 = $("#category1").val();//一级分类id
+		var category2 = $("#category2").val();//二级分类id
+		var category3 = $("#category3").val();//三级分类id
+		var beginDate = $("#beginDate").val();
+		var endDate = $("#endDate").val();
+		if($("#storeName").val()=="请输入店铺编号或关键字"){
+			var storeName = "";
+		}else{
+			var storeName = $("#storeName").val();
+		}
+		
+		var categoryId = "";
+	  	if(category3.length >  0  ){
+	  		categoryId = category3;
+	  	}else if( (category2.length > 0 ) && ( category3.length <= 0  ) ){
+	  		categoryId = category2;
+	  	}else if( ( category1.length > 0 ) && (category2.length <= 0 ) && (category3.length <= 0 ) ){
+	  		categoryId = category1 ;
+	  	}
+	  	//alert(beginDate);
+		var storeId=$("#storeId").val();//店铺名称
+		var releaseUser=$("#releaseUser").val();//上架人
+		var brandName=$("#brandName").val();//品牌
+		if(beginDate==""||endDate==""){
+			$("#list").jqGrid('setGridParam',{ 
+	             url:"${ctx}/goodsAudit/recycleBinGrid", 
+	             postData:{'name':name,'beginDate':beginDate,'endDate':endDate,'categoryId':categoryId,'storeId':storeId,'releaseUser':releaseUser,'brandName':brandName,'storeName':storeName}, //发送数据 
+	             page:1 
+	         }).trigger("reloadGrid"); //重新载入 
+		}else if(beginDate<endDate){
+			//alert("搜");
+			//alert(endDate);
+		   	$("#list").jqGrid('setGridParam',{ 
+	             url:"${ctx}/goodsAudit/recycleBinGrid", 
+	             postData:{'name':name,'beginDate':beginDate,'endDate':endDate,'categoryId':categoryId,'storeId':storeId,'releaseUser':releaseUser,'brandName':brandName,'storeName':storeName}, //发送数据 
+	             page:1 
+	         	}).trigger("reloadGrid"); //重新载入 
+		}else{
+			alert("请输入正确的上架日期");
+		}
+	});
+</script>
+</html>

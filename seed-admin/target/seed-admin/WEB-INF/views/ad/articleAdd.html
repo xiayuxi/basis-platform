@@ -1,0 +1,178 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<!-- jquery-form.js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.form.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="${staticCtx}/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="${staticCtx}/ueditor/ueditor.all.js"></script>
+<link rel="stylesheet" href="${staticCtx}/ueditor/themes/default/css/ueditor.css"/>
+<script type="text/javascript" src="${staticCtx}/ueditor/lang/zh-cn/zh-cn.js"></script> 
+<script type="text/javascript">
+ 
+var uestory=UE.getEditor('contentEditor');
+function getContent(){
+	var arr = [];
+	arr.push(UE.getEditor('contentEditor').getContent());
+	var storytxt = arr.join("\n");
+	var st=storytxt.toString();
+	st=st.replace("<p>","");
+	st=st.replace("</p>","");
+	$("#content").val(st);
+}
+</script>
+
+<script type="text/javascript">
+
+$(function() {
+		$("#file1").change(function(){
+			alert("!!!!");
+		ajaxFileUpload('file1',"img1","bigImg");
+	})
+		$("#file2").change(function(){
+		ajaxFileUpload('file2',"img2","smallImg");
+	})
+})
+</script>
+
+<script type="text/javascript">
+
+
+function ajaxFileUpload(fid,imgid,pathid) {
+	
+    $.ajaxFileUpload
+    (
+        {
+            url: '${ctx}/upload/uploadPic?type=4', //用于文件上传的服务器端请求地址
+            secureuri: false, //一般设置为false
+            fileElementId: fid, //文件上传空间的id属性  <input type="file" id="file" name="file" />
+            dataType: 'HTML', //返回值类型 一般设置为json
+            success: function (data, status)  //服务器成功响应处理函数
+            {
+         		alert(data);   	
+            	//显示上传图片
+                var pic=$.parseJSON(data);
+            
+                $("#"+imgid).attr("src", pic.realPath);
+                $("#"+pathid).val(pic.relativePath);
+                if (typeof (data.error) != 'undefined') {
+                    if (data.error != '') {
+                        alert(data.error);
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            },
+            error: function (data, status, e)//服务器响应失败处理函数
+            {
+                alert(e);
+            }
+        }
+    )
+    return false;
+}
+</script>
+<body>
+<div style="margin-left: 20px">
+	<form id="articleFormAdd" action="${ctx}/article/add" method="post" enctype="multipart/form-data">
+		<table class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td><input type="hidden" id="articleId" name="articleId"/> 
+			 	文章标题： *
+			 	</td>
+				<td><input type="text" id="title" name="title"/></td>
+			</tr>
+			<tr>
+				<td>文章分类：*	</td>
+				<td>
+					<select id="categoryId" name="categoryId">
+						<option value="">请选择</option>
+			            <#if aCList??>
+					 		<#list aCList as value>
+				            	<option value='${value.id}' >${value.name}</option>
+				            </#list>
+				        </#if>
+					</select>	
+				</td>
+			</tr>
+			<tr>
+				<td>是否置顶：</td>
+				<td>
+					<input type="radio" id="articleType" name="articleType" value="1" checked="checked"/>不置顶
+				    <input type="radio" id="articleType" name="articleType" value="2" />置顶
+				</td>
+			</tr>
+			<tr>
+				<td>排序：</td>
+				<td>
+					<input type="text" id="seq" name="seq"  onkeyup="this.value=this.value.replace(/\D/g,'')" maxLength=6 onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+				</td>
+			</tr>
+			<tr>
+				<td>是否显示：</td>
+				<td>
+					<input type="radio" id="isShow" name="isShow" value="1" checked="checked"/>显示
+				    <input type="radio" id="isShow" name="isShow" value="0" />不显示
+				</td>
+			</tr>
+		    <tr>
+		    	<td>文章来源：</td>
+				<td><input type="text" id="source" name="source"/></td>
+			</tr>
+		    <tr>
+		    	<td>关键字：</td>
+				<td><input type="text" id="keywords" name="keywords"/></td>
+			</tr>
+		    <tr>
+		    	<td>标签：</td>
+				<td><input type="text" id="tags" name="tags"/></td>
+			</tr>
+		    <tr>
+		    	<td>网页描述：</td>
+				<td><input type="text" id="description" name="description"/></td>
+			</tr>
+			<tr>
+				<td>文章简介： </td>
+				<td><input type="text" id="brief" name="brief"/></td>
+			</tr>
+			<tr>
+				<td>外部链接： </td>
+				<td><input type="text" id="link" name="link"/></td>
+			</tr>
+			<tr>
+				<td>文章内容：</td>
+				<td>
+					<input id="content" name="content" type="hidden"></input> 
+					<div id="d2"><script type="text/plain" id="contentEditor" ></script></div>
+				</td>
+			</tr>
+			<!-- <tr>
+				<td>推荐位图片：</td>
+				<td>
+					<img id="img1" alt="" src="" class="imgcss">
+					<input type="hidden" id="bigImg" name="bigImg"/>
+					<input type="file" name="file1" id="file1" style="width:160px"/>
+				</td>
+			</tr>
+			<tr>
+				<td>缩略图：</td>
+				<td>
+					<img id="img2" alt="" src="" class="imgcss">
+					<input type="hidden" id="smallImg" name="smallImg"/>
+					<input type="file" name="file2" id="file2" style="width:160px"/> 
+				</td>
+			</tr> -->
+			<tr><td><input type="submit" value="提交" class="btn btn-primary"  onclick="getContent();"/>
+	          		<input type="button" value="取消"  class="btn btn-success"   onclick="history.back();"/>
+	       		</td>
+	       	</tr>
+        </table>
+	</form>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js"></script>
+<script type="text/javascript" src="${staticCtx}/validate/page/ad/articleAdd.js"></script>

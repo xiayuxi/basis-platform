@@ -1,0 +1,73 @@
+<#assign ctx="${request.contextPath}" /> <#assign staticCtx="${request.contextPath}/resources" />
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/pagination.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/tooldate.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/toolenum.js"></script>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<div id="div1" style="margin: 0 auto;" >
+<form action="${ctx}/order/orderGooodsChangeConfirmCheck">
+	<h4>商品信息</h4>
+	---------------------------------------------------------------------------------------------------------------------------------<br>
+	<img width="60" height="60" src="http://ynctest.b0.upaiyun.com${orderGoods.goodsUrl}" />${orderGoods.goodsName!'' }
+	</div>
+<div id="div2" style="margin: 0 auto;">
+	<div id="div3" style="margin: 0 auto;" >
+	<h4>商品信息</h4>
+	----------------------------------------------------------------------------------------------------------------------------------
+	</div>
+	<table border="1" >
+	<tr align="center">
+		<td></td>
+		<td>商品单价(元)</td>
+		<td>村站佣金(元)</td>
+		<!-- <td>平台佣金(元)</td> -->
+		<td>LC佣金(元)</td>		
+		<td>众筹费用(元)</td>		
+	</tr>
+	<tr align="center">
+		<td>下单价</td>
+		<td>${orderGoods.goodsPrice?string("0.00")}</td>
+		<td>${orderGoods.villageExpense?string("0.000")}</td>
+		<!-- <td>${orderGoods.platformExpense!''}</td> -->
+		<td>${orderGoods.lcExpense?string("0.000")}</td>		
+		<td>${orderGoods.planExpense?string("0.000")}</td>		
+	</tr>
+	<tr align="center">
+		<td>变更为</td>
+		<td><input disabled="disabled" style="text-align:center;color:red"  value="${orderGoods.actualPrice?string("0.00")}"/></td>
+		<td><input disabled="disabled" style="text-align:center;color:red"  value="${orderGoods.villageExpenseChange?string("0.000")}"/></td>
+		<!-- <td><input disabled="disabled" style="text-align:center;color:red"  value="${orderGoods.platformExpenseChange!''}"/></td> -->
+		<td><input disabled="disabled" style="text-align:center;color:red"  value="${orderGoods.lcExpenseChange?string("0.000")}"/></td>
+		<td><input disabled="disabled" style="text-align:center;color:red"  value="${orderGoods.planExpenseChange?string("0.000")}"/></td>		
+	</tr>
+	</table>
+</div>
+<div id="div4" style="margin: 0 auto;">	
+	订单中商品数量：<font color="red">${orderGoods.goodsCount}</font>	
+</div>
+</form>
+</body>
+<script type="text/javascript">
+
+	
+</script>
+</html>

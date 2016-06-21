@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.common.dao.UnitDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.common.entity.Unit" >
+    <id column="unit_id" property="unitId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    unit_id, name, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from unit
+    where unit_id = #{unitId,jdbcType=INTEGER}
+  </select>
+  <!-- 查询所有单位 -->
+  <select id="selectAllUnit" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from unit
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from unit
+    where unit_id = #{unitId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.common.entity.Unit" >
+    insert into unit (unit_id, name, remark
+      )
+    values (#{unitId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.common.entity.Unit" >
+    insert into unit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="unitId != null" >
+        unit_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="unitId != null" >
+        #{unitId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.common.entity.Unit" >
+    update unit
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where unit_id = #{unitId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.common.entity.Unit" >
+    update unit
+    set name = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where unit_id = #{unitId,jdbcType=INTEGER}
+  </update>
+</mapper>

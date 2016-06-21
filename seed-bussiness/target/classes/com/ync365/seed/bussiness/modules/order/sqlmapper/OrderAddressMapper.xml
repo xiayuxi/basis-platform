@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderAddressMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderAddress" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="receiver_num" property="receiverNum" jdbcType="CHAR" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR" />
+    <result column="receiver_tel" property="receiverTel" jdbcType="VARCHAR" />
+    <result column="receiver_address" property="receiverAddress" jdbcType="VARCHAR" />
+    <result column="vs_num" property="vsNum" jdbcType="CHAR" />
+    <result column="vs_name" property="vsName" jdbcType="VARCHAR" />
+    <result column="vs_address" property="vsAddress" jdbcType="VARCHAR" />
+    <result column="vs_tel" property="vsTel" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_no, receiver_num, receiver_name, receiver_tel, receiver_address, vs_num, 
+    vs_name, vs_address, vs_tel
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_address
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_address
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderAddress" >
+    insert into order_address (id, order_no, receiver_num, 
+      receiver_name, receiver_tel, receiver_address, 
+      vs_num, vs_name, vs_address, 
+      vs_tel)
+    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=CHAR}, #{receiverNum,jdbcType=CHAR}, 
+      #{receiverName,jdbcType=VARCHAR}, #{receiverTel,jdbcType=VARCHAR}, #{receiverAddress,jdbcType=VARCHAR}, 
+      #{vsNum,jdbcType=CHAR}, #{vsName,jdbcType=VARCHAR}, #{vsAddress,jdbcType=VARCHAR}, 
+      #{vsTel,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderAddress" >
+    insert into order_address
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="receiverNum != null" >
+        receiver_num,
+      </if>
+      <if test="receiverName != null" >
+        receiver_name,
+      </if>
+      <if test="receiverTel != null" >
+        receiver_tel,
+      </if>
+      <if test="receiverAddress != null" >
+        receiver_address,
+      </if>
+      <if test="vsNum != null" >
+        vs_num,
+      </if>
+      <if test="vsName != null" >
+        vs_name,
+      </if>
+      <if test="vsAddress != null" >
+        vs_address,
+      </if>
+      <if test="vsTel != null" >
+        vs_tel,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="receiverNum != null" >
+        #{receiverNum,jdbcType=CHAR},
+      </if>
+      <if test="receiverName != null" >
+        #{receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverTel != null" >
+        #{receiverTel,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverAddress != null" >
+        #{receiverAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="vsNum != null" >
+        #{vsNum,jdbcType=CHAR},
+      </if>
+      <if test="vsName != null" >
+        #{vsName,jdbcType=VARCHAR},
+      </if>
+      <if test="vsAddress != null" >
+        #{vsAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="vsTel != null" >
+        #{vsTel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderAddress" >
+    update order_address
+    <set >
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="receiverNum != null" >
+        receiver_num = #{receiverNum,jdbcType=CHAR},
+      </if>
+      <if test="receiverName != null" >
+        receiver_name = #{receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverTel != null" >
+        receiver_tel = #{receiverTel,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverAddress != null" >
+        receiver_address = #{receiverAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="vsNum != null" >
+        vs_num = #{vsNum,jdbcType=CHAR},
+      </if>
+      <if test="vsName != null" >
+        vs_name = #{vsName,jdbcType=VARCHAR},
+      </if>
+      <if test="vsAddress != null" >
+        vs_address = #{vsAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="vsTel != null" >
+        vs_tel = #{vsTel,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderAddress" >
+    update order_address
+    set order_no = #{orderNo,jdbcType=CHAR},
+      receiver_num = #{receiverNum,jdbcType=CHAR},
+      receiver_name = #{receiverName,jdbcType=VARCHAR},
+      receiver_tel = #{receiverTel,jdbcType=VARCHAR},
+      receiver_address = #{receiverAddress,jdbcType=VARCHAR},
+      vs_num = #{vsNum,jdbcType=CHAR},
+      vs_name = #{vsName,jdbcType=VARCHAR},
+      vs_address = #{vsAddress,jdbcType=VARCHAR},
+      vs_tel = #{vsTel,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

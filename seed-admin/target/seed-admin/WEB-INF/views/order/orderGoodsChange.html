@@ -1,0 +1,158 @@
+<#assign ctx="${request.contextPath}" /> <#assign staticCtx="${request.contextPath}/resources" />
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/pagination.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/tooldate.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/toolenum.js"></script>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+
+<!-- jquery-form.js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>  
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script> 
+</head>
+<body>
+<form id="myForm" action="" method="post">
+<div id="div1" style="margin: 0 auto;">
+
+	<h4>商品信息</h4>
+	---------------------------------------------------------------------------------------------------------------------------------<br>
+	<img width="60" height="60" src="http://ynctest.b0.upaiyun.com${orderGoods.goodsUrl}" />${orderGoods.goodsName!'' }
+	</div>
+<div id="div2" style="margin: 0 auto;">
+	<div id="div3" style="margin: 0 auto;" >
+	<h4>商品信息</h4>	
+	----------------------------------------------------------------------------------------------------------------------------------
+</div>
+	<table border="1" >	
+	<tr align="center" style="width: 100px">
+		<td></td>
+		<td >商品单价(元)</td>
+		<td >村站佣金(元)</td>
+		<!-- <td >平台佣金(元)</td> -->
+		<td >LC佣金(元)</td>		
+		<td >众筹费用(元)</td>		
+	</tr>
+	<tr align="center" style="width: 100px">
+		<td >下单价</td>
+		<td >${orderGoods.goodsPrice?string("0.00")}</td>
+		<td >${orderGoods.villageExpense?string("0.000")}</td>
+		<!-- <td >${orderGoods.platformExpense?string("0.000")}</td> -->
+		<td >${orderGoods.lcExpense?string("0.000")}</td>		
+		<td >${orderGoods.planExpense?string("0.000")}</td>		
+	</tr>
+	<tr align="center" style="width: 100px">
+		<td>变更为</td>		
+		<td ><input style="text-align:center;color:red"  id="goodsPriceChange"/></td>
+		<td ><input style="text-align:center;color:red"  id="villageExpenseChange"/></td>
+		<!-- <td ><input style="text-align:center;color:red"  id="platformExpenseChange"/></td> -->
+		<td ><input style="text-align:center;color:red"  id="lcExpenseChange"/></td>		
+		<td ><input style="text-align:center;color:red"  id="planExpenseChange"/></td>			
+	</tr>
+	</table>
+</div>
+<div id="div4" style="margin: 0 auto;">
+	<!-- 订单id和订单商品id的隐藏域 -->
+	<input type="hidden" id="orderId" value="${orderGoods.orderId}"/>
+	<input type="hidden" id="skuId" value="${orderGoods.skuId}"/>	
+	<input type="hidden" id="goodsId" value="${orderGoods.goodsId}"/>
+	<!-- 改价前的商品及佣金 -->	
+	<input type="hidden" id="goodsPrice" value="${orderGoods.goodsPrice}"/>
+	<input type="hidden" id="villageExpense" value="${orderGoods.villageExpense?string("0.000")}"/>	
+	<input type="hidden" id="lcExpense" value="${orderGoods.lcExpense?string("0.000")}"/>
+	<input type="hidden" id="planExpense" value="${orderGoods.planExpense?string("0.000")}"/>
+	订单中商品数量：<font color="red">${orderGoods.goodsCount}</font>
+	<input type="button" id="subBtn" value="保存改价" />	<!-- <a href="javascript:void(0)" id="cancle" onclick="cancle()">取消</a> -->
+</div>
+</form>
+</body>
+<script type="text/javascript">	
+	$(function(){		
+		$("#subBtn").click(function(){
+			var orderId = $("#orderId").val();
+			var skuId = $("#skuId").val();
+			var goodsId = $("#goodsId").val();
+			
+			//改价前的商品单价及佣金
+			var goodsPrice = $("#goodsPrice").val();
+			var villageExpense = $("#villageExpense").val();
+			var lcExpense = $("#lcExpense").val();
+			var planExpense = $("#planExpense").val();
+			
+			//改价后的商品单价及佣金
+			var goodsPriceChange = $("#goodsPriceChange").val();
+			var villageExpenseChange = $("#villageExpenseChange").val();
+			//var platformExpenseChange = $("#platformExpenseChange").val();
+			var lcExpenseChange = $("#lcExpenseChange").val();
+			//var integralExpenseChange = $("#integralExpenseChange").val();
+			var planExpenseChange = $("#planExpenseChange").val();
+			//改价后佣金的总和
+			var holdGoldSum = parseFloat(villageExpenseChange)+parseFloat(lcExpenseChange)+parseFloat(planExpenseChange);
+			//alert("改价后佣金的总和:"+holdGoldSum);
+			//alert("改价后商品单价:"+parseFloat(goodsPriceChange));
+			if(parseFloat(villageExpenseChange)>parseFloat(goodsPriceChange)){
+				alert("改价后的村站佣金不能高于改价后商品的单价");
+			}else if(parseFloat(lcExpenseChange)>parseFloat(goodsPriceChange)){
+				alert("改价后的LC佣金不能高于改价后商品的单价");
+			}else if(parseFloat(planExpenseChange)>parseFloat(goodsPriceChange)){
+				alert("改价后的众筹费用不能高于改价后商品的单价");
+			}else if(parseFloat(holdGoldSum)>parseFloat(goodsPriceChange)){
+				alert("改价后的佣金之和不能高于改价后商品的单价");
+			}else{
+				jQuery.ajax({
+					type:"post",
+				    url: '${ctx}/order/orderGooodsChangeSave',
+				    data : {	
+				    	orderId : orderId,
+				    	skuId : skuId,
+				    	goodsId : goodsId,
+				    	goodsPrice : goodsPrice,
+				    	villageExpense : villageExpense,
+				    	lcExpense : lcExpense,
+				    	planExpense : planExpense,
+						goodsPriceChange : goodsPriceChange,
+						villageExpenseChange : villageExpenseChange,
+						//platformExpenseChange : platformExpenseChange,
+						lcExpenseChange : lcExpenseChange,
+						//integralExpenseChange : integralExpenseChange,
+						planExpenseChange : planExpenseChange
+					},
+				    success: function (data) {
+				    	if (data == "OK") {
+							alert("保存成功！");						
+							art.dialog.close();							
+						} else {
+							alert("保存失败");
+							art.dialog.close();					
+						
+						}
+				    }
+				});
+			}			
+		});			
+		
+	}); 
+	
+	
+	/* //取消
+	function cancle(){
+		art.dialog.close();
+	} */
+</script>
+</html>

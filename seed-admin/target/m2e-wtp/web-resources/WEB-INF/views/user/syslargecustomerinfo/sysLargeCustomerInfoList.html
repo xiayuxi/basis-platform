@@ -1,0 +1,272 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+	<link rel="stylesheet" media="screen" type="text/css"  href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+	<!-- 时间控件 css  -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+	<!-- js -->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript"  src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+	<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+	<script type="text/javascript"  src="${staticCtx}/jqGrid/js/jquery.treegrid.js"></script>
+	<!-- 时间控件js  -->
+	<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+	<!-- 弹框 js -->
+	<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+	<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+	<!-- 地址联动js  -->
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+
+</head>
+<body>
+	<div style="margin: 20px 0 10px 20px;">
+		姓名：<input type="text" name="nameSearch" id="nameSearch" />&nbsp; &nbsp; 
+		手机号：<input type="text" name="userMobileSearch" id="userMobileSearch" />&nbsp; &nbsp; 
+		编号：<input type="text" name="userNumSearch" id="userNumSearch" />&nbsp; &nbsp;
+		激活状态：<select name="stateSearch" id="stateSearch" >
+					<option value="" >--请选择--</option>
+					<option value="0" >未审核</option>
+					<option value="1" >通过</option>
+					<option value="2">未通过</option>
+			   </select>&nbsp; &nbsp; 
+		注册时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})"
+					type="text" id="beginDateSearch" name="beginDateSearch" />
+					——
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})" 
+					type="text" id="endDateSearch" name="endDateSearch" />&nbsp; &nbsp; 
+		所属VS：<input type="text" name="vsInfoSearch" id="vsInfoSearch" />&nbsp; &nbsp; 
+		
+		所属LC：<input type="text" name="lcInfoSearch" id="lcInfoSearch" />&nbsp; &nbsp; 
+					
+		所属SE：<input type="text" name="seInfoSearch" id="seInfoSearch" />&nbsp; &nbsp; 
+		
+		所属A+：<input type="text" name="aInfoSearch" id="aInfoSearch" />&nbsp; &nbsp; 
+		
+		服务区域：<select id="provinceRegion">
+				</select>
+				<select id="cityRegion">
+					<option>--请选择--</option>
+				</select>
+				<select id="countyRegion">
+					<option>--请选择--</option>
+				</select>
+				<select id="townRegion">
+					<option>--请选择--</option>
+				</select>
+				<select id="villageRegion" name="userAddress">
+					<option>--请选择--</option>
+				</select>
+		
+		<button type="submit" class="btn btn-primary" id="btnSearch">查询</button> &nbsp; &nbsp; 
+		
+		
+	</div>
+	<@shiro.hasPermission name="lager_user_recom">
+	<a href="${ctx}/syslargecust/getrecommended">认证设置</a>
+	</@shiro.hasPermission>
+	<div style="margin-left: 20px">
+		<table id="list"></table>
+		<div id="pager"></div>
+	</div>
+	<!--  拒绝 或 通过 弹框   页面-->
+	<div style="display:none;" id="binding_r">
+		<form action="${ctx}/syslargecust/updatePageFailOrTg" method="post" id="binding_r_Form">
+			<input type="hidden" name="userNum" id = "userNum_rc"/>
+			<input type="hidden" name="stat" id = "stat" />
+			审核原因：<input type="text" name="failInfo" id = "teee_id" />
+			<span style="display:none;" id ="span_idd"><font color="red">*审核原因不能为空</font></span>
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+
+	$(function(){
+		regionPlugin.init("${ctx}");
+		regionPlugin.regionInit();
+		$("#list").jqGrid({
+	        url:'${ctx}/syslargecust/grid',// 获取数据的url,action
+	        datatype: "json",//后台返回的数据格式
+	        mtype:"post",//提交的方式,默认是get
+	        //width:1024,//这个宽度不能为百分比,
+	        autowidth:true,//自动宽
+		    colNames:['姓名', '手机号','编号','绑定VS','绑定LC','绑定SE','绑定A+','地域','申请时间','状态'],
+	        colModel:[
+				{name:'sysUserRealName',index:'sysUserRealName', editable:true,sortable:true},
+				{name:'userMobile',index:'userMobile', align:"center",editable:true},
+				{name:'userNum',index:'userNum', align:"center",editable:true},
+				{name:'vsUserName',index:'vsUserName', align:"center",editable:true},
+				{name:'lcUserName',index:'lcUserName', align:"center",editable:true},
+				{name:'seUserName',index:'seUserName', align:"center",editable:true},
+				{name:'aUserName',index:'aUserName', align:"center",editable:true},
+				{name:'sysUserAddressDetail',index:'sysUserAddressDetail', align:"center",editable:true},
+				{name:'createTime',index:'createTime', align:"center",editable:true,formatter:'date' ,
+              	  formatoptions:{srcformat:'u',newformat:'Y/m/d H:i:s'}},
+				{name:'state',index:'state', align:"center",editable:true,formatter:formatFction}
+			],
+	        postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+	        //styleUI : 'Bootstrap',
+	        //caption:"品牌列表",//表名称
+	        //multiselect: true,//开启多选
+	        rowNum:10,//每页显示的条数,此参数会被传递到后台
+	        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+	        viewrecords: true,//定义是否显示总的数据条数
+	        pager: '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+	        height : "auto",
+	        rownumbers:true,//添加左侧行号
+	        ondblClickRow:function(rowid){
+	        	selectInfo(rowid);
+	        }
+		});
+	      // $("#list").jqGrid('navGrid','#pager', {edit:true,add:true,del:true,search:true,refresh:true,addtext:'添加'});  
+	      //$("#list").jqGrid("navGrid","#pager",{view :true}); 
+	    jQuery("#list").navGrid('#pager',{edit:false,add:false,del:false,search:false,refresh:true})
+	     //自定义添加按钮
+	     <@shiro.hasPermission name="lager_user_views">
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"查看", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+							    	addFun();  
+							    	},
+			position:"last"
+		})
+		</@shiro.hasPermission>
+		//通过
+		<@shiro.hasPermission name="lager_user_pass">
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"通过",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 toGoFun();
+    		 }, 
+    		position:"last"
+    	})
+    	</@shiro.hasPermission>
+    	
+    	//拒绝
+    	<@shiro.hasPermission name="lager_user_faile">
+	    .navButtonAdd('#pager',{ 
+	    	 caption:"拒绝",
+	    	 buttonicon:"ui-icon-edit",  
+    		 onClickButton:function(){
+    			 toFailFun();
+    		 }, 
+    		position:"last"
+    	})
+		</@shiro.hasPermission>
+	     
+	    $("#btnSearch").click(function () {
+			var nameSearch = $("#nameSearch").val();
+			var userMobileSearch = $("#userMobileSearch").val();
+			var userNumSearch = $("#userNumSearch").val();
+			var stateSearch = $("#stateSearch").val();
+			var beginDateSearch = $("#beginDateSearch").val();
+			var endDateSearch = $("#endDateSearch").val();
+			
+			var vsInfoSearch = $("#vsInfoSearch").val();
+			var lcInfoSearch = $("#lcInfoSearch").val();
+			var seInfoSearch = $("#seInfoSearch").val();
+			var aInfoSearch = $("#aInfoSearch").val();
+			var userAddressSearch = $("#villageRegion").val();
+			
+	    	//alert(qName);
+	    	$("#list").jqGrid('setGridParam',{ 
+	              url:"${ctx}/syslargecust/grid", 
+	              postData:{'nameSearch':nameSearch,"userMobileSearch":userMobileSearch,
+	            	  "userNumSearch":userNumSearch,"stateSearch":stateSearch,
+	            	  "beginDateSearch":beginDateSearch,"endDateSearch":endDateSearch,
+	            	  "vsInfoSearch":vsInfoSearch,"lcInfoSearch":lcInfoSearch,
+	            	  "seInfoSearch":seInfoSearch,"aInfoSearch":aInfoSearch,
+	            	  "userAddressSearch":userAddressSearch}, //发送数据 
+	              page:1 
+	          	}).trigger("reloadGrid"); //重新载入 
+	      });
+	   
+	 });
+	
+	//展示
+	function formatFction(cellvalue){
+		 if(cellvalue == 0 ){
+			 return "<font color=blue >未审核</font>";
+		 }else if(cellvalue == 1 ){
+			 return "<font color=blue >通过</font>";
+		 }else if(cellvalue == 2 ){
+			 return "<font color=blue >未通过</font>";
+		 }else {
+			 return "<font color=red ></font>";
+		 }
+	 }
+	 
+	 //查看审核资料
+	 function addFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要查看的行！");
+		}else{
+			var val= rowData.userNum;//获取每一行制定的列的数据
+		  	 window.location.href="${ctx}/syslargecust/cheackPage?userNum="+val;
+		} 
+	 }
+	 
+	//通过
+	 function toGoFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要审核的行！");
+		}else{
+			var val= rowData.userNum;//获取每一行制定的列的数据
+		  	 //window.location.href="${ctx}/syslargecust/updatePageTg?userNum="+val;
+			$("#userNum_rc").attr("value",val);
+		  	$("#stat").attr("value","2");
+		  	bindingFun();
+		} 
+	 }
+	
+	//拒绝
+	 function toFailFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+		if(null == rowData || '' == rowData || rowData.length > 0){
+			alert("请选择需要审核的行！");
+		}else{
+			var val_t= rowData.userNum;//获取每一行制定的列的数据
+		  	 //window.location.href="${ctx}/syslargecust/updatePageFail?userNum="+val;
+		  	$("#userNum_rc").attr("value",val_t);
+		  	$("#stat").attr("value","1");
+		  	bindingFun();
+		} 
+	 }
+	
+	//拒绝输入拒绝原因弹框页面
+	 function bindingFun(){
+		  art.dialog({
+			  title:"审核原因",
+			  width:600,
+			  height:300,
+			  padding:0,
+			  lock:true,
+			  content:$("#binding_r").html(),
+			  ok:function(){
+				  var content = $(this.DOM.content[0]);
+				  var t = $("#teee_id").val();
+				  if(t != ""){
+					  content.find("#binding_r_Form").submit();//提交
+				  }else{
+					  $("#span_idd").show();
+					  return false;
+				  }
+			  },
+			  cancel:true
+		  }).show();
+	 }
+	 
+</script>
+</html>

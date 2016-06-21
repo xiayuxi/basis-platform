@@ -1,0 +1,184 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/regionPlugin/region.js"></script>
+	<!--验证js-->
+	<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+	<script type="text/javascript" src="${staticCtx}/validate/page/user/sysAdminInfoEditPage.js"></script>
+	<script type="text/javascript">
+		
+		$(function () { 
+			$('#submitForm').click(function(){
+				$("#formId").submit();
+			 });
+			$('#backid').click(function(){
+					history.back();
+			 });
+			regionPlugin.init("${ctx}");
+    		regionPlugin.regionInitParam({
+    			provinceId:'address_provinceId',
+    			cityId:'address_cityId',
+    			countyId:'address_countyId',
+    			townId:'address_townId',
+    			villageId:'address_villageId',
+    			defaultVillageId:'${sysAdminInfoBO.address!''}'
+			});
+    		
+    		<#if sysAdminInfoBO.serviceserviceDistincts??>
+	    		<#list sysAdminInfoBO.serviceserviceDistincts as serviceserviceDistinct>
+		    		regionPlugin.regionInitParam({
+		    			provinceId:'provinceRegion_${serviceserviceDistinct_index}',
+		    			cityId:'cityId_${serviceserviceDistinct_index}',
+		    			countyId:'countyId_${serviceserviceDistinct_index}',
+		    			defaultCountyId:'${serviceserviceDistinct}'
+					});
+		    		$('#formId').validator("setField", "serviceserviceDistincts[${serviceserviceDistinct_index}]", "区域:uniquenessRegion;required;");
+	    		</#list>
+	    		regionNum_ = ${sysAdminInfoBO.serviceserviceDistincts?size};
+	    	</#if>
+	    	
+	    	 /* 编辑时保存原有数据   begin*/
+			var old_n = $('#adminMobile_id').val();
+			$("#id_old_2").val(old_n);
+			/* end */	
+		});
+		
+		function addServiceDistinct(){
+			if(!regionNum_){
+				regionNum_ = $("#serviceserviceDistinctDiv").find("select").length;
+			}
+			$("#serviceserviceDistinctDiv").append('<div><select id="provinceRegion_'+regionNum_+'"></select>'+
+					'<select id="cityId_'+regionNum_+'" name="serviceserviceDistincts['+regionNum_+']"></select><br/><a onclick="$(this).parent().remove()">删除</a></div>');
+			regionPlugin.regionInitParam({
+    			provinceId:'provinceRegion_'+regionNum_,
+    			cityId:'cityId_'+regionNum_,
+			});
+			$('#formId').validator("setField", "serviceserviceDistincts["+regionNum_+"]", "区域:uniquenessRegion;required;");
+			regionNum_++;
+		}
+		
+		
+			 /* 校验手机号  原使用手机号可以通过 */
+			function adminMobile_fun(){
+				var t_n_r = $('#adminMobile_id').val();
+				var new_n = $('#id_old_2').val();
+				var boolMobile = false;
+				if(t_n_r == new_n){
+					boolMobile=true;
+           		}else{
+           			$.ajax({ 
+				        type: "GET", 
+				       	url: "${ctx}/admin/selectAdminByNameOrNum?pho="+t_n_r+"&str"+'', 
+				        dataType:"json", 
+				        async:false,
+				        success: function(data){ 
+				        	if(data.success == true){
+				        		boolMobile=true;
+				           	}
+				        }
+					});
+           		}
+				return boolMobile;
+			}
+	</script>
+ </HEAD>
+
+<body>
+	<div style="margin-left: 2px">
+	<form action="${ctx}/sysadmininfo/aEdit" method="post" id="formId">
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td >名称</td>
+			        <td><input type="text" name="name" value="${sysAdminInfoBO.name!''}"/></td>
+			        <td >手机号</td>
+			        <td>
+			        	<input type="text" name="mobile" value="${sysAdminInfoBO.mobile!''}" id = "adminMobile_id"/>
+			        	<input type= "hidden" id = "id_old_2"/> <!-- 无实际意义 存放原 电话号码  -->
+			        </td>
+			    </tr> 
+			    <tr>
+			        <td >座机号</td>
+			        <td><input type="text" name="telephone" value="${sysAdminInfoBO.telephone!''}"/></td>
+			    </tr> 
+			    <tr>
+			        <td >家庭住址</td>
+			        <td colspan="3">
+			        	<select id="address_provinceId"></select>
+			        	<select id="address_cityId"></select>
+			        	<select id="address_countyId"></select>
+			        	<select id="address_townId"></select>
+			        	<select id="address_villageId" name="address"></select>
+			        	<input type="text" name="addressDetail" value="${sysAdminInfoBO.addressDetail!''}"/>
+			        </td>
+			    </tr>
+			    
+			    <tr>
+			        <td >身份证号</td>
+			        <td><input type="text" name="idCard" value="${sysAdminInfoBO.idCard!''}"/></td>
+			   
+			        <td >A+编号</td>
+			        <td><input type="hidden" name="adminNum" value="${sysAdminInfoBO.adminNum!''}"/>${sysAdminInfoBO.adminNum!''}</td>
+			    </tr>
+			    <tr>
+			    	<td>用户名</td>
+			        <td>${sysAdminInfoBO.adminLoginName!''}</td>
+			        <td >注册时间</td>
+			        <td>
+			        	<#if sysAdminInfoBO.createTime??>
+			        		${sysAdminInfoBO.createTime?string("yyyy-MM-dd HH:mm:ss")}
+			        	</#if>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td >服务区域</td>
+			        <td colspan="3">
+			       	 	<div id="serviceserviceDistinctDiv">
+			    		<#if sysAdminInfoBO.serviceserviceDistincts??>
+			        		<#list sysAdminInfoBO.serviceserviceDistincts as serviceserviceDistinct>
+			        			<div>
+			        			<select id="provinceRegion_${serviceserviceDistinct_index}"></select>
+			        			<select id="cityId_${serviceserviceDistinct_index}" name="serviceserviceDistincts[${serviceserviceDistinct_index}]"></select>
+			        			<br/>
+			        			<a onclick="$(this).parent().remove()">删除</a>
+			        			</div>
+			        		</#list>
+			        	</#if>
+			        	</div>
+			        	<button type="button" onclick="addServiceDistinct()">新增服务区域</button>
+			        </td>
+
+			    </tr>
+			</table>
+		</form>
+	</div>
+	
+	<!-- <div style="margin-left: 2px">
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>绑定用户数量：</td>
+				<td>${sysAdminInfoBO.usCount!0}</td>
+				<td>绑定VS数量：</td>
+				<td>${sysAdminInfoBO.vsCount!0}</td>
+				<td>绑定LC数量：</td>
+				<td>${sysAdminInfoBO.lcCount!0}</td>
+				<td>绑定SE数量：</td>
+				<td>${sysAdminInfoBO.seCount!0}</td>
+			</tr>
+		</table>
+	</div> -->
+
+	<div style="margin-left: 20px">
+		<input type="submit" class="btn btn-success" value="保存" name="submitForm" id="submitForm"/>
+		<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+	</div>
+</body>
+</html>

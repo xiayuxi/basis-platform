@@ -1,0 +1,956 @@
+<#assign ctx="${request.contextPath}" /> 
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+#infoCheck {
+	border: 1px solid #ccc;
+	padding: 10px;
+	width: 650px;
+}
+
+#infoSelect {
+	line-height: 30px;
+	border: 1px solid #ccc;
+}
+
+.infolistCon {
+	display: none;
+}
+
+.infolistCon {
+	margin-top: 10px;
+}
+
+.infolistCon label {
+	font-size: 12px;
+	margin-right: 10px;
+	line-height: 30px;
+}
+
+.infolistCon label input {
+	margin-right: 3px;
+}
+
+.addinput {
+	text-align: right;
+}
+
+.tablediv {
+	margin-top: 10px;
+}
+.tablediv table {
+	border-collapse: collapse;
+	width: 650px;
+}
+
+.tablediv table td {
+	border: 1px solid #ccc;
+	line-height: 20px;
+	text-align: center;
+	padding: 5px 0;
+}
+
+.tablediv table td span {
+	margin: 0 3px;
+}
+
+.aLinkTd a {
+	font-size: 12px;
+	margin: 0 3px;
+}
+
+.imgcss {
+	width: 200px;
+	height: 200px;
+}
+
+.table-1 table {
+	border-collapse: collapse;
+	width: 1000px;
+}
+
+.table-1 table td {
+	border: 1px solid #ccc;
+	line-height: 20px;
+	text-align: left;
+	padding: 4px 0;
+}
+
+.table-1 table {
+	table-layout: fixed;
+}
+
+.table-1 table tr td:first-child,.table-1 table tr td:first-child {
+	width: 120px;
+}
+
+#t1,#t2 {
+	margin: 10px;
+	border: 2px solid #03436c;
+	float: left;
+	width: 400px;
+}
+
+#t3 {
+	margin: 10px;
+	width: 800px;
+}
+
+#t3 table tr td:first-child,#t3 table tr td:first-child {
+	width: 120px;
+}
+</style>
+<!-- zTree -->
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<link rel="stylesheet" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" type="text/css">
+<!-- jqGrid -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<!-- ueditor -->
+<script type="text/javascript" src="${staticCtx}/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="${staticCtx}/ueditor/ueditor.all.js"></script>
+<link rel="stylesheet" href="${staticCtx}/ueditor/themes/default/css/ueditor.css" />
+<script type="text/javascript" src="${staticCtx}/ueditor/lang/zh-cn/zh-cn.js"></script>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+<!-- ajaxFileupload -->
+<script type="text/javascript" src="${staticCtx}/js/ajaxfileupload.js"></script>
+<!-- fileupload -->
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.fileupload.js"></script>
+<script type="text/javascript">
+var list = [{"fileBtnId":"lbtp1","imgId":"carouselPicture1_img","urlId":"carouselPicture1_url"},
+            {"fileBtnId":"lbtp2","imgId":"carouselPicture2_img","urlId":"carouselPicture2_url"},
+            {"fileBtnId":"lbtp3","imgId":"carouselPicture3_img","urlId":"carouselPicture3_url"},
+            {"fileBtnId":"lbtp4","imgId":"carouselPicture4_img","urlId":"carouselPicture4_url"},
+            {"fileBtnId":"lbtp5","imgId":"carouselPicture5_img","urlId":"carouselPicture5_url"}];
+
+//图片上传
+function fileUpload(fileBtnId,imgId,urlId){
+	$('#'+fileBtnId).fileupload({        
+		dataType: 'json',        
+		done: function (e,data) {
+			$('#'+urlId).val(data.result.url);
+			$('#'+imgId).attr('src', "${imgYunServer}" + data.result.url);
+			if(fileBtnId=="lbtp1"){
+				$("#tagImgId").val(data.result.url);
+			}
+		}
+	});
+}
+
+$(function(){
+	 for(var index = 0,l = list.length;index<l;index++){
+			fileUpload(list[index].fileBtnId,list[index].imgId,list[index].urlId);
+	 }
+});
+</script>
+<script type="text/javascript">
+function check(e){
+  var re = /^\d+(?=\.{0,1}\d+$|$)/ 
+	    if (e.value != "") { 
+	        if (!re.test(e.value)) { 
+	            alert("请输入正确的数字"); 
+	            e.value = ""; 
+	            e.focus(); 
+	        } 
+	    } 
+}
+</script>
+<script type="text/javascript">
+
+	//商品详情UEditor插件
+	var uestory=UE.getEditor('storyEditor');
+	function getContent(){
+		var arr = [];
+		arr.push(UE.getEditor('storyEditor').getContent());
+		var storytxt = arr.join("\n");
+		var st=storytxt.toString();
+		st=st.replace("<p>","");
+		st=st.replace("</p>","");
+		$("#goodsDesc").val(st);
+	
+		//验证
+		var num=$('#info_table2').find('tr').length;
+		if(num == 0 ){
+			alert("请选择分类，并且添加商品规格");
+			return false;
+		}else{
+			for(var i=0;i<num-1;i++){
+				marketPrice=$("input[name='goods.skus["+i+"].marketPrice']").val();
+				marketPrice=$.trim(marketPrice);
+				if(marketPrice.length == 0){
+					alert("请输入商品规格中第"+(i+1)+"个商品的市场价格");
+					return false;
+				}
+				
+				costPrice=$("input[name='goods.skus["+i+"].costPrice']").val();
+				costPrice=$.trim(costPrice);
+				if(costPrice.length == 0){
+					alert("请输入商品规格中第"+(i+1)+"个商品的平台价");
+					return false;
+				}
+				
+				lowerLimit=$("input[name='goods.skus["+i+"].lowerLimit']").val();
+				lowerLimit=$.trim(lowerLimit);
+				if(lowerLimit.length == 0){
+					alert("请输入商品规格中第"+(i+1)+"个商品的最少购买量");
+					return false;
+				}
+				
+				regionId=$("input[name='goods.skus["+i+"].regionId']").val();
+				regionId=$.trim(regionId !="undefined");
+				if(regionId.length == 0 && regionId != "undefined"){
+					alert("请编辑商品规格中第"+(i+1)+"个商品的区域");
+					return false;
+				}
+			}
+		}
+	}
+	//添加属性
+	var th = "<td>商品自自编码</td><td>重量</td><td>市场价</td><td>平台价格</td><td>库存</td><td>最大购买数量</td><td>最小购买数量</td><td>佣金</td><td>区域</td>";
+
+	function getTd(row) {
+		var  td = '<td><input type="text" name="goods.skus['+row+'].sn"/></td>'; 
+		td += '<td><input type="text" name="goods.skus['+row+'].weight" /></td>';
+		td += '<td><input type="text" name="goods.skus['+row+'].marketPrice" onblur="check(this)"/></td>';
+		td += '<td><input type="text" name="goods.skus['+row+'].costPrice" onblur="check(this)"/></td>';
+		td += '<td><input type="text" name="goods.skus['+row+'].stockNum" onblur="check(this)"/></td>'; 
+		td += '<td><input type="text" name="goods.skus['+row+'].upperLimit" onblur="check(this)"/></td>';
+		td += '<td><input type="text" name="goods.skus['+row+'].lowerLimit" onblur="check(this)"/></td>';
+		//佣金编辑
+		td += '<td> <input type="hidden" name="attr_value[]" pattern="required" /> <a id="edit_button1" onclick="return addholdGoldAttrValue('+row+');">编辑</a><input type="hidden" id="item" ></td>' ;	
+		//隐藏佣金
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.vsAmount" id="holdvsAmount'+row+'"  value="0.0" />';
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.supplierAmount" id="holdsupplierAmount'+row+'"  value="0.0" />';
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.lcAmount" id="holdlcAmount'+row+'"  value="0.0" />';
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.engineerAmount" id="holdengineerAmount'+row+'"  value="0.0" />';
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.aAmount" id="holdaAmount'+row+'"  value="0.0" />';
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.integrationCosts" id="integrationCosts'+row+'"  value="0.0" />';
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.manpowerCosts" id="manpowerCosts'+row+'"  value="0.0" />';
+		td += '<input type="hidden" name="goods.skus['+row+'].holdGold.percent" id="percent'+row+'"  value="0.0" />';
+		//隐藏区域
+		td += '<input type="hidden" name="goods.skus['+row+'].regionId" id="region'+row+'"  value="" />';
+		//区域编辑
+		td += '<td> <input type="hidden" name="attr_value_region[]" pattern="required" /> <a id="edit_button2" onclick="return addRegionAttrValue('+row+');">编辑</a></td>';
+		return td;
+	}
+	//佣金和销售区域的操作
+	function addholdGoldAttrValue(num){
+		
+		  art.dialog.data('preview',0);
+		  art.dialog.data('attr_num',num);
+		  
+		  /*传入平台价格*/
+		   
+		  var cost_price = $("input[name='goods.skus["+num+"].costPrice']").val();
+		  
+		  if(cost_price==""){
+			  alert("请添加平台价格");
+			  return;
+		  }
+		  
+		  art.dialog.data('cost_price',cost_price);
+		  
+		  
+		  //获得需要回显的数据
+		  var vsAmount =$("input[name='goods.skus["+num+"].holdGold.vsAmount']").val();
+		  var supplierAmount=$("input[name='goods.skus["+num+"].holdGold.supplierAmount']").val();
+		  var lcAmount=$("input[name='goods.skus["+num+"].holdGold.lcAmount']").val();
+		  var engineerAmount=$("input[name='goods.skus["+num+"].holdGold.engineerAmount']").val();
+		  var aAmount=$("input[name='goods.skus["+num+"].holdGold.aAmount']").val();
+		  var integrationCosts=$("input[name='goods.skus["+num+"].holdGold.integrationCosts']").val();
+		  var manpowerCosts=$("input[name='goods.skus["+num+"].holdGold.manpowerCosts']").val();
+		  var percent=$("input[name='goods.skus["+num+"].holdGold.percent']").val();
+		  
+		  var holdGolds=new Array();
+		  holdGolds[0]=vsAmount;
+		  holdGolds[1]=supplierAmount;
+		  holdGolds[2]=lcAmount;
+		  holdGolds[3]=engineerAmount;
+		  holdGolds[4]=aAmount;
+		  holdGolds[5]=integrationCosts;
+		  holdGolds[6]=manpowerCosts;
+		  holdGolds[7]=percent;
+		  
+		  var current_value=$("input[name='attr_value[]']").eq(num).val();
+		 
+		  if(current_value==""){
+			  $("input[name='attr_value[]']").eq(num).val(holdGolds);
+			  current_value=$("input[name='attr_value[]']").eq(num).val();
+		  }else{
+			  current_value=$("input[name='attr_value[]']").eq(num).val();
+		  }
+		  
+		  art.dialog.data('current_value',current_value);
+		  art.dialog.open("${ctx}/goods/addHoldGoldValuePage",{id:'attr_dialog',resize:false,width:700,height:400});
+		}
+	//从佣金对话框返回数据并且接收
+	function updAttrValue(values){
+ 
+		 art.dialog({id:'attr_dialog'}).close();
+	}
+	
+	function addRegionAttrValue(num){
+		  art.dialog.data('preview',0);
+		  
+		  art.dialog.data('attr_num',num);
+		
+		  var regionsize=$("td[name='r1"+num+"'] > input").size();
+		 
+		  var regionId=new Array();
+		  
+		 for(var i=0;i<regionsize;i++){
+			  regionId[i]=$("td[name='r1"+num+"'] > input ").eq(i).val();
+		  } 
+		  		  
+		 var current_value=$("input[name='attr_value_region[]']").eq(num).val();
+		 
+		 if(current_value==""){
+			  $("input[name='attr_value_region[]']").eq(num).val(regionId);
+			  current_value=$("input[name='attr_value_region[]']").eq(num).val();
+		  }else{
+			  current_value=$("input[name='attr_value_region[]']").eq(num).val();
+		  }
+		 			  
+		  art.dialog.data('current_value',current_value);
+		  
+		  art.dialog.open("${ctx}/goods/addRegionValuePage",{id:'attr_dialog',resize:false,width:700,height:400});
+		  
+		}
+	
+	//从区域对话框返回数据并且接收
+	function updrAttrValue(values){
+		 var num = art.dialog.data('attr_num');
+		 $("input[name='attr_value_region[]']").eq(num).val(values.join(','));
+		 
+		 var values_str="";
+		  
+		 var ids=new Array();
+		     
+	     var regionsize=$("td[name='r1"+num+"'] > input").size();
+	     
+	     var j=0;
+	     for(var i=0 ;i < values.length ;i++){
+	    		if(values[i] != undefined){
+		    		 ids[j] = values[i];
+		    		 j++;
+		    	 }
+	     }
+	     //保存多个区域和价格
+	     if(ids.length ){
+	    	 var regionHtml=" ";
+	    	 for(var i=0;i<ids.length;i++){
+		    	  regionHtml+="<input type='hidden' name='goods.skus["+num+"].regionId' value='"+ids[i]+"'/>";
+			  }
+	     	$("td[name='r1"+num+"']").html(regionHtml);
+	     }
+	     
+	     //删除元数据，添加新数据，执行此段，如果没有删除元数据，添加新数据则不执行
+		 $("#region"+num).val(ids); 
+		
+		 art.dialog({id:'attr_dialog'}).close();
+	}
+	//添加行
+	function addTr() {
+		var tr = $('#info_table1').find('tr');
+		var count = tr.length;
+		if (count == 1) {
+			var infoTableHtml = '';
+			var selTdKey = $('#tdKey1').find('span');
+			var selTdName = $('#tdName1').html();
+			var featureId = $('#tdName1').attr("name");
+			if (selTdKey.length > 0) {
+				infoTableHtml += '<table>';
+				infoTableHtml += '<tr>';
+				infoTableHtml += '<td>' + selTdName + '</td>';
+				infoTableHtml += th;
+				infoTableHtml += '</tr>';
+				var row = 0;
+				for (var i = 0; i < selTdKey.length; i++) {
+					infoTableHtml += '<tr>';
+					infoTableHtml += '<td> <input type="hidden" name="goods.skus['+row+'].skuFeatures[0].featureId" value="'+featureId+'"/> <input type="hidden" name="goods.skus['
+							+ row
+							+ '].skuFeatures[0].specValue" value="'
+							+ selTdKey.eq(i).html()
+							+ '"/> '
+							+ selTdKey.eq(i).html() + '</td>';
+					infoTableHtml += getTd(row);
+					infoTableHtml += '</tr>';
+					
+					row += 1;
+				}
+				infoTableHtml += '</table>';
+			}
+			$('#info_table2').html(infoTableHtml);
+		}
+
+		if (count == 2) {
+			var infoTableHtml = '';
+			var selTdKey1 = $('#tdKey1').find('span');
+			var selTdName1 = $('#tdName1').html();
+			var selTdKey2 = $('#tdKey2').find('span');
+			var selTdName2 = $('#tdName2').html();
+			var featureId1 = $('#tdName1').attr("name");
+			var featureId2 = $('#tdName2').attr("name");
+
+			if (selTdKey1.length > 0 && selTdKey2.length > 0) {
+
+				infoTableHtml += '<table>';
+				infoTableHtml += '<tr>';
+				infoTableHtml += '<td>' + selTdName1 + '</td>';
+				infoTableHtml += '<td>' + selTdName2 + '</td>';
+				infoTableHtml += th;
+				infoTableHtml += '</tr>';
+				var row = 0;
+				for (var i = 0; i < selTdKey1.length; i++) {
+					for (var j = 0; j < selTdKey2.length; j++) {
+						infoTableHtml += '<tr>';
+						if (j == 0) {
+							infoTableHtml += '<td rowspan="'+selTdKey2.length+'">'
+									+ selTdKey1.eq(i).html() + '</td>';
+						}
+						infoTableHtml += '<td>  <input type="hidden" name="goods.skus['+row+'].skuFeatures[0].featureId" value="'+featureId1+'"/>   <input type="hidden" name="goods.skus['
+								+ row
+								+ '].skuFeatures[0].specValue" value="'
+								+ selTdKey1.eq(i).html()
+								+ '"/> '
+								+ ' <input type="hidden" name="goods.skus['+row+'].skuFeatures[1].featureId" value="'+featureId2+'"/>   <input type="hidden" name="goods.skus['
+								+ row
+								+ '].skuFeatures[1].specValue" value="'
+								+ selTdKey2.eq(j).html()
+								+ '"/> '
+								+ selTdKey2.eq(j).html() + '</td>';
+						infoTableHtml += getTd(row);
+						infoTableHtml += '</tr>';
+						row += 1;
+					}
+				}
+				infoTableHtml += '</table>';
+			}
+			$('#info_table2').html(infoTableHtml);
+
+		}
+		if (count == 3) {
+			var infoTableHtml = '';
+			var selTdKey1 = $('#tdKey1').find('span');
+			var selTdName1 = $('#tdName1').html();
+
+			var selTdKey2 = $('#tdKey2').find('span');
+			var selTdName2 = $('#tdName2').html();
+
+			var selTdKey3 = $('#tdKey3').find('span');
+			var selTdName3 = $('#tdName3').html();
+			var featureId1 = $('#tdName1').attr("name");
+			var featureId2 = $('#tdName2').attr("name");
+			var featureId3 = $('#tdName3').attr("name");
+
+			if (selTdKey1.length > 0 && selTdKey2.length > 0
+					&& selTdKey3.length > 0) {
+
+				infoTableHtml += '<table>';
+				infoTableHtml += '<tr>';
+				infoTableHtml += '<td>' + selTdName1 + '</td>';
+				infoTableHtml += '<td>' + selTdName2 + '</td>';
+				infoTableHtml += '<td>' + selTdName3 + '</td>';
+				infoTableHtml += th;
+				infoTableHtml += '</tr>';
+
+				var row = 0;
+				for (var i = 0; i < selTdKey1.length; i++) {
+					for (var j = 0; j < selTdKey2.length; j++) {
+						for (var m = 0; m < selTdKey3.length; m++) {
+							
+							infoTableHtml += '<tr>';
+							if (j == 0 && m == 0) {
+								infoTableHtml += '<td rowspan="'
+										+ (selTdKey2.length * selTdKey3.length)
+										+ '"> ' + selTdKey1.eq(i).html()
+										+ '</td>';
+							}
+							if (m == 0) {
+								infoTableHtml += '<td rowspan="'+selTdKey3.length+'"> '
+										+ selTdKey2.eq(j).html() + '</td>';
+							}
+							infoTableHtml += '<td> <input type="hidden" name="goods.skus['+row+'].skuFeatures[0].featureId" value="'+featureId1+'"/>  <input type="hidden" name="goods.skus['
+									+ row
+									+ '].skuFeatures[0].specValue" value="'
+									+ selTdKey1.eq(i).html()
+									+ '"/> '
+									+ '<input type="hidden" name="goods.skus['+row+'].skuFeatures[1].featureId" value="'+featureId2+'"/>  <input type="hidden" name="goods.skus['
+									+ row
+									+ '].skuFeatures[1].specValue" value="'
+									+ selTdKey2.eq(j).html()
+									+ '"/>'
+									+ '<input type="hidden" name="goods.skus['+row+'].skuFeatures[2].featureId" value="'+featureId3+'"/>  <input type="hidden" name="goods.skus['
+									+ row
+									+ '].skuFeatures[2].specValue" value="'
+									+ selTdKey3.eq(m).html()
+									+ '"/> '
+									+ selTdKey3.eq(m).html() + '</td>';
+							infoTableHtml += getTd(row);
+							infoTableHtml += '</tr>';
+							row += 1;
+						}
+						
+					}
+
+				}
+				infoTableHtml += '</table>';
+			}
+			$('#info_table2').html(infoTableHtml);
+		}
+
+	}
+//增加
+var addBtn=function(){
+	$('.addBtn').on('click',
+			function() {
+				var inputChecked = $(this).parents('.infolistCon').find('input[type=checkbox]:checked');
+
+				// 每次点击拼装tr数据
+				var attrNum = $(this).parents('.infolistCon').attr('attr-num');
+				var rowNum = $("#info_table1 tr").length;
+				var tdNum = rowNum + 1;
+
+				var featureId = $('#infoSelect').find('option:selected').attr("value");
+
+				var table1addHTML = '<tr attr-id="trId'+ tdNum +'"><td name='+featureId+' id="tdName'+ tdNum +'">'
+						+ $('#infoSelect').find(
+								'option:selected').text()
+						+ '</td><td id="tdKey'+ tdNum +'">';
+
+				for (var i = 0; i < inputChecked.length; i++) {
+					table1addHTML += '<span>'
+							+ inputChecked.eq(i).attr(
+									'attr-value')
+							+ '</span>';
+				}
+				table1addHTML += '</td><td class="aLinkTd"><input type="button" name="'+attrNum+'" value="删除" class="delBtn"></td></tr>';
+
+				// 判断是否选中
+				if (inputChecked.length == 0) {
+					alert('请至少选择一个属性');
+					return;
+				} else {
+					$(this).parents('.infolistCon').find('input').attr('disabled', true);
+					// 判断是否第一次插入数据
+					if ($('#info_table1').html() == '') {
+						table1HTML = '<table></table>';
+						$('#info_table1').html(table1HTML);
+						$('#info_table1 > table').append(table1addHTML);
+					} else {
+						$('#info_table1 > table').append(table1addHTML);
+					}
+				}
+				addTr();
+				delbutton();
+			});
+	};
+	
+function delbutton(){
+	// 删除
+	$('.delBtn').on('click',function() {
+		var table1RowCount = $("#info_table1 tr").length;
+		if (table1RowCount > 1) {
+			$(this).parents('tr').remove();
+			addTr();//重新组装
+		} else {
+			$('#info_table1').empty();
+			$('#info_table2').empty();
+		}
+		var attr = $(this).attr("name");
+		$(".infolistCon[attr-num="+ attr+"]").find('input').attr('disabled', false);
+	})
+}
+</script>
+<script type="text/javascript">
+	var goods = {
+		skuNum : 0,
+		allfeature : "",
+		getFeatureByCategoryId : function(id) {
+			$.post("${ctx}/goods/getFeatureByCategoryId", {
+				"categoryId" : id
+			}, function(data) {
+				//清空内容
+				$("#ordinaryfeature").empty();
+				$("#infoSelect").empty();
+				$("#infoList").empty();
+				$("#info_table1").empty();
+				$("#info_table2").empty();
+				goods.allfeature = data;
+				goods.viewOrdinaryFeature($("#ordinaryfeature"));
+				goods.viewspecificationFeature(0);//0非规格
+			}, "json")
+		},	
+		viewOrdinaryFeature : function(jqobject) {
+			for ( var index in goods.allfeature) {
+				if (goods.allfeature[index].isSpec != 1) {
+					jqobject
+							.append(goods.allfeature[index].name
+									+ " <input type='hidden' name='goods.skuFeatures["+index+"].featureId' value='"+goods.allfeature[index].featureId+"'/>"
+									+ " <input type='text' name='goods.skuFeatures["+index+"].specValue'/>");
+				}
+
+			}
+		},	
+		viewspecificationFeature : function(skuindex) {
+			var n = 0;
+			for ( var i in goods.allfeature) {
+				if (goods.allfeature[i].isSpec == 1) {
+					var optionHTML = '<option value="'+goods.allfeature[i].featureId+'">'
+							+ goods.allfeature[i].name + '</option>';
+					if (n == 0) {
+						optionHTML = "属性标签名：<option>请选择</option>" + optionHTML;
+					}
+					$('#infoSelect').append(optionHTML);
+
+					var infoListHTML = '';
+					if (n == 0) {
+						infoListHTML+= '<div class="infolistCon" attr-num="'+ n +'"/>';
+					}
+					infoListHTML += '<div class="infolistCon" attr-num="'+ n +'">';
+					for ( var j in goods.allfeature[i].featureValues) {
+						infoListHTML += '<label><input type="checkbox" attr-value="'+ goods.allfeature[i].featureValues[j].attrValue +'">'
+								+ goods.allfeature[i].featureValues[j].attrValue
+								+ '</label>'
+					}
+					infoListHTML += '<div class="addinput"><input type="button" name="" value="增加" class="addBtn"></div>';
+					infoListHTML += '</div>';
+					$('#infoList').append(infoListHTML);
+					n++;
+				}
+			}
+			addBtn();
+		}
+	};
+	$(
+			function() {
+				$("#goods_categoryId").change(function() {
+					goods.getFeatureByCategoryId($(this).val());
+				});
+				// 选择对应相应数据
+				$('#infoSelect').on('change', function() {
+					var _index = $(this).find('option:selected').index();
+					$('#infoList').children().hide();
+					$('#infoList').children().eq(_index).show();
+					var selectValue = $(this).find('option:selected').attr("value");
+					$("#info_table1").find("td[id^='tdName']").each(function(){
+						if($(this).attr("name")==selectValue){
+							$('#infoList').children().eq(_index).find('input').attr('disabled', true);
+						}
+					});
+				}); 
+				goods.allfeature=eval(${json});
+				goods.viewspecificationFeature();
+				$("#tabs").tabs();
+				//delbutton();
+			});
+</script>
+<script type="text/javascript">
+$(function(){
+	$(":checkbox,:radio").attr("disabled","disabled");
+});
+</script>
+<script type="text/javascript">
+$(function(){
+	 if(${model.goods.goodsType}==1){
+		 $(".ChooseFertilizer").hide();
+	 }else if(${model.goods.goodsType}==4){
+		 $(".ChooseStoreName").hide();
+	 }
+});	
+</script>
+<body>
+	<form enctype="application/x-www-form-urlencoded">
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">商品预览</a></li>
+			</ul>
+			<div id="tabs-1" class="table-1">
+				<table>
+					<tr>
+						<td>商品编号</td>
+						<td>${model.goods.code!''}</td>
+					</tr>
+					<tr>
+						<td>发布类型</td>
+						<td>
+							<#if model.goods.goodsType==1>入驻商</#if>
+							<#if model.goods.goodsType==2>直营</#if>
+							<#if model.goods.goodsType==3>海外购</#if>
+							<#if model.goods.goodsType==4>测土培肥</#if>
+						</td>
+					</tr>
+					<#if sps??>
+					<tr style="display:blank" id="postTypeStore" class="ChooseStoreName">
+				 		<td>店铺名称 </td>
+						<td>${sps.popStoreName!''}</td>
+					</tr>
+				    </#if>
+					
+					<#if sps??>
+					<tr style="display:blank" id="postTypefertilizer" class="ChooseFertilizer">
+						<td>配肥站 </td>
+						<td> ${sps.popStoreName!''} 
+							&nbsp;&nbsp;&nbsp;&nbsp; 虚拟商品
+							<#if model.goods.isVirtual ?? >
+						    <input class="p" type="radio" id="isVirtual" name="goods.isVirtual" value="1" <#if (model.goods.isVirtual)==1> checked="checked" </#if> />是 
+						    <input class="p" type="radio" id="isVirtual" name="goods.isVirtual" value="2" <#if (model.goods.isVirtual)==2> checked="checked" </#if> />否
+						    </#if>
+						    &nbsp;&nbsp;&nbsp;&nbsp;在综合供应专区显示
+						    <#if model.goods.isSupplyArea??>
+						    <input class="p" type="radio" id="isSupplyArea" name="goods.isSupplyArea" value="1" <#if (model.goods.isSupplyArea)==1> checked="checked" </#if> />是 
+						    <input class="p" type="radio" id="isSupplyArea" name="goods.isSupplyArea" value="2" <#if (model.goods.isSupplyArea)==2> checked="checked" </#if> />否
+							</#if>
+						</td>
+					</tr>
+					</#if>
+					
+					<tr>
+						<td>商品标题</td>
+						<td> ${model.goods.name!''}</td>
+					</tr>
+
+					<tr>
+						<td>商品副标题</td>
+						<td> ${model.goods.subtitle!''}</td>
+					</tr>
+					<tr>
+						<td>商品单位</td>
+						<td> ${model.goods.unit!''}</td>
+					</tr>
+					<tr>
+						<td>分类id</td>
+						<td>
+						<#list categoryList as category> 
+						<#if model.goods.categoryId==category.categoryId> ${category.name!''} </#if> 
+						</#list></td>
+					</tr>
+					<tr>
+						<td>品牌id</td>
+						<input type="hidden" name="goods.brandId"  value="${model.goods.brandId!''}"/>
+						<#if brandList??>
+						<td>
+						<#list brandList as brand_s> 
+							<#if model.goods.brandId??>
+								<#if model.goods.brandId==brand_s.brandId> ${brand_s.chName!''} </#if>
+							</#if>
+						</#list>
+						</td>
+					    </#if>
+					</tr>
+
+					<tr>
+						<td>商品属性</td>
+						<td>
+							<div id="ordinaryfeature">
+			<#assign featureIndex=0/>
+			<#assign featureSelect=false>
+			<#list model.features as feature>
+				<#if feature.isSpec!=1 && feature.featureValues??>
+					${feature.name}:
+					<#if feature.isMultiselect == 1>
+						<#list feature.featureValues as featureValue>
+							<#assign featureSelect=false>
+							<input type='hidden' name='goods.skuFeatures[${featureIndex}].featureId' value='${feature.featureId}'/>
+							<#if model.goods.skuFeatures??>
+								<#list model.goods.skuFeatures as skufeature>
+									<#if featureValue.attrValue==skufeature.specValue>
+										<#assign featureSelect=true>
+											<input type="hidden" name="goods.skuFeatures[${featureIndex}].tid" value="${skufeature.tid}"/>
+										<#break/>
+									</#if>
+								</#list>
+							</#if>
+							<input type='checkbox' id='goods_skuFeatures[${featureIndex}]_specValue' name='goods.skuFeatures[${featureIndex}].specValue' 
+							value='${featureValue.attrValue}' <#if featureSelect==true>checked/><#else>/><input type="hidden" name="goods.skuFeatures[${featureIndex}].tid" value=""/></#if>
+							<label for='goods_skuFeatures[${featureIndex}]_specValue'>${featureValue.attrValue}</label>
+							<#assign featureIndex=featureIndex+1/>
+						</#list>
+					<#else>
+						<#list feature.featureValues as featureValue>
+							<#assign featureSelect=false>
+							<input type='hidden' name='goods.skuFeatures[${featureIndex}].featureId' value='${feature.featureId}'/>
+							<#list model.goods.skuFeatures as skufeature>
+								<#if featureValue.attrValue==skufeature.specValue>
+								<#assign featureSelect=true>
+								<input type="hidden" name="goods.skuFeatures[${featureIndex}].tid" value="${skufeature.tid}"/>
+								<#break/>
+								</#if>
+							</#list>
+							<input type='radio' id='goods_skuFeatures[${featureIndex}]_specValue' name='goods.skuFeatures[${featureIndex}].specValue' 
+							value='${featureValue.attrValue}' <#if featureSelect==true>checked</#if>>
+							<label for='goods_skuFeatures[${featureIndex}]_specValue'>${featureValue.attrValue}</label>
+						</#list>
+						<#assign featureIndex=featureIndex+1/>
+					</#if>
+				</#if>
+			</#list>
+			</div>
+						</td>
+					</tr>
+					<tr>
+						<td>商品规格</td>
+						<td>
+							<div title="商品规格" style="padding: 10px">
+								<div id="info_table1" class="tablediv">
+									<table style="width:869px">
+										<tbody>
+											<#if featuresList??> <#list featuresList as features>
+											<tr  attr-id="trId${features_index+1}">
+												<td id="tdName${features_index+1}"
+													name="${features.featureId!0}">${features.name!''}</td>
+												<td id="tdKey${features_index+1}"><#if
+													features.featureValues??> <#list features.featureValues as
+													featureValue > <span>${featureValue.attrValue}</span>
+													</#list> </#if>
+												</td>
+											</tr>
+											</#list> </#if>
+										</tbody>
+									</table>
+								</div>
+								<div id="info_table2" class="tablediv">
+								<#if (model.goods.skus?size>0)>
+									<table style="width:950px">
+										<tbody>
+											<tr>
+												<#list model.goods.skus[0].skuFeatures as skuFeatures >
+													<td>${skuFeatures.featureName}</td> 
+												</#list>
+												<td>商品自编码</td> <td>重量</td> <td>市场价</td> <td>平台价格</td><td>库存</td> <td>最大购买数量</td> <td>最小购买数量</td> <td>佣金</td><td>区域</td>
+											</tr>
+											<#assign skusSum=model.goods.skus?size /> 
+											<#assign featuresSum=featuresList?size-1 /> 
+											<#assign featuresCount = []/> 
+											<#list 0..featuresSum as t> 
+											<#assign featuresCount = featuresCount+[skusSum/featuresList[t].featureValues?size] />
+											<#assign skusSum = skusSum/featuresList[t].featureValues?size /> 
+											</#list> 
+											<#list model.goods.skus as sku>
+									 		<#-- sku_index当前变量的索引值 -->
+											<#assign i=sku_index />
+											<tr>
+												<#-- 查询所有商品对应的非规格属性集合 -->
+												<#list sku.skuFeatures as skuFeatures > 
+													<#if i%featuresCount[skuFeatures_index]==0>
+													<input type="hidden" name="goods.skus[${i}].skuFeatures[${i}].specValue" value="${skuFeatures.specValue}"/>
+													<td rowspan="${featuresCount[skuFeatures_index]}">${skuFeatures.specValue}</td>
+													</#if> 
+												</#list>
+												<input type="hidden" name="goods.skus[${i}].skuId" value="${sku.skuId}" />
+												<td>${sku.sn}</td>
+												<td>${sku.weight!0}</td>
+												<td>${sku.marketPrice!0}</td>
+												<td><input type="hidden" name="goods.skus[${i}].costPrice" value="${sku.costPrice!0}"/>${sku.costPrice!0}</td>
+												<#list ss as stocks>
+													<#if stocks.skuId == sku.skuId>
+														<td>${stocks.stockNum}</td>
+													</#if>
+												</#list>
+												<td>${sku.upperLimit!0}</td>
+												<td>${sku.lowerLimit!0}</td>
+												
+												<#--佣金和销售区域-->
+												<td><input type="hidden" name="attr_value[]" pattern="required" /><a id="edit_button1" onclick="return addholdGoldAttrValue('${i}');">查看</a>
+												<input type="hidden" name="goods.skus[${i}].holdGold.vsAmount" value="${sku.holdGold.vsAmount?string("#.###")}"  id="holdvsAmount${i}"/>
+												<input type="hidden" name="goods.skus[${i}].holdGold.supplierAmount" value="${sku.holdGold.supplierAmount?string("#.###")}" id="holdsupplierAmount${i}"/>
+												<input type="hidden" name="goods.skus[${i}].holdGold.lcAmount" value="${sku.holdGold.lcAmount?string("#.###")}" id="holdlcAmount${i}"/>
+												<input type="hidden" name="goods.skus[${i}].holdGold.engineerAmount" value="${sku.holdGold.engineerAmount?string("#.###")}" id="holdengineerAmount${i}"/>
+												<input type="hidden" name="goods.skus[${i}].holdGold.aAmount" value="${sku.holdGold.aAmount?string("#.###")}" id="holdaAmount${i}"/>
+												<input type="hidden" name="goods.skus[${i}].holdGold.integrationCosts" value="${sku.holdGold.integrationCosts?string("#.###")}" id="integrationCosts${i}"/>
+												<input type="hidden" name="goods.skus[${i}].holdGold.manpowerCosts" value="${sku.holdGold.manpowerCosts?string("#.###")}" id="manpowerCosts${i}"/>
+												<input type="hidden" name="goods.skus[${i}].holdGold.percent" value="${sku.holdGold.percent?string("#.###")}" id="percent${i}"/>
+												</td>
+												<td><input type="hidden" name="attr_value_region[]" pattern="required" value="" /><a id="edit_button2" onclick="return addRegionAttrValue('${i}');">查看</a></td>
+												<#if sku.regionId??>
+													<td  style="border:0px" name="r1${i}">
+													<#list sku.regionId as sr>
+														<input type ="hidden"  name="goods.skus[${i}].regionId"  value="${sr}"/>
+													</#list>
+													</#if>
+												</td>
+											</tr>
+											</#list>
+										</tbody>
+									</table>
+									</#if>
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>描述</td>
+						<td>${model.goods.remark!''}</td>
+					</tr>
+					<tr>
+						<td>送达天数</td>
+						<td>${model.goods.sendTime!''}</td>
+					</tr>
+					<tr>
+						<td>商品图片</td>
+						<td>
+						<#list 0..4 as picNum>
+						<#if picInfoList?? && picInfoList[picNum]??>
+							<div id="product1" style="float:left">
+							<input id="carouselPicture${picNum+1}_url"  name="carouselPicture${picNum+1}"  type="hidden" value="">
+		                    <img id="carouselPicture${picNum+1}_img" src="${imgYunServer}${picInfoList[picNum].picName!''}" alt="" width="100px" height="100px">
+							<a href="javascript:;" >
+							</a>
+							</div >
+							<#else>
+							<div id="product1" style="float:left">
+							<input id="carouselPicture${picNum+1}_url"  name="carouselPicture${picNum+1}"  type="hidden" value="">
+		                    <img id="carouselPicture${picNum+1}_img" src="" alt="" width="100px" height="100px">
+							<a href="javascript:;" >
+							</a>
+							</div >
+							</#if>
+						</#list>
+						</td>
+					</tr>
+					<tr>
+						<td>商品介绍</td>
+						<td>
+							<div>${model.blob.goodsDesc!''}</div>
+						</td>
+					</tr>
+ 
+					<tr>
+						<td>是否新品</td>
+						<td>
+						<input class="p" type="radio" name="goods.isNew"  id="isNew"   value="1" <#if (model.goods.isNew == 1)> checked="checked" </#if> />是
+						<input class="p" type="radio" name="goods.isNew"  id="isNew"  value="0" <#if (model.goods.isNew == 0)> checked="checked" </#if> />否
+						</td>
+					</tr>
+					<tr>
+						<td>是否热门</td>
+						<td>
+						<input class="p" type="radio" name="goods.isHot"  id="isHot"   value="1" <#if (model.goods.isHot == 1)> checked="checked" </#if> />是
+						<input class="p" type="radio" name="goods.isHot"  id="isHot"  value="0" <#if (model.goods.isHot == 0)> checked="checked" </#if> />否
+						</td>
+					</tr>
+					<tr>
+						<td>页面关键字</td>
+						<td>${model.goods.keywords!''}</td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<#if status == 1>
+				<input type="button"   onclick="javascript:window.location.href='${ctx}/goods/list';" value="返回列表">
+				<#else>
+				<input type="button"   onclick="javascript:window.location.href='${ctx}/goodsAudit/auditList';" value="返回列表">
+				</#if>
+			</div>
+	</form>
+</body>
+</html>

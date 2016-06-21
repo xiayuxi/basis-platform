@@ -1,0 +1,760 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<!--  My97DatePicker -->
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+</head>
+
+<body>
+	<div idex = 99 style="margin: 20px 0 10px 20px;">
+		商品名称：<input type="text" name="qName" id="qName">
+		
+		&nbsp;&nbsp;
+		上架时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+		             type="text" name="beginDate" id="beginDate"/> -
+		      <input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+		             type="text" name="endDate" id="endDate"/>		&nbsp;&nbsp;			
+		所属分类： <select class="category1" name="categoryIds[0]" id="categoryId1" onchange="">
+		            <option value="">请选择</option>
+		            <#list catList as cat>
+		            	<option value="${cat.categoryId}">${cat.name}</option>
+		            </#list>
+		        </select>
+		        <select class="category2" name="categoryIds[1]" id="categoryId2">
+		            <option value="">请选择</option>
+		        </select>
+		        <select class="category3" name="categoryIds[2]" id="categoryId3">
+		            <option value="">请选择</option>
+		        </select>
+		<br/><br/>
+
+	      店铺名称：<input type="text" name="storeName" id="storeName">    
+	      
+	      
+	      &nbsp;&nbsp;
+	      商品类别：<select class="goodsType" name="goodsType" id="goodsType">
+		        <option value="">请选择</option>
+		        <option value="1">入驻商</option>
+		        <option value="2">直营</option>
+		        <option value="3">海外购</option>
+		        <option value="4">测土配肥</option>
+	         </select>
+	     上架人：<input type="text" name="releaseUser" id="releaseUser" />&nbsp;&nbsp;	
+	     品牌：<input type="text" name="brandName" id="brandName"/> 
+	 	 <button type="submit" class="btn btn-primary" id="btnSearch">查询
+	</div>
+	
+	<div id="tabs">
+			<ul>
+				<li><a href="#tabs-0" onclick="onchangeTabs('0')">全部</a></li>
+				<li><a href="#tabs-1" onclick="onchangeTabs('1')">待上架</a></li>
+				<li><a href="#tabs-2" onclick="onchangeTabs('2')">已上架</a></li>
+				<li><a href="#tabs-3" onclick="onchangeTabs('3')">已下架</a></li>
+				
+			</ul>
+			<div id="tabs-0">
+				    <table id="list-0"></table>
+				    <div id="pager-0"></div>
+			</div>
+			<div id="tabs-1">
+				<div >
+				    <table id="list-1"></table>
+				    <div id="pager-1"></div>
+				</div>
+			</div>
+			<div id="tabs-2">
+				<div >
+				    <table id="list-2"></table>
+				    <div id="pager-2"></div>
+				</div>
+			</div>
+			<div id="tabs-3">
+				<div >
+				    <table id="list-3"></table>
+				    <div id="pager-3"></div>
+				</div>
+			</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+//需要查询的参数，全部先定义出来，查询是赋值
+var qName="";
+var beginDate="";
+var endDate="";
+var categoryId="";
+var brandName="";
+var goodsType="";
+var categoryId1 = document.getElementById("categoryId1").value;
+var categoryId2 = document.getElementById("categoryId2").value;
+var categoryId3 = document.getElementById("categoryId3").value; 
+
+var storeName = "";
+	
+	
+var releaseUser = "";//上架人
+//先给list赋值为第一个页面索要展示的，第一页查询时用，以后再切换tab时赋给新值
+var list ="#list-0";
+var qStatus;
+
+
+function onchangeTabs(id){
+	 	qName = $("#qName").val();
+		
+	 	if(categoryId3!=''){
+			categoryId = categoryId3;
+		}else if(categoryId2!=''){
+			categoryId = categoryId2;
+		}else if(categoryId1!=''){
+			categoryId = categoryId1;
+		}else{
+			categoryId = "";
+		}  
+	 	
+	 	releaseUser = $("#releaseUser").val();//上架人
+		beginDate = $("#beginDate").val();
+		endDate = $("#endDate").val();
+		storeName = $("#storeName").val();
+		goodsType = $("#goodsType").val();
+		brandName = $("#brandName").val();
+		
+		
+	 list ="#list-"+id;
+	 if(id==0){
+		 qStatus=5;
+	 }else if(id==1){
+		 qStatus=1;
+	 }else if(id==2){
+		 qStatus=3;
+	 }else if(status=3){
+		 qStatus=4;
+	 }
+	 
+	 //alert("id="+id+"qStatus="+qStatus);
+	 var nv = "#pager-"+id ;
+
+	 //变状态
+	  $(list).jqGrid('setGridParam',{
+	        url:"${ctx}/goods/releaseGrid", 
+	        postData:{
+				'name':qName,
+				'beginDate':beginDate,
+				'endDate':endDate,
+				'categoryId':categoryId,
+				'storeName':storeName,
+				'releaseUser':releaseUser,
+				'brandName':brandName,
+				'status':qStatus,
+				'goodsType':goodsType
+			},
+	        page:1 
+	    }).trigger("reloadGrid"); //重新载入 
+}
+
+//初始化要将四个页面同导航栏都加载进来，切换tab的时候只更新表格，不更新导航栏
+$(function(){
+	$( "#tabs" ).tabs();
+	//全部
+    $("#list-0").jqGrid({
+    	url:'${ctx}/goods/releaseGrid',// 获取数据的url,action
+        datatype: "json",//后台返回的数据格式
+        mtype:"post",//提交的方式,默认是get
+        //width:1024,//这个宽度不能为百分比,
+        autowidth:true,//自动宽
+        colNames:['goodsId','上架时间', '品牌 ', '商品编号','店铺名称','商品名称','价格','库存','上架人','审核'],
+        colModel:[
+                   {name:"goodsId",hidden:true,align:"center",sortable:false},
+                   {name:'releaseTime',index:'releaseTime', align:"center",width:100,editable:true, formatter:'date' ,
+                  	  formatoptions:{srcformat:'u',newformat:'Y-m-d H:i:s'}},
+                   {name:'brandName',index:'brandName', align:"center",editable:true},
+                   {name:'code',index:'code', align:"center",editable:true},
+                   {name:'popStoreName',index:'popStoreName', align:"center",editable:true}, 
+                   {name:'name',index:'name', align:"center",editable:true},       
+                   {name:'costPrice',index:'costPrice', align:"center",editable:true},       
+                   {name:'minStockNum',index:'minStockNum', align:"center",width:100,editable:true},
+                   {name:'adminName',index:'adminName', align:"center",width:100,editable:true},
+                   {name:'status',index:'status', align:"center",sortable:false,editable:true,formatter:formatStatus},
+               ],
+        postData:{status:5},//此参数用来向后台提交数据*****可以自己添加需要的参数
+        //styleUI : 'Bootstrap',
+        //caption:"类别列表",//表名称
+        //multiselect: true,//开启多选
+        rowNum:10,//每页显示的条数,此参数会被传递到后台
+        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+        viewrecords: true,//定义是否显示总的数据条数
+        pager: 'pager-0',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+        height : "auto",
+        rownumbers:true//添加左侧行号
+    });  
+    $("#list-0").jqGrid("navGrid","#pager-0",{edit:false,add:false,del:false,search:false,refresh:true})
+      .navButtonAdd('#pager-0',{ 
+    	 caption:"发布商品", 
+    	 buttonicon:"ui-icon-add",
+    	 onClickButton: function(){ 
+						    	addFun();  
+						    	},
+		position:"last"
+		})
+
+		//自定义编辑按钮
+     .navButtonAdd('#pager-0',{ 
+    	 caption:"修改",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					editFun();
+			 					}, 
+		position:"last"
+		})
+		//复制
+		.navButtonAdd('#pager-0',{ 
+    	 caption:"复制",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					copyGoodsFun();
+			 					}, 
+		position:"last"
+		})
+		
+	//自定义删除按钮
+     .navButtonAdd('#pager-0',{ 
+    	 caption:"删除",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			 					delFun();
+			 					}, 
+		position:"last"
+		})
+		
+		//上架
+   	.navButtonAdd('#pager-0',{ 
+    	 caption:"上架",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			  groundingFun();
+			 					}, 
+		position:"last"
+		})
+		
+		//预览
+		.navButtonAdd('#pager-0',{ 
+    	 caption:"预览",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					previewFun();
+			 					}, 
+		position:"last"
+		});
+   
+    
+     //待上架
+    $("#list-1").jqGrid({
+    	//url:'${ctx}/goods/releaseGrid',// 获取数据的url,action
+        datatype: "json",//后台返回的数据格式
+        mtype:"post",//提交的方式,默认是get
+        //width:1024,//这个宽度不能为百分比,
+        autowidth:true,//自动宽
+        colNames:['goodsId','上架时间', '品牌 ', '商品编号','店铺名称','商品名称','价格','库存','上架人','审核'],
+        colModel:[
+                   {name:"goodsId",hidden:true,align:"center",sortable:false},
+                   {name:'releaseTime',index:'releaseTime', align:"center",width:100,editable:true, formatter:'date' ,
+                 	  formatoptions:{srcformat:'u',newformat:'Y-m-d H:i:s'}},
+                   {name:'brandName',index:'brandName', align:"center",width:100,editable:true},
+                   {name:'code',index:'code', align:"center",editable:true},  
+                   {name:'popStoreName',index:'popStoreName', align:"center",editable:true}, 
+                   {name:'name',index:'name', align:"center",editable:true},       
+                   {name:'costPrice',index:'costPrice', align:"center",width:100,editable:true},       
+                   {name:'minStockNum',index:'minStockNum', align:"center",width:100,editable:true},
+                   {name:'adminName',index:'adminName', align:"center",width:100,editable:true},
+                   {name:'status',index:'status', align:"center",sortable:false,width:100,editable:true,formatter:formatStatus},
+               ],
+        postData:{status:1},//此参数用来向后台提交数据*****可以自己添加需要的参数
+        //styleUI : 'Bootstrap',
+        //caption:"类别列表",//表名称
+        //multiselect: true,//开启多选
+        rowNum:10,//每页显示的条数,此参数会被传递到后台
+        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+        viewrecords: true,//定义是否显示总的数据条数
+        pager: 'pager-1',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+        height : "auto",
+        rownumbers:true//添加左侧行号
+    });  
+    $("#list-1").jqGrid("navGrid","#pager-1",{edit:false,add:false,del:false,search:false,refresh:true})
+     .navButtonAdd('#pager-1',{ 
+    	 caption:"发布商品", 
+    	 buttonicon:"ui-icon-add",
+    	 onClickButton: function(){ 
+						    	addFun();  
+						    	},
+		position:"last"
+		})
+		//自定义编辑按钮
+     .navButtonAdd('#pager-1',{ 
+    	 caption:"修改",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					editFun();
+			 					}, 
+		position:"last"
+		})
+		//复制
+		.navButtonAdd('#pager-1',{ 
+    	 caption:"复制",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					copyGoodsFun();
+			 					}, 
+		position:"last"
+		})
+	//自定义删除按钮
+     .navButtonAdd('#pager-1',{ 
+    	 caption:"删除",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			 					delFun();
+			 					}, 
+		position:"last"
+		})
+		
+	//上架
+   	.navButtonAdd('#pager-1',{ 
+    	 caption:"上架",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			  groundingFun();
+			 					}, 
+		position:"last"
+		})
+		
+		//预览
+		.navButtonAdd('#pager-1',{ 
+    	 caption:"预览",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					previewFun();
+			 					}, 
+		position:"last"
+		});		
+     //已上架
+    $("#list-2").jqGrid({
+    	//url:'${ctx}/goods/releaseGrid',// 获取数据的url,action
+        datatype: "json",//后台返回的数据格式
+        mtype:"post",//提交的方式,默认是get
+        //width:1024,//这个宽度不能为百分比,
+        autowidth:true,//自动宽
+        colNames:['goodsId','上架时间', '品牌 ', '商品编号','店铺名称','商品名称','价格','库存','上架人','审核'],
+        colModel:[
+                   {name:"goodsId",hidden:true,align:"center",sortable:false},
+                   {name:'releaseTime',index:'releaseTime', align:"center",width:100,editable:true, formatter:'date' ,
+                 	  formatoptions:{srcformat:'u',newformat:'Y-m-d H:i:s'}},
+                   {name:'brandName',index:'brandName', align:"center",width:100,editable:true},
+                   {name:'code',index:'code', align:"center",editable:true}, 
+                   {name:'popStoreName',index:'popStoreName', align:"center",editable:true},  
+                   {name:'name',index:'name', align:"center",editable:true},       
+                   {name:'costPrice',index:'costPrice', align:"center",width:100,editable:true},       
+                   {name:'minStockNum',index:'minStockNum', align:"center",width:100,editable:true},
+                   {name:'adminName',index:'adminName', align:"center",width:100,editable:true},
+                   {name:'status',index:'status', align:"center",sortable:false,width:100,editable:true,formatter:formatStatus},
+               ],
+        postData:{status:3},//此参数用来向后台提交数据*****可以自己添加需要的参数
+        //styleUI : 'Bootstrap',
+        //caption:"类别列表",//表名称
+        //multiselect: true,//开启多选
+        rowNum:10,//每页显示的条数,此参数会被传递到后台
+        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+        viewrecords: true,//定义是否显示总的数据条数
+        pager: 'pager-2',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+        height : "auto",
+        rownumbers:true//添加左侧行号
+    });  
+    $("#list-2").jqGrid("navGrid","#pager-2",{edit:false,add:false,del:false,search:false,refresh:true})
+     .navButtonAdd('#pager-2',{ 
+    	 caption:"发布商品", 
+    	 buttonicon:"ui-icon-add",
+    	 onClickButton: function(){ 
+						    	addFun();  
+						    	},
+		position:"last"
+		})
+		//复制
+		.navButtonAdd('#pager-2',{ 
+    	 caption:"复制",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					copyGoodsFun();
+			 					}, 
+		position:"last"
+		})
+	//自定义删除按钮
+     .navButtonAdd('#pager-2',{ 
+    	 caption:"删除",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			 					delFun();
+			 					}, 
+		position:"last"
+		})
+		
+		
+   	//下架
+   	.navButtonAdd('#pager-2',{ 
+    	 caption:"下架",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			 undercarriageFun();
+			 					}, 
+		position:"last"
+		})
+		
+		//预览
+		.navButtonAdd('#pager-2',{ 
+    	 caption:"预览",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					previewFun();
+			 					}, 
+		position:"last"
+		});
+   	
+     //已下架
+    $("#list-3").jqGrid({
+    	//url:'${ctx}/goods/releaseGrid',// 获取数据的url,action
+        datatype: "json",//后台返回的数据格式
+        mtype:"post",//提交的方式,默认是get
+        //width:1024,//这个宽度不能为百分比,
+        autowidth:true,//自动宽
+        colNames:['goodsId','上架时间', '品牌 ', '商品编号','店铺名称','商品名称','价格','库存','上架人','审核'],
+        colModel:[
+                   {name:"goodsId",hidden:true,align:"center",sortable:false},
+                   {name:'releaseTime',index:'releaseTime', align:"center",width:100,editable:true, formatter:'date' ,
+                 	  formatoptions:{srcformat:'u',newformat:'Y-m-d H:i:s'}},
+                   {name:'brandName',index:'brandName', align:"center",width:100,editable:true},
+                   {name:'code',index:'code', align:"center",editable:true},
+                   {name:'popStoreName',index:'popStoreName', align:"center",editable:true},  
+                   {name:'name',index:'name', align:"center",editable:true},       
+                   {name:'costPrice',index:'costPrice', align:"center",width:100,editable:true},       
+                   {name:'minStockNum',index:'minStockNum', align:"center",width:100,editable:true},
+                   {name:'adminName',index:'adminName', align:"center",width:100,editable:true},
+                   {name:'status',index:'status', align:"center",sortable:false,editable:true,width:100,formatter:formatStatus},
+               ],
+        postData:{status:4},//此参数用来向后台提交数据*****可以自己添加需要的参数
+        //styleUI : 'Bootstrap',
+        //caption:"类别列表",//表名称
+        //multiselect: true,//开启多选
+        rowNum:10,//每页显示的条数,此参数会被传递到后台
+        rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+        viewrecords: true,//定义是否显示总的数据条数
+        pager: 'pager-3',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+        height : "auto",
+        rownumbers:true//添加左侧行号
+    });  
+    $("#list-3").jqGrid("navGrid","#pager-3",{edit:false,add:false,del:false,search:false,refresh:true})
+    
+     .navButtonAdd('#pager-3',{ 
+    	 caption:"发布商品", 
+    	 buttonicon:"ui-icon-add",
+    	 onClickButton: function(){ 
+						    	addFun();  
+						    	},
+		position:"last"
+		})
+	//自定义编辑按钮
+     .navButtonAdd('#pager-3',{ 
+    	 caption:"修改",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					editFun();
+			 					}, 
+		position:"last"
+		})
+	//自定义删除按钮
+     .navButtonAdd('#pager-3',{ 
+    	 caption:"删除",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			 					delFun();
+			 					}, 
+		position:"last"
+		})
+		//复制
+		.navButtonAdd('#pager-3',{ 
+    	 caption:"复制",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					copyGoodsFun();
+			 					}, 
+		position:"last"
+		})
+		
+		
+   	//上架
+   	.navButtonAdd('#pager-3',{ 
+    	 caption:"上架",
+    	 buttonicon:"ui-icon-del",  
+		 onClickButton:function(){
+			  groundingFun();
+			 					}, 
+		position:"last"
+		})
+		
+		//预览
+		.navButtonAdd('#pager-3',{ 
+    	 caption:"预览",
+    	 buttonicon:"ui-icon-edit",  
+		 onClickButton:function(){
+			 					previewFun();
+			 					}, 
+		position:"last"
+		});
+   	
+  //搜索栏部分类别三级联动
+    $(".category1").change(function(){
+   	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+   		  setHtml(data,".category2");
+   	  });
+    });
+    
+    $(".category2").change(function(){
+   	   
+   	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+   		  setHtml(data,".category3");
+   	  });
+    });
+});
+
+//复制商品
+function copyGoodsFun(){
+	var id=jQuery(list).jqGrid('getGridParam','selrow');
+	var rowData = $(list).jqGrid('getRowData',id);//获取选中所有数据
+	
+	if(null == rowData || '' == rowData || rowData.length > 0){
+		alert("请选择需要编辑的行！")
+	}else{
+		var val= rowData.goodsId;//获取每一行制定的列的数据
+	  	window.location.href="${ctx}/goods/copyGoods?goodsId="+val;
+	} 
+}
+
+//预览商品
+function previewFun(){
+	var id=jQuery(list).jqGrid('getGridParam','selrow');
+	var rowData = $(list).jqGrid('getRowData',id);//获取选中所有数据
+	
+	if(null == rowData || '' == rowData || rowData.length > 0){
+		alert("请选择需要编辑的行！")
+	}else{
+		var val= rowData.goodsId;//获取每一行制定的列的数据
+	  	window.location.href="${ctx}/goods/preview?goodId="+val+"&status=1";
+	} 
+}
+
+//修改
+function editFun(){
+	var id=jQuery(list).jqGrid('getGridParam','selrow');
+	var rowData = $(list).jqGrid('getRowData',id);//获取选中所有数据
+	var status =rowData.status;
+	if(null == rowData || '' == rowData || rowData.length > 0){
+		alert("请选择需要编辑的行！");
+	}else{
+		var val= rowData.goodsId;//获取每一行制定的列的数据
+		$.post("${ctx}/goods/modifyJudgment?goodId="+val, function(data) {
+			if (data.success) {
+			  	 window.location.href="${ctx}/goods/editPage?goodId="+val;
+			}else{
+				alert("此商品不能修改");
+			}
+		}, 'JSON')
+		
+	}
+}
+
+//删除 
+function delFun(){
+	//alert("aaa");
+	var id=jQuery(list).jqGrid('getGridParam','selrow');
+	var rowData = $(list).jqGrid('getRowData',id);//获得所选中数据信息
+	if(null==rowData || ''==rowData || rowData.length>0){
+		alert("请选择要删除的行");
+		return ;
+	}else{
+		var val= rowData.goodsId;//获取每一行制定的列的数据
+		var postData = {
+				goodsId : val
+		};
+		//alert(val);
+		$.post("${ctx}/goods/delete", postData, function(data) {
+			//alert(data);
+			if (data.success) {
+				alert("删除成功");
+				window.location.href="list.html";
+				onchangeTabs('0');
+				onchangeTabs('3');
+			} else {
+				alert(data.msg);
+			}
+		}, 'JSON')
+	}
+} 
+//格式化审核状态
+function formatStatus(cellvalue) {
+	if(cellvalue == 2) {
+		return "<font color=red>审核不通过</font>";
+	} else if(cellvalue == 0 ) {
+		return "<font color=blue>未审核</font>";
+	} else  if(cellvalue == 3 ){
+		return "<font color=green>已上架</font>";
+	} else if(cellvalue == 4 ){
+		return "<font color=green>已下架</font>";
+	} else {
+		return "<font color=green>已审核</font>";
+	}
+}
+
+function formatGrounp(){
+	var id = jQuery(list).jqGrid('getGridParam', 'selrow');
+	var rowData = $(list).jqGrid('getRowData', id);//获取选中所有数据
+	if (null == rowData || '' == rowData || rowData.length > 0) {
+		alert("请选择需要上架的商品！"); 
+	}else{
+		var val = rowData.goodsId;//获取每一行制定的列的数据
+		var postData = {
+			goodsId : val
+		};
+		$.post("${ctx}/goods/formatGrounp", postData, function(data) {
+			if (data.success) {
+				alert("上架成功");
+				window.location.href =window.location.href;
+			} else {
+				alert("上架失败");
+			}
+		}, 'JSON')
+	}
+}
+//上架
+function groundingFun() {
+	//1:通过  2：未通过  3：上架  4：下架   0：默认未审核
+	var id = jQuery(list).jqGrid('getGridParam', 'selrow');
+	var rowData = $(list).jqGrid('getRowData', id);//获取选中所有数据
+	if (null == rowData || '' == rowData || rowData.length > 0) {
+		alert("请选择需要上架的商品！"); 
+	}else{
+		var val = rowData.goodsId;//获取每一行制定的列的数据
+		var postData = {
+			goodsId : val,
+			status : 3
+		};
+		$.post("${ctx}/goods/grounding", postData, function(data) {
+			if (data.success) {
+				alert("上架成功");
+				window.location.href =window.location.href;
+			} else {
+				alert(data.msg+"上架失败");
+			}
+		}, 'JSON')
+	}
+}
+//发布商品
+function addFun(){
+	 window.location.href = "${ctx}/goods/addPage";
+}
+//下架
+function undercarriageFun() {
+	var id = jQuery(list).jqGrid('getGridParam', 'selrow');
+	var rowData = $(list).jqGrid('getRowData', id);//获取选中所有数据
+	if (null == rowData || '' == rowData || rowData.length > 0) {
+		alert("请选择需要下架的商品！")
+	} else {
+		var val = rowData.goodsId;//获取每一行制定的列的数据
+		var postData = {
+			goodsId : val,
+			status : 4
+		};
+		$.post("${ctx}/goods/grounding", postData, function(data) {
+			if (data.success) {
+				alert("下架成功");
+				window.location.href = window.location.href;
+			} else {
+				alert("下架失败");
+			}
+		}, 'JSON')
+	}
+}
+//所属分类设置内容的函数
+function setHtml(data, selectId) {
+	var temp_html = "<option value=''>请选择</option>";
+	$.each(data, function(i, category1) {
+		temp_html += "<option value='"+category1.categoryId+"'>"
+				+ category1.name + "</option>";
+	});
+	$(selectId).html(temp_html);
+}
+//查询操作
+$("#btnSearch").click(function() {
+	 	qName = $("#qName").val();
+		categoryId = "";
+		categoryId1 = document.getElementById("categoryId1").value;
+		categoryId2 = document.getElementById("categoryId2").value;
+		categoryId3 = document.getElementById("categoryId3").value;
+	 	if(categoryId3!=''){
+			categoryId = categoryId3;
+		}else if(categoryId2!=''){
+			categoryId = categoryId2;
+		}else if(categoryId1!=''){
+			categoryId = categoryId1;
+		}else{
+			categoryId = "";
+		} 
+			beginDate = $("#beginDate").val();
+			endDate = $("#endDate").val();
+			storeName = $("#storeName").val();
+			releaseUser = $("#releaseUser").val();//上架人
+			brandName = $("#brandName").val();//品牌
+			goodsType = $("#goodsType").val();
+			if(beginDate==""||endDate==""){
+				$(list).jqGrid('setGridParam', {
+					url : "${ctx}/goods/releaseGrid",
+					postData : {
+						'name':qName,
+						'beginDate':beginDate,
+						'endDate':endDate,
+						'categoryId':categoryId,
+						'storeName':storeName,
+						'releaseUser':releaseUser,
+						'brandName':brandName,
+						'status':qStatus,
+						'goodsType':goodsType
+					}, //发送数据 
+					page : 1
+				}).trigger("reloadGrid"); //重新载入 
+			}else if(beginDate<endDate){
+				$(list).jqGrid('setGridParam', {
+					url : "${ctx}/goods/releaseGrid",
+					postData : {
+						'name':qName,
+						'beginDate':beginDate,
+						'endDate':endDate,
+						'categoryId':categoryId,
+						'storeName':storeName,
+						'releaseUser':releaseUser,
+						'brandName':brandName,
+						'status':qStatus,
+						'goodsType':goodsType
+					}, //发送数据 
+					page : 1
+				}).trigger("reloadGrid"); //重新载入 
+			}else{
+				alert("请输入正确的上架时间");
+			}
+		});
+</script>
+</html>

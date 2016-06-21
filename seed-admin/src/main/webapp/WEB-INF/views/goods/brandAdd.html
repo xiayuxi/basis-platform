@@ -1,0 +1,160 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!-- jquery-form.js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.form.js"></script>
+<!-- 富文本编辑器 -->
+<script type="text/javascript" src="${staticCtx}/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="${staticCtx}/ueditor/ueditor.all.js"></script>
+<link rel="stylesheet" href="${staticCtx}/ueditor/themes/default/css/ueditor.css"/>
+<script type="text/javascript" src="${staticCtx}/ueditor/lang/zh-cn/zh-cn.js"></script> 
+<!-- fileupLoad -->
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="${staticCtx}/fileupload/jquery.fileupload.js"></script>
+<!-- 验证js  -->
+<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+<script type="text/javascript" src="${staticCtx}/validate/page/goods/brandAdd.js"></script>
+
+<script type="text/javascript">
+	var list = [{"fileBtnId":"lbtp4","imgId":"carouselPicture4_img","urlId":"carouselPicture4_url"}];
+	
+	//图片上传
+	function fileUpload(fileBtnId,imgId,urlId){
+		$('#'+fileBtnId).fileupload({        
+			dataType: 'json',        
+			done: function (e,data) {
+				$('#'+urlId).val(data.result.url);
+				$('#'+imgId).attr('src', "${imgYunServer}" + data.result.url);
+				$('#logo').val("${imgYunServer}" + data.result.url);
+			}
+		});
+	}
+
+	$(function(){
+		 UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+			UE.Editor.prototype.getActionUrl = function(action) {
+			    if (action == 'uploadimage') {
+			        return '${ctx}/ueditor/uploadImage';
+			    } else if(action == 'listimage') {
+			        return '${ctx}/ueditor/listimage';
+			    } else {
+			        return this._bkGetActionUrl.call(this, action);
+			    }
+			}	
+			
+		 for(var index = 0,l = list.length;index<l;index++){
+				fileUpload(list[index].fileBtnId,list[index].imgId,list[index].urlId);
+		 }
+	});
+</script>
+<script type="text/javascript">
+ 
+//初始化UE
+var uestore = UE.getEditor('storyEditor',{
+	  zIndex : 999
+  });
+function getContent(){
+	var arr = [];
+	arr.push(UE.getEditor('storyEditor').getContent());
+	var storytxt = arr.join("\n");
+	var st=storytxt.toString();
+	st=st.replace("<p>","");
+	st=st.replace("</p>","");
+	$("#story").val(st);
+}
+</script>
+
+<!-- <script type="text/javascript">
+function submitUpload(){
+	var option = {
+		url : "${ctx}/upload/uploadPic",
+		type : "post",
+		dateType : "json",
+		success : function(responseText) {
+			var jsonObj = $.parseJSON(responseText);
+			$("#imgsImgSrc").attr("src", jsonObj.realPath);
+			$("#logo").val(jsonObj.relativePath);
+			$("#uuid").val(jsonObj.uuid);
+		},
+		error : function() {
+			alert("系统错误");
+		}
+	};
+	//ajax方式提交表单，页面不会跳转（由jQuery-form提供）
+	$("#brandFormAdd").ajaxSubmit(option);
+	 
+}
+</script> -->
+<body>
+<div style="margin-left: 20px">
+	<form id="brandFormAdd" action="${ctx}/brand/add" method="post" enctype="multipart/form-data">
+		<table class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td><input type="hidden" id="brandId" name="brandId"/> 
+			 	     品牌中文名称： 
+			 	</td>
+				<td><input type="text" id="chName" name="chName"/></td>
+			</tr>
+		
+		    <tr><td>品牌英文名称：</td>
+				<td><input type="text" id="enName" name="enName"/></td>
+			</tr>
+		
+			<tr><td>品牌描述： </td>
+				<td><input type="text" id="remark" name="remark"/></td>
+			</tr>
+		
+		<tr>
+			<td>品牌LOGO：</td>
+			<td>
+            	<div id="product5">
+					<input id="carouselPicture4_url"  name="carouselPicture4"  type="hidden" value="">
+                    <img id="carouselPicture4_img" src="" alt="" width="200px" height="200px">
+                    <input id="logo" name="logo" type="hidden">
+                    <input type="hidden" id="uuid" name="uuid" />
+				</div>
+				<a href="javascript:;" >
+					<input upImg="true"  id="lbtp4"   name="uploaderImage" type="file"  data-url="${ctx}/upload/upImgPic" multiple="multiple" /> 
+				</a>
+			</td>
+		</tr>
+		
+		<tr><td>排序号：</td>
+		<td><input type="text" id="seq" name="seq" onkeyup="this.value=this.value.replace(/\D/g,'')" maxLength=6 onafterpaste="this.value=this.value.replace(/\D/g,'')" /></td>
+		</tr>
+	
+		<tr><td>状态：</span></div>
+			<td><input  type="radio" id="status" name="status" value="1" checked="checked" />是
+			    <input type="radio" id="status"  name="status" value="2" />否
+			    <p>(当前品牌下还没有商品的时候,首页及分类页的品牌区将不会显示该品牌.)</p> 
+			</td>
+		</tr>
+
+		<tr><td>品牌官方地址：</span></div>
+			<td><input type="text" id="address" name="address"/></td>
+		</tr>
+		
+		<tr><td>品牌故事：</td>
+		<td><input id="story" name="story" type="hidden"></input> 
+			<div id="d2"><script type="text/plain" id="storyEditor" ></script></div>
+		</td>
+		</tr>
+		 
+		<tr><td><input type="submit" value="提交" class="btn btn-primary"  onclick="getContent();"/>
+                <input type="button" value="取消"  class="btn btn-success"   onclick="history.back();"/>
+       		</td>
+       	</tr>
+        </table>
+	</form>
+</div>
+</body>
+</html>

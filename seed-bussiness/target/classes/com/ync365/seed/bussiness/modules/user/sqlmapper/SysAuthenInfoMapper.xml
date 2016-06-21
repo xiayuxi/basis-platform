@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysAuthenInfoMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysAuthenInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_num" property="userNum" jdbcType="VARCHAR" />
+		<result column="source" property="source" jdbcType="INTEGER" />
+		<result column="authen_state" property="authenState" jdbcType="INTEGER" />
+		<result column="authen_reason" property="authenReason"
+			jdbcType="VARCHAR" />
+		<result column="authen_admin_name" property="authenAdminName"
+			jdbcType="VARCHAR" />
+		<result column="authen_time" property="authenTime" jdbcType="TIMESTAMP" />
+		<result column="authen_admin_num" property="authenAdminNum"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_num, source, authen_state, authen_reason,
+		authen_admin_name,
+		authen_time,authen_admin_num
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_authen_info
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_authen_info
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAuthenInfo">
+		insert into sys_authen_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userNum != null">
+				user_num,
+			</if>
+			<if test="source != null">
+				source,
+			</if>
+			<if test="authenState != null">
+				authen_state,
+			</if>
+			<if test="authenReason != null">
+				authen_reason,
+			</if>
+			<if test="authenAdminName != null">
+				authen_admin_name,
+			</if>
+			<if test="authenTime != null">
+				authen_time,
+			</if>
+			<if test="authenAdminNum != null">
+				authen_admin_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="userNum != null">
+				#{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="source != null">
+				#{source,jdbcType=INTEGER},
+			</if>
+			<if test="authenState != null">
+				#{authenState,jdbcType=INTEGER},
+			</if>
+			<if test="authenReason != null">
+				#{authenReason,jdbcType=VARCHAR},
+			</if>
+			<if test="authenAdminName != null">
+				#{authenAdminName,jdbcType=VARCHAR},
+			</if>
+			<if test="authenTime != null">
+				#{authenTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="authenAdminNum != null">
+				#{authenAdminNum,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysAuthenInfo">
+		update sys_authen_info
+		<set>
+			<if test="userNum != null">
+				user_num = #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="source != null">
+				source = #{source,jdbcType=INTEGER},
+			</if>
+			<if test="authenState != null">
+				authen_state = #{authenState,jdbcType=INTEGER},
+			</if>
+			<if test="authenReason != null">
+				authen_reason = #{authenReason,jdbcType=VARCHAR},
+			</if>
+			<if test="authenAdminName != null">
+				authen_admin_name = #{authenAdminName,jdbcType=VARCHAR},
+			</if>
+			<if test="authenTime != null">
+				authen_time = #{authenTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="authenAdminNum != null">
+				authen_admin_num = #{authenAdminNum,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_authen_info
+		<where>
+			<if test="userNum != null and userNum != ''">
+			and	user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="source != null">
+			and	source = #{source,jdbcType=INTEGER}
+			</if>
+			<if test="authenState != null">
+			and	authen_state = #{authenState,jdbcType=INTEGER}
+			</if>
+			<if test="authenReason != null">
+			and	authen_reason = #{authenReason,jdbcType=VARCHAR}
+			</if>
+			<if test="authenAdminName != null and authenAdminName != ''">
+			and	authen_admin_name = #{authenAdminName,jdbcType=VARCHAR}
+			</if>
+			<if test="authenAdminNum != null and authenAdminNum != ''">
+			and	authen_admin_num = #{authenAdminNum,jdbcType=VARCHAR}
+			</if>
+			<if test="authenTime != null">
+			and	authen_time = #{authenTime,jdbcType=TIMESTAMP}
+			</if>
+		</where>
+		ORDER BY authen_time DESC 
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+</mapper>

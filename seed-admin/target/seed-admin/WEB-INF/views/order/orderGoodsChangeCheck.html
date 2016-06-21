@@ -1,0 +1,133 @@
+<#assign ctx="${request.contextPath}" /> <#assign staticCtx="${request.contextPath}/resources" />
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/pagination.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/tooldate.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/toolenum.js"></script>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<form action="">
+<div id="div1" style="margin: 0 auto;" >
+	<h4>商品信息</h4>
+	---------------------------------------------------------------------------------------------------------------------------------<br>
+	<img width="60" height="60" src="http://ynctest.b0.upaiyun.com${orderGoods.goodsUrl}" />${orderGoods.goodsName!'' }
+</div>
+
+<div id="div3" style="margin: 0 auto;" >
+	<h4>商品信息</h4>
+	----------------------------------------------------------------------------------------------------------------------------------
+	</div>
+	<table border="1" >
+	<tr align="center">
+		<td></td>
+		<td>商品单价(元)</td>
+		<td>村站佣金(元)</td>
+		<!-- <td>平台佣金(元)</td> -->
+		<td>LC佣金(元)</td>		
+		<td>众筹费用(元)</td>		
+	</tr>
+	<tr align="center">
+		<td>下单价</td>
+		<td>${orderGoods.goodsPrice?string("0.00")}</td>
+		<td>${orderGoods.villageExpense?string("0.000")}</td>
+		<!-- <td>${orderGoods.platformExpense?string("0.000")}</td> -->
+		<td>${orderGoods.lcExpense?string("0.000")}</td>		
+		<td>${orderGoods.planExpense?string("0.000")}</td>		
+	</tr>
+	<tr align="center">
+		<td>变更为</td>
+		<td><input style="text-align:center;color:red" id="goodsPriceChange" value="${orderGoods.actualPrice?string("0.00")}"/></td>
+		<td><input style="text-align:center;color:red" id="villageExpenseChange" value="${orderGoods.villageExpenseChange?string("0.000")}"/></td>
+		<!-- <td><input style="text-align:center;color:red" id="platformExpenseChange" value="${orderGoods.platformExpenseChange!''}"/></td> -->
+		<td><input style="text-align:center;color:red" id="lcExpenseChange" value="${orderGoods.lcExpenseChange?string("0.000")}"/></td>		
+		<td><input style="text-align:center;color:red" id="planExpenseChange" value="${orderGoods.planExpenseChange?string("0.000")}"/></td>		
+	</tr>
+	</table>
+</div>
+
+<div id="div4" style="margin: 0 auto;">
+	<!-- 订单id和订单商品的隐藏域 -->
+	<input type="hidden" id="orderId" value="${orderGoods.orderId}"/>
+	<input type="hidden" id="skuId" value="${orderGoods.skuId}"/>
+	<input type="hidden" id="goodsId" value="${orderGoods.goodsId}"/>
+	<input type="hidden" id="status"  value="${orderGoods.auditStatus}"/>
+	订单中商品数量：<font color="red">${orderGoods.goodsCount}</font>
+	<select id="auditStatus" name="auditStatus">	
+		<option value="2">审核通过</option>
+		<option value="3">审核拒绝</option>
+	</select>
+	<input type="button" value="确认" id="subBtn" onclick="return confirm('您确定要审核？');"/>	
+	
+</div>
+</form>
+</body>
+<script type="text/javascript">
+$(function(){
+	$("#subBtn").click(function(){
+		var orderId = $("#orderId").val();
+		var skuId = $("#skuId").val();
+		var goodsId = $("#goodsId").val();
+		var status = $("#status").val();
+		var auditStatus = $("#auditStatus").val();
+		var goodsPriceChange = $("#goodsPriceChange").val();
+		var villageExpenseChange = $("#villageExpenseChange").val();
+		//var platformExpenseChange = $("#platformExpenseChange").val();
+		var lcExpenseChange = $("#lcExpenseChange").val();
+		//var integralExpenseChange = $("#integralExpenseChange").val();
+		var planExpenseChange = $("#planExpenseChange").val();
+		if(status==2){
+			alert("该商品改价已通过审核，无需再次审核！");
+		}else{
+			$.ajax({
+				type:"post",
+			    url: '${ctx}/order/orderGooodsChangeConfirmCheck',
+			    data : {	
+			    	orderId : orderId,
+			    	skuId : skuId,
+			    	goodsId : goodsId,
+					goodsPriceChange : goodsPriceChange,
+					villageExpenseChange : villageExpenseChange,
+					auditStatus : auditStatus,
+					//platformExpenseChange : platformExpenseChange,
+					lcExpenseChange : lcExpenseChange,
+					//integralExpenseChange : integralExpenseChange,
+					planExpenseChange : planExpenseChange
+				},
+			    success: function (data) {
+			    	if (data == "OK") {
+						alert("审核成功！");						
+						art.dialog.close();
+					}else if(data == "Refused"){
+						alert("拒绝审核成功！");
+						art.dialog.close();
+					}else{
+						alert("审核失败");
+						art.dialog.close();
+					}
+			    }
+			});
+		}
+		
+	});			
+	
+}); 
+	
+</script>
+</html>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.HoldGoldDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.HoldGold" >
+    <id column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="vs_amount" property="vsAmount" jdbcType="DECIMAL" />
+    <result column="lc_amount" property="lcAmount" jdbcType="DECIMAL" />
+    <result column="engineer_amount" property="engineerAmount" jdbcType="DECIMAL" />
+    <result column="a_amount" property="aAmount" jdbcType="DECIMAL" />
+    <result column="supplier_amount" property="supplierAmount" jdbcType="DECIMAL" />
+    <result column="integration_costs" property="integrationCosts" jdbcType="DECIMAL" />
+	<result column="manpower_costs" property="manpowerCosts" jdbcType="DECIMAL" />
+	<result column="percent" property="percent" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sku_id,goods_id, vs_amount, lc_amount, engineer_amount, a_amount, supplier_amount,
+    integration_costs,manpower_costs,percent
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_hold_gold
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </select>
+  
+   <select id="selectBySkuId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_hold_gold
+    where sku_id = #{skuId,jdbcType=INTEGER}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from goods_hold_gold
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.goods.entity.HoldGold" >
+    insert into goods_hold_gold (sku_id,goods_id, vs_amount, lc_amount, 
+      engineer_amount, a_amount, supplier_amount,integration_costs,manpower_costs,percent
+      )
+    values (#{skuId,jdbcType=INTEGER},#{goodsId,jdbcType=INTEGER}, #{vsAmount,jdbcType=DECIMAL}, #{lcAmount,jdbcType=DECIMAL}, 
+      #{engineerAmount,jdbcType=DECIMAL}, #{aAmount,jdbcType=DECIMAL}, #{supplierAmount,jdbcType=DECIMAL},
+       #{integrationCosts,jdbcType=DECIMAL}, #{manpowerCosts,jdbcType=DECIMAL},#{percent,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.HoldGold" >
+    insert into goods_hold_gold
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+     <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="vsAmount != null" >
+        vs_amount,
+      </if>
+      <if test="lcAmount != null" >
+        lc_amount,
+      </if>
+      <if test="engineerAmount != null" >
+        engineer_amount,
+      </if>
+      <if test="aAmount != null" >
+        a_amount,
+      </if>
+      <if test="supplierAmount != null" >
+        supplier_amount,
+      </if>
+      <if test="integrationCosts != null" >
+        integration_costs,
+      </if>
+      <if test="manpowerCosts != null" >
+        manpower_costs,
+      </if>
+      <if test="percent != null">
+      	percent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="vsAmount != null" >
+        #{vsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="lcAmount != null" >
+        #{lcAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="engineerAmount != null" >
+        #{engineerAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="aAmount != null" >
+        #{aAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="supplierAmount != null" >
+        #{supplierAmount,jdbcType=DECIMAL},
+      </if>
+       <if test="integrationCosts != null" >
+        #{integrationCosts,jdbcType=DECIMAL},
+      </if>
+       <if test="manpowerCosts != null" >
+        #{manpowerCosts,jdbcType=DECIMAL},
+      </if>
+      <if test="percent != null ">
+      	#{percent,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.HoldGold" >
+    update goods_hold_gold
+    <set >
+      <if test="skuId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="vsAmount != null" >
+        vs_amount = #{vsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="lcAmount != null" >
+        lc_amount = #{lcAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="engineerAmount != null" >
+        engineer_amount = #{engineerAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="aAmount != null" >
+        a_amount = #{aAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="supplierAmount != null" >
+        supplier_amount = #{supplierAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="integrationCosts != null" >
+        integration_costs = #{integrationCosts,jdbcType=DECIMAL},
+      </if>
+      <if test="manpowerCosts != null" >
+        manpower_costs = #{manpowerCosts,jdbcType=DECIMAL},
+      </if>
+      <if test="percent != null ">
+      	percent = #{percent,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where sku_id = #{skuId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.goods.entity.HoldGold" >
+    update goods_hold_gold
+    set goods_id= #{goodsId,jdbcType=INTEGER},
+      vs_amount = #{vsAmount,jdbcType=DECIMAL},
+      lc_amount = #{lcAmount,jdbcType=DECIMAL},
+      engineer_amount = #{engineerAmount,jdbcType=DECIMAL},
+      a_amount = #{aAmount,jdbcType=DECIMAL},
+      supplier_amount = #{supplierAmount,jdbcType=DECIMAL},
+      integration_costs = #{integrationCosts,jdbcType=DECIMAL},
+      manpower_costs = #{manpowerCosts,jdbcType=DECIMAL},
+      percent = #{percent,jdbcType=DECIMAL}
+    where sku_id = #{skuId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,76 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+	<TITLE> ZTREE DEMO - Hide With Checkbox Mode</TITLE>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	 
+	<link rel="stylesheet" href="${staticCtx}/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.core-3.5.js"></script>
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+<!--<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.exedit-3.5.js"></script>-->
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.exhide-3.5.js"></script>
+	<SCRIPT type="text/javascript">
+		var tree="";
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				key: {
+					title: "title"
+				},
+				simpleData: {
+					enable: true
+				}
+			},
+		};
+
+		function reloadTree() { 
+			var url = "${ctx}/brand/getCategoryTree?brandId=${brandId}";
+			$.post(url,function(data){
+					   	 var json = eval(data);
+					   	    tree=$.fn.zTree.init($("#dictionarytypeTree"), setting, json);
+					   	    tree.expandAll(true);//全部展开
+					 	 },
+					  "json");//这里返回的类型有：json,html,xml,text
+		};
+
+		$(document).ready(function(){
+			reloadTree();
+		});
+		
+		//获取选中节点
+		function onCheck() {
+			var rid=$("#brandId").val();
+			var treeObj = $.fn.zTree.getZTreeObj("dictionarytypeTree");
+			var nodes = treeObj.getCheckedNodes(true);
+			var ids = "";
+			for ( var i = 0; i < nodes.length; i++) {
+				//获取选中节点的值
+				ids += nodes[i].id + ",";
+			}
+			$("#categoryIds").val(ids);
+			window.location.href =  "${ctx}/brand/addBrandCategory?brandId="+rid+"&categoryIds="+ids;
+		}	
+	</script>	
+
+ </HEAD>
+
+<body>
+	<div style="margin-left: 20px">
+		<table style="width: 180px;">
+			<tr>
+			  <input type="hidden" name="brandId" id="brandId" value="${brandId}"/>
+			  <input type="hidden" name="categoryIds" id="categoryIds" /> 
+				<td width="4%" align=left valign=top>
+					<ul id="dictionarytypeTree" class="ztree"></ul>
+				</td>
+			</tr>
+		</table>
+		<input type="button" value="提交" onclick="onCheck()"/>
+	</div>
+</body>
+</HTML>

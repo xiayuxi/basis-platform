@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderGoodsExpenseInfoMapperManual" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderGoodsExpenseInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_goods_id" property="orderGoodsId" jdbcType="INTEGER" />
+    <result column="village_expense" property="villageExpense" jdbcType="DECIMAL" />
+    <result column="platform_expense" property="platformExpense" jdbcType="DECIMAL" />
+    <result column="lc_expense" property="lcExpense" jdbcType="DECIMAL" />
+    <result column="integral_expense" property="integralExpense" jdbcType="DECIMAL" />
+    <result column="plan_expense" property="planExpense" jdbcType="DECIMAL" />
+    <result column="se_expense" property="seExpense" jdbcType="DECIMAL" />
+    <result column="a_expense" property="aExpense" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_goods_id, village_expense, platform_expense, lc_expense, integral_expense, 
+    plan_expense, se_expense, a_expense, create_time
+  </sql>
+ <!--  根据订单商品取出商品的佣金改价记录 -->
+  <select id="getHoldGoldByOrderGoodsId" resultMap="BaseResultMap" parameterType="Integer">
+  SELECT t1.* FROM order_goods_expense_info AS t1 WHERE t1.order_goods_id = #{id,jdbcType=INTEGER} ORDER BY t1.create_time
+  </select>
+</mapper>

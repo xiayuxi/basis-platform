@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.order.dao.OrderMergeDetailMapperManual">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderMergeDetail">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_info_id" property="orderInfoId" jdbcType="INTEGER" />
+		<result column="order_merge_info_id" property="orderMergeInfoId"
+			jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="order_merge_no" property="orderMergeNo"
+			jdbcType="CHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, order_info_id, order_merge_info_id, order_no, order_merge_no,
+		create_time
+	</sql>
+	<select id="getMergeDListByMergeIId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from order_merge_detail
+		where order_merge_info_id =
+		#{orderMergeInfoId,jdbcType=INTEGER}
+	</select>
+
+	<insert id="insertOrderMergeDetailList" parameterType="list"
+		useGeneratedKeys="true">
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			SELECT
+			LAST_INSERT_ID() as id
+		</selectKey>
+		insert into order_merge_detail (order_info_id, order_merge_info_id,
+		order_no,
+		order_merge_no, create_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.orderInfoId,jdbcType=INTEGER},
+			#{item.orderMergeInfoId,jdbcType=INTEGER},
+			#{item.orderNo,jdbcType=CHAR},
+			#{item.orderMergeNo,jdbcType=CHAR},
+			#{item.createTime,jdbcType=TIMESTAMP})
+		</foreach>
+	</insert>
+	
+	<!-- 根据订单id查询订单合并详情 -->
+	<select id="getOrderMergeDetailByOrderId" parameterType="Integer" resultMap="BaseResultMap">
+		SELECT * FROM order_merge_detail WHERE order_info_id = #{orderId,jdbcType=INTEGER}
+	</select>
+</mapper>

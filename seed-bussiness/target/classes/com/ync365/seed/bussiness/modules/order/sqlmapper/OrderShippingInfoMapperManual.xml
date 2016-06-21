@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderShippingInfoMapperManual" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderShippingInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+    <result column="prepared_no" property="preparedNo" jdbcType="CHAR" />
+    <result column="prepared_time" property="preparedTime" jdbcType="TIMESTAMP" />
+    <result column="stock_no" property="stockNo" jdbcType="CHAR" />
+    <result column="stock_time" property="stockTime" jdbcType="TIMESTAMP" />
+    <result column="delively_no" property="delivelyNo" jdbcType="CHAR" />
+    <result column="delively_time" property="delivelyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, order_no, order_type, prepared_no, prepared_time, stock_no, stock_time, 
+    delively_no, delively_time
+  </sql>
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_shipping_info
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+</mapper>

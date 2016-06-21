@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.user.dao.SysLargeCustomerValueInfoMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysLargeCustomerValueInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_num" property="userNum" jdbcType="VARCHAR" />
+		<result column="property_id" property="propertyId" jdbcType="INTEGER" />
+		<result column="property_value" property="propertyValue"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_num, property_id, property_value
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_large_customer_value_info
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from sys_large_customer_value_info
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLargeCustomerValueInfo">
+		insert into sys_large_customer_value_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userNum != null">
+				user_num,
+			</if>
+			<if test="propertyId != null">
+				property_id,
+			</if>
+			<if test="propertyValue != null">
+				property_value,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="userNum != null">
+				#{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="propertyId != null">
+				#{propertyId,jdbcType=INTEGER},
+			</if>
+			<if test="propertyValue != null">
+				#{propertyValue,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLargeCustomerValueInfo">
+		update sys_large_customer_value_info
+		<set>
+			<if test="userNum != null">
+				user_num = #{userNum,jdbcType=VARCHAR},
+			</if>
+			<if test="propertyId != null">
+				property_id = #{propertyId,jdbcType=INTEGER},
+			</if>
+			<if test="propertyValue != null">
+				property_value = #{propertyValue,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_large_customer_value_info
+		<where>
+			<if test="userNum != null">
+			and	user_num = #{userNum,jdbcType=VARCHAR}
+			</if>
+			<if test="propertyId != null">
+			and	property_id = #{propertyId,jdbcType=INTEGER}
+			</if>
+			<if test="propertyValue != null">
+			and	property_value = #{propertyValue,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLargeCustomerInfoByUserNum" resultType="com.ync365.seed.bussiness.modules.user.bo.LargeCustomerValueInfoBO"
+		parameterType="java.lang.String">
+		select 
+			a.property_value as propertyValue ,b.property_name as propertyName ,
+			b.property_type as propertyType,b.property_hint  as propertyHint
+		from 
+			sys_large_customer_value_info a
+		LEFT JOIN  sys_large_customer_property_info b on a.property_id = b.id
+		where 
+			b.is_del = 'true' 
+		and 
+			a.user_num = #{userNum,jdbcType=VARCHAR}
+	</select>
+</mapper>

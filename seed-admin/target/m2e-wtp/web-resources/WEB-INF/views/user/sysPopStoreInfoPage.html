@@ -1,0 +1,195 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript">
+		
+		$(function () {       
+			$('#backid').click(function(){
+					history.back();
+			 });
+		});
+		
+	</script>
+ </HEAD>
+
+<body>
+	<br />
+	<div style="margin-left: 2px">
+		<form action="${ctx}/sysvsinfo/edit" method="post" id="formId">
+        	<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			    	<td><span>供应商信息</span></td>
+			    </tr>
+			    <tr>
+			        <td>编号:</td>
+			        <td>${popStoreBO.popStoreNum!''}</td>
+			    </tr>
+			    <tr>    
+			        <td>店铺名称：</td>
+			        <td>${popStoreBO.popStoreName!''}</td>
+			    </tr>
+			    <tr>   
+			        <td>店铺联系人：</td>
+			        <td>${popStoreBO.popStorePrincipal!''}</td>
+			    </tr>
+			    <tr>     
+			  		<td>供应商账号：</td>
+			  		<td>${popStoreBO.popLoginName!''}</td>
+			    </tr>
+				<tr>   
+			        <td>联系电话：</td>
+			        <td>${popStoreBO.popStoreMobile!''}</td>
+			    </tr>
+			    <tr>
+			        <td>入驻商类型：</td>
+			        <td>${popStoreBO.popStoreType!''}</td>
+			    </tr>
+			    <tr>   
+			        <td>商城域名：</td>
+			        <td>${popStoreBO.popStoreDomain!''}.ync365.com</td>
+			    </tr>
+			    <tr>
+			        <td>供应品类：</td>
+			        <td>
+			        	<#list categorys as category>
+			        		<#if category??>
+			        			${category.name!''}
+			        		</#if>
+			        	</#list>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td >供应品牌:</td>
+			        <td>
+			        	<#list brands as brand>
+			        		<#if brand??>
+			        			${brand.chName!''}
+			        		</#if>
+			        	</#list>
+			        </td>
+			    </tr>
+			    <tr>
+			        <td>负责人：</td>
+			        <td>${popStoreBO.popStorePrincipal!''}</td>
+			    </tr>
+			    <tr>
+			        <td >负责人电话：</td>
+			        <td>${popStoreBO.popStorePrincipalMobile!''}</td>
+			    </tr>
+			    <tr>
+				    <td>
+				    	所处区域：
+				    </td>
+			        <td>
+			        	${popStoreBO.popStoreAddress!''}
+			        </td>
+			    </tr>
+			    
+			    <tr>
+				    <td>
+				    	详细地址：
+				    </td>
+			        <td>
+			        	${popStoreBO.popStoreAddressDetail!''}
+			        </td>
+			    </tr>
+		        <tr>
+		    		<td>店铺logo：</td>
+		   		 	<td><img alt="" src="${popStoreBO.logoPath!'' }" height="170px" width="100px"></td>
+		        </tr>
+			</table>
+		</form>
+	</div>
+	
+	
+	
+	
+	<div style="margin-left: 50px">
+		<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+	</div>
+	<br />	
+
+	<div style="margin-left: 2px">
+		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+			<tr>
+				<td>订单信息</td>
+			</tr>
+			<tr>
+				<td>
+					订单号	
+				</td>
+				<td>
+					订单时间	
+				</td>
+				<td>
+					商品名称	
+				</td>
+				<td>
+					商品数量	
+				</td>
+				<td>
+					商品总价	
+				</td>
+				<td>
+					订单状态
+				</td>
+			</tr>
+			<#if orderInfoGoodsBOs??>
+				<#list orderInfoGoodsBOs as orderInfo>
+				<tr>
+					<td>
+						${orderInfo.orderNo!''}	
+					</td>
+					<td>
+						${orderInfo.createTime?string["yyyy-MM-dd, HH:mm:ss"]}
+					</td>
+					<td>
+						${orderInfo.goodsName!''}
+					</td>
+					<td>
+						${orderInfo.goodsCount!''}
+					</td>
+					<td>
+						${orderInfo.goodsPrice!''}
+					</td>
+					<td>
+						<#if orderInfo.orderStatus??>
+							<#if orderInfo.orderStatus==1>
+								待支付
+							<#elseif orderInfo.orderStatus==2>
+								改价待审核
+							<#elseif orderInfo.orderStatus==3>
+								改价已审核
+							<#elseif orderInfo.orderStatus==4>
+								已支付
+							<#elseif orderInfo.orderStatus==5>
+								已配货
+							<#elseif orderInfo.orderStatus==6>
+								待收货
+							<#elseif orderInfo.orderStatus==7>
+								已完成
+							<#elseif orderInfo.orderStatus==8>
+								已取消
+							<#elseif orderInfo.orderStatus==9>
+								已关闭
+							<#elseif orderInfo.orderStatus==10>
+								已退货
+							</#if>
+						</#if>
+					</td>
+				</tr>
+				</#list>
+			</#if>
+		</table>
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysUsVsRelationshipMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysUsVsRelationship" >
+    <result column="us_num" property="usNum" jdbcType="VARCHAR" />
+    <result column="vs_num" property="vsNum" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+	  us_num,vs_num
+	</sql>
+  
+  <!-- <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUsVsRelationship" >
+    insert into sys_us_vs_relationship (us_num, vs_num)
+    values (#{usNum,jdbcType=VARCHAR}, #{vsNum,jdbcType=VARCHAR})
+  </insert> -->
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUsVsRelationship" >
+    insert into sys_us_vs_relationship
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="usNum != null" >
+        us_num,
+      </if>
+      <if test="vsNum != null" >
+        vs_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="usNum != null" >
+        #{usNum,jdbcType=VARCHAR},
+      </if>
+      <if test="vsNum != null" >
+        #{vsNum,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 通过map参数查询记录  list记录-->
+  <select id="selectPageByMap" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List"></include>
+    from sys_us_vs_relationship
+    <where>
+		<if test="usNum != null ">
+			and us_num =#{usNum,jdbcType=VARCHAR}
+		</if>
+		<if test="vsNum != null">
+			and vs_num = #{vsNum,jdbcType=VARCHAR}
+		</if>
+	</where>
+  </select>
+  
+   <select id="selectSysUsVsByUsNum" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List"></include>
+    from sys_us_vs_relationship
+    where  us_num = #{usNum,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 通过vsNum删除-->
+  	<delete id="deleteSysUsVsByVsNum" parameterType="java.lang.String">
+		delete from
+		sys_us_vs_relationship
+		where  vs_num = #{vsNum,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 通过usNum删除-->
+  	<delete id="deleteSysUsVsByUsNum" parameterType="java.lang.String">
+		delete from
+		sys_us_vs_relationship
+		where  us_num = #{usNum,jdbcType=VARCHAR}
+	</delete>
+	
+  <update id="update" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysUsVsRelationship">
+		update sys_us_vs_relationship
+		<set>
+			<if test="usNum != null ">
+			    us_num =#{usNum,jdbcType=VARCHAR},
+			</if>
+			<if test="vsNum != null">
+				vs_num = #{vsNum,jdbcType=VARCHAR},
+			</if>
+			</set>
+		where us_num = #{usNum,jdbcType=VARCHAR}
+	</update>
+  
+  <select id="selectPageCount" parameterType="map" resultType="java.lang.Integer">
+		select
+		count(1)
+		from sys_us_vs_relationship
+		<where>
+			<if test="usNum != null ">
+				and us_num =#{usNum,jdbcType=VARCHAR}
+			</if>
+			<if test="vsNum != null">
+				and vs_num = #{vsNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

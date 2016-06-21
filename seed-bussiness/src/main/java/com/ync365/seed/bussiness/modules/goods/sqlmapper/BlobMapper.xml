@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.BlobDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.Blob" >
+    <id column="goods_id" property="goodsId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.ync365.seed.bussiness.modules.goods.entity.Blob" extends="BaseResultMap" >
+    <result column="goods_desc" property="goodsDesc" jdbcType="VARCHAR" />
+    <result column="packing_list" property="packingList" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    goods_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    goods_desc, packing_list
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from goods_blob
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from goods_blob
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Blob" >
+    insert into goods_blob (goods_id, goods_desc, packing_list
+      )
+    values (#{goodsId,jdbcType=INTEGER}, #{goodsDesc,jdbcType=VARCHAR}, #{packingList,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Blob" >
+    insert into goods_blob
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="goodsDesc != null" >
+        goods_desc,
+      </if>
+      <if test="packingList != null" >
+        packing_list,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsDesc != null" >
+        #{goodsDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="packingList != null" >
+        #{packingList,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Blob" >
+    update goods_blob
+    <set >
+      <if test="goodsDesc != null" >
+        goods_desc = #{goodsDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="packingList != null" >
+        packing_list = #{packingList,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Blob" >
+    update goods_blob
+    set goods_desc = #{goodsDesc,jdbcType=VARCHAR},
+      packing_list = #{packingList,jdbcType=VARCHAR}
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectBlobByskuId"  resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  	select  
+  	<include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+     from goods_blob a where a.goods_id = (
+     	select b.goods_id from goods_sku b where b.sku_id= #{skuId} )
+  </select>
+</mapper>

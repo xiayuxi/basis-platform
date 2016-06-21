@@ -1,0 +1,267 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ync365.seed</groupId>
+		<artifactId>seed-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../seed-parent/</relativePath>
+	</parent>
+	<artifactId>seed-admin</artifactId>
+	<packaging>war</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.ync365.seed</groupId>
+			<artifactId>seed-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ync365.seed</groupId>
+			<artifactId>seed-bussiness</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ync365.seed</groupId>
+			<artifactId>seed-service-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+		</dependency>
+		
+		<dependency>
+		     <groupId>com.alibaba</groupId>
+		     <artifactId>druid</artifactId>
+		</dependency>
+		
+		<dependency>
+	         <groupId>com.jagregory</groupId>
+	          <artifactId>shiro-freemarker-tags</artifactId>
+	          <version>0.1</version>
+        </dependency>
+		
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
+		<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+			</dependency>
+			
+		<!-- JSON -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
+			</dependency>
+		
+		<!-- GENERAL UTILS begin -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.dozer</groupId>
+			<artifactId>dozer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<!-- GENERAL UTILS end -->
+		<!-- WEB Begin -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		<!-- WEB end -->
+
+		<!-- LOGGING begin -->
+		<!-- slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<!-- logback -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<!-- 代码直接调用log4j会被桥接到slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+		</dependency>
+
+		<!-- 代码直接调用commons-logging会被桥接到slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		
+
+		<!-- 代码直接调用java.util.logging会被桥接到slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+ 
+		<!-- LOGGING end -->
+		
+		<!-- FileUpload start -->
+		
+	<!-- 	<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.8</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.upyun</groupId>
+			<artifactId>java-sdk</artifactId>
+		</dependency>
+
+
+	     
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		
+		<dependency>
+		      <groupId>ueditor.com.baidu</groupId>
+		      <artifactId>ueditor</artifactId>
+		      <version>1.1.1</version>
+		      <scope>system</scope>
+		      <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ueditor-1.1.1.jar</systemPath>
+		</dependency>
+		<dependency>
+		      <groupId>ueditor.org.json</groupId>
+		      <artifactId>json</artifactId>
+		      <version>1.1.1</version>
+		      <scope>system</scope>
+		      <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/json.jar</systemPath>
+		</dependency>
+
+		
+		<!-- FileUpload end -->
+	</dependencies>
+
+	<build>
+		<finalName>seed-admin</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<!-- 资源根目录排除各环境的配置，使用单独的资源目录来指定 -->
+				<excludes>
+					<exclude>test/*</exclude>
+					<exclude>production/*</exclude>
+					<exclude>development/*</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/${profiles.active}</directory>
+			</resource>
+		</resources>
+		 
+	</build>
+	
+	 
+</project>

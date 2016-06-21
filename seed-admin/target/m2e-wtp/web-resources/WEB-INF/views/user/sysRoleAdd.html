@@ -1,0 +1,126 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!--css  -->
+	 <link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<link rel="stylesheet" href="${staticCtx}/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+	
+	<!-- js-->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+	<!--  js-->
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.core-3.5.js"></script>
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+	<script type="text/javascript" src="${staticCtx}/zTree/js/jquery.ztree.exhide-3.5.js"></script>
+	<!--验证js-->
+	<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js?local=zh-CN"></script>
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/validate/jquery.validator.css" />
+	<script type="text/javascript" src="${staticCtx}/validate/page/user/sysRoleAdd.js"></script>
+	
+	<style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+	</style>  
+
+	<script type="text/javascript">
+		/* 返回按钮 */
+		$(function () {       
+			$('#backid').click(function(){
+					history.back();
+			 });
+		});
+		
+		
+		
+		var tree="";
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				key: {
+					title: "title"
+				},
+				simpleData: {
+					enable: true
+				}
+			},
+		};
+
+		function reloadTree() { 
+			var url = "${ctx}/sysrole/getRoleModuleTree?id=0";
+			$.post(url,function(data){
+					   	 var json = eval(data);
+					   	    tree=$.fn.zTree.init($("#dictionarytypeTree"), setting, json);
+					   	    tree.expandAll(true);//全部展开
+					 	 },
+					  "json");//这里返回的类型有：json,html,xml,text
+		};
+
+		$(document).ready(function(){
+			reloadTree();
+		});
+		//获取选中节点
+		function onCheck() {
+			
+			var treeObj = $.fn.zTree.getZTreeObj("dictionarytypeTree");
+			var nodes = treeObj.getCheckedNodes(true);
+			var ids = "";
+			for ( var i = 0; i < nodes.length; i++) {
+				//获取选中节点的值
+				ids += nodes[i].id + ",";
+			}
+			$("#categoryIds").val(ids);
+			 $("#formId").submit();
+		}	
+		
+	</script>
+</HEAD>
+
+<body>
+<div style="margin-left: 2px">
+		<form method="post" id="formId" action="${ctx}/sysrole/add">
+        	<table class="table table-bordered table-hover definewidth m10">
+			    <tr>
+			        <td  style="width: 2%" class="tableleft">角色名称</td>
+			        <td><input type = "text" name = "roleName" size = "3"/></td>
+			    </tr>
+			    <tr>
+			        <td class="tableleft">角色描述</td>
+			        <td><input type = "text" name = "description"   size = "100"/></td>
+			    </tr>
+			    <tr>
+			    	<td class="tableleft">角色权限</td>
+			    	<input type="hidden" name="roleIds" id="categoryIds" /> 
+					<td width="4%" align=left valign=top>
+						<ul id="dictionarytypeTree" class="ztree"></ul>
+					</td>
+			    </tr>
+			    <tr>
+			        <td class="tableleft"></td>
+			        <td>
+			            <button type="button" class="btn btn-primary" onclick="onCheck();">保存</button>&nbsp;&nbsp;
+			            <button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+			        </td>
+			    </tr>
+			</table>
+		</form>
+	</div>
+
+</body>
+</html>

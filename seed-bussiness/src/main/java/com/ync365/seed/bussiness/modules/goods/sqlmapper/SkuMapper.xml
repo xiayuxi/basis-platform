@@ -1,0 +1,940 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.SkuDao">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.goods.entity.Sku">
+		<id column="sku_id" property="skuId" jdbcType="INTEGER" />
+		<result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+		<result column="sn" property="sn" jdbcType="VARCHAR" />
+		<result column="market_price" property="marketPrice" jdbcType="DECIMAL" />
+		<result column="sell_price" property="sellPrice" jdbcType="DECIMAL" />
+		<result column="cost_price" property="costPrice" jdbcType="DECIMAL" />
+		<result column="lower_limit" property="lowerLimit" jdbcType="DECIMAL" />
+		<result column="upper_limit" property="upperLimit" jdbcType="DECIMAL" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="ftype" property="ftype" jdbcType="DECIMAL" />
+		<result column="sort" property="sort" jdbcType="DECIMAL" />
+		<result column="sales_count" property="salesCount" jdbcType="DECIMAL" />
+		<result column="status" property="status" jdbcType="DECIMAL" />
+		<result column="bar_code" property="barCode" jdbcType="VARCHAR" />
+		<result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="opt_date" property="optDate" jdbcType="TIMESTAMP" />
+		<result column="opt_user" property="optUser" jdbcType="INTEGER" />
+		<result column="opt_term" property="optTerm" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDelete" jdbcType="DECIMAL" />
+		<result column="visit_count" property="visitCount" jdbcType="DECIMAL" />
+		<result column="store_id" property="storeId" jdbcType="INTEGER" />
+		<result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
+		<result column="full_name" property="fullName" jdbcType="VARCHAR" />
+		<result column="weight" property="weight" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- 审核&发布结果列 -->
+	<resultMap id="ARResultMap"
+		type="com.ync365.seed.bussiness.modules.goods.entity.Sku">
+		<id column="sku_id" property="skuId" jdbcType="INTEGER" />
+		<result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+		<result column="sn" property="sn" jdbcType="VARCHAR" />
+		<result column="market_price" property="marketPrice" jdbcType="DECIMAL" />
+		<result column="sell_price" property="sellPrice" jdbcType="DECIMAL" />
+		<result column="cost_price" property="costPrice" jdbcType="DECIMAL" />
+		<result column="lower_limit" property="lowerLimit" jdbcType="DECIMAL" />
+		<result column="upper_limit" property="upperLimit" jdbcType="DECIMAL" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="ftype" property="ftype" jdbcType="DECIMAL" />
+		<result column="sort" property="sort" jdbcType="DECIMAL" />
+		<result column="sales_count" property="salesCount" jdbcType="DECIMAL" />
+		<result column="status" property="status" jdbcType="DECIMAL" />
+		<result column="bar_code" property="barCode" jdbcType="VARCHAR" />
+		<result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="opt_date" property="optDate" jdbcType="TIMESTAMP" />
+		<result column="opt_user" property="optUser" jdbcType="INTEGER" />
+		<result column="opt_term" property="optTerm" jdbcType="VARCHAR" />
+		<result column="is_good" property="isGood" jdbcType="INTEGER" />
+		<result column="is_hot" property="isHot" jdbcType="INTEGER" />
+		<result column="is_del" property="isDelete" jdbcType="DECIMAL" />	
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		sku_id, goods_id, sn,  market_price, sell_price,cost_price, lower_limit, upper_limit,
+		goods_name,ftype, sort, sales_count, status , bar_code, goods_code, create_time,
+		opt_date,opt_user, opt_term,is_del,store_id,visit_count,subtitle,full_name,weight
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_sku
+		where is_del = 0  and sku_id = #{skuId,jdbcType=INTEGER}
+	</select>
+
+	<select id="searchPageCount" resultType="Integer" parameterType="map">
+		select count(*) from goods_sku
+		where goods_id in (
+		select a.goods_id from goods_sku a
+		left join goods g on a.goods_id=g.goods_id
+		<where>
+			a.is_del = 0
+			<if test="name!=null and name!='null' and name !=''">
+				and g.name like '%'||#{name}||'%'
+			</if>
+			<if test="code!=null &amp;&amp; code.length()">
+				and g.code like '%'||#{code}||'%'
+			</if>
+			<if test="stockStart!=null &amp;&amp; stock.length()">
+				and a.stock_num between #{stockStart} and #{stockEnd}
+			</if>
+		</where>
+		) 
+	</select>
+	<!-- 分页查询之条件搜索 -->
+	<select id="searchPage" resultMap="BaseResultMap" parameterType="map">
+		select a.* from
+		(select * from goods_sku
+		where goods_id in (
+		select gs.goods_id from goods_sku gs
+		left join goods g on gs.goods_id=g.goods_id
+		<where>
+			gs.is_del = 0 	
+			<if test="name!=null and name!='null' and name !=''">
+				and g.name like '%'||#{name}||'%'
+			</if>
+			<if test="code!=null and code!='' ">
+				and g.code like '%'||#{code}||'%'
+			</if>
+			<if test="stockStart!= null  and stockEnd != null  and stockStart !=''">
+				and gs.stock_num between #{stockStart} and #{stockEnd}
+			</if>
+		</where>
+		)
+		order by goods_id ) a
+		limit #{pageIndex} , #{pageSize}
+	</select>
+	
+ 
+
+	<select id="selectByGoodsId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_sku
+		where
+		is_del =  0 
+		and goods_id = #{goodsId,jdbcType=INTEGER}
+	</select>
+
+<!-- 	将删除方法改为逻辑删除 -->
+	<update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		update goods_sku set is_del =1
+		where goods_id = #{goodsId,jdbcType=INTEGER};
+	</update>
+<!-- 	将删除方法改为逻辑删除 -->
+	<update id="deleteByGoodsId" parameterType="java.lang.Integer">
+		update goods_sku set is_del =1
+		where goods_id = #{goodsId,jdbcType=INTEGER};
+	</update>
+	
+	<!--  新增 -->
+	<insert id="insert" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Sku"
+		useGeneratedKeys="true" keyProperty="skuId" keyColumn="sku_id">
+		insert into goods_sku (    
+			sku_id,goods_id ,sn,
+			market_price, sell_price, cost_price,
+			lower_limit, upper_limit, goods_name,
+			ftype, sort, sales_count,status, bar_code,
+			goods_code, create_time, opt_date,
+			opt_user, opt_term, is_del,visit_count,store_id,subtitle,full_name,weight
+		)values (
+			#{skuId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER},
+			#{sn,jdbcType=VARCHAR},
+			#{marketPrice,jdbcType=DECIMAL}, #{sellPrice,jdbcType=DECIMAL},#{costPrice,jdbcType=DECIMAL},
+			#{lowerLimit,jdbcType=DECIMAL}, #{upperLimit,jdbcType=DECIMAL},
+			#{goodsName,jdbcType=VARCHAR},
+			#{ftype,jdbcType=DECIMAL}, #{sort,jdbcType=DECIMAL}, 0,
+			#{status,jdbcType=DECIMAL}, #{barCode,jdbcType=VARCHAR},
+			#{goodsCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{optDate,jdbcType=TIMESTAMP},
+			#{optUser,jdbcType=INTEGER}, #{optTerm,jdbcType=VARCHAR},0,
+			0,#{storeId,jdbcType=INTEGER},#{subtitle,jdbcType=VARCHAR},
+			#{fullName,jdbcType=VARCHAR},#{weight,jdbcType=INTEGER}
+		)
+	</insert>
+
+	<!--  更新-->
+	<update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Sku">
+		update goods_sku
+		set goods_id = #{goodsId,jdbcType=INTEGER},
+		sn = #{sn,jdbcType=VARCHAR},
+		market_price = #{marketPrice,jdbcType=DECIMAL},
+		sell_price = #{sellPrice,jdbcType=DECIMAL},
+		cost_price = #{costPrice,jdbcType=DECIMAL},
+		lower_limit = #{lowerLimit,jdbcType=DECIMAL},
+		upper_limit = #{upperLimit,jdbcType=DECIMAL},
+		goods_name = #{goodsName,jdbcType=VARCHAR},
+		ftype = #{ftype,jdbcType=DECIMAL},
+		sort = #{sort,jdbcType=DECIMAL},
+		sales_count = #{salesCount,jdbcType=DECIMAL},
+		status = #{status,jdbcType=DECIMAL},
+		bar_code = #{barCode,jdbcType=VARCHAR},
+		goods_code = #{goodsCode,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		opt_date = #{optDate,jdbcType=TIMESTAMP},
+		opt_user = #{optUser,jdbcType=INTEGER},
+		opt_term = #{optTerm,jdbcType=VARCHAR},
+		visit_count = #{visitCount,jdbcType=DECIMAL},
+		store_id = #{storeId,jdbcType=INTEGER},
+		subtitle = #{subtitle,jdbcType=VARCHAR},
+		full_name = #{fullName,jdbcType=VARCHAR},
+		weight = #{weight,jdbcType=INTEGER}
+		where sku_id = #{skuId,jdbcType=INTEGER}
+	</update>
+
+	<!--  根据商品主键更新SKU -->
+	<update id="updateByGoodsId" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Sku">
+		update goods_sku
+		<set>
+			<if test="sn != null">
+				sn = #{sn,jdbcType=VARCHAR},
+			</if>
+			<if test="stockNum != null">
+				stock_num = #{stockNum,jdbcType=DECIMAL},
+			</if>
+			<if test="marketPrice != null">
+				market_price = #{marketPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="sellPrice != null">
+				sell_price = #{sellPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="costPrice != null">
+				cost_price = #{costPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="lowerLimit != null">
+				lower_limit = #{lowerLimit,jdbcType=DECIMAL},
+			</if>
+			<if test="upperLimit != null">
+				upper_limit = #{upperLimit,jdbcType=DECIMAL},
+			</if>
+			<if test="goodsName != null">
+				goods_name = #{goodsName,jdbcType=VARCHAR},
+			</if>
+			<if test="ftype != null">
+				ftype = #{ftype,jdbcType=DECIMAL},
+			</if>
+			<if test="sort != null">
+				sort = #{sort,jdbcType=DECIMAL},
+			</if>
+			<if test="salesCount != null">
+				sales_count= #{salesCount,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=DECIMAL},
+			</if>
+			<if test="barCode != null">
+				bar_code = #{barCode,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsCode != null">
+				goods_code = #{goodsCode,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optDate != null">
+				opt_date = #{optDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optUser != null">
+				opt_user = #{optUser,jdbcType=BIGINT},
+			</if>
+			<if test="optTerm != null">
+				opt_term = #{optTerm,jdbcType=VARCHAR},
+			</if>
+			<if test="isDelete != null">
+				is_del = #{isDelete,jdbcType=DECIMAL},
+			</if>
+			<if test="fullName != null">
+				full_name = #{fullName,jdbcType=VARCHAR},
+			</if>
+			<if test="weight != null">
+				weight = #{weight,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where goods_id= #{goodsId,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 上下架  -->
+	<update id="grounding" parameterType="map">
+		update goods_sku
+		set status = #{status}
+		where sku_id= #{skuId,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 根据sku的主键集合查询对应的sku列表 -->
+	<select id="selectSkuListByIds"  resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO" >
+      select
+		a.sku_id, a.goods_id, a.sn, a.market_price, a.sell_price,a.cost_price, a.lower_limit, a.upper_limit,
+		a.goods_name,a.ftype, a.sort, a.sales_count, a.status , a.bar_code, a.goods_code, a.create_time,
+		a.is_del,a.store_id,a.visit_count,a.subtitle,b.tag_img_id,
+		(select group_concat(spec_value) from goods_sku_feature where sku_id=a.sku_id and is_spec= 1 group by sku_id ) attr_value,
+		(select stock_num-lock_qty from goods_stocks where sku_id = a.sku_id ) stock_num
+         from goods_sku a ,goods b ,goods_stocks c where a.goods_id = b.goods_id and a.sku_id = c.sku_id
+      
+      	<if test="list != null and list.size > 0 ">
+       	   and a.sku_id in 
+	       <foreach item="item" index="index" collection="list" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+
+    </select>
+    
+    <!-- 查询SKU库存列表 -->
+	<select id="selectSkuStockPage" resultMap="BaseResultMap"  parameterType="map">
+      select
+		a.sku_id, a.goods_id, a.sn, a.market_price, a.sell_price,a.cost_price, a.lower_limit, a.upper_limit,
+		a.goods_name,a.ftype, a.sort, a.sales_count, a.status , a.bar_code, a.goods_code, a.create_time,
+		a.is_del,a.store_id,a.visit_count,a.subtitle,
+		(select group_concat(spec_value) from goods_sku_feature where sku_id=a.sku_id and is_spec= 1 group by sku_id ) attr_value,
+		(select stock_num from goods_stocks where sku_id = a.sku_id ) stock_num
+       from
+       	 goods_sku a left join goods b on a.goods_id=b.goods_id  left join goods_stocks c  on a.sku_id = c.sku_id
+       <where>
+       	   b.is_del = 0
+	      <if test="name != null and name != '' and name !='null' ">
+	      	 and a.goods_name = #{name}
+	      </if>  
+		  <if test="subtitle != null and subtitle != '' and subtitle !='null' ">
+		  	 and a.subtitle = #{subtitle}
+		  </if>
+		  <if test="categoryId != null and categoryId != ''  ">
+		  	 and b.category_id = #{categoryId}
+		  </if>
+		  <if test="sn != null and sn != '' and sn !='null' ">
+		  	 and a.sn like concat('%','${sn}','%' ) 
+		  </if>
+		  <if test="startQty != null   ">
+		  	 and c.stock_num &gt;= #{startQty}
+		  </if>
+		  <if test="endQty != null   ">
+		  	 and c.stock_num &lt; #{endQty}
+		  </if>
+		  <!-- 限定状态  and a.status = 3-->
+       </where>
+          limit #{startIndex}  ,   #{pageSize}
+    </select>
+	
+	<!-- 库存管理的查询总记录数 -->
+	<select id="selectSkuStockPageCount" resultType="Integer" parameterType="map">
+		select count(*)  from
+       	goods_sku a left join goods b on a.goods_id=b.goods_id  left join goods_stocks c  on a.sku_id = c.sku_id
+		<where>
+			b.is_del = 0
+		  <if test="name != null and name != '' and name !='null' ">
+	      	 and a.goods_name = #{name},
+	      </if>  
+		  <if test="subtitle != null and subtitle != '' and subtitle !='null' ">
+		  	 and a.subtitle = #{subtitle},
+		  </if>
+		  <if test="categoryId != null and name != ''  ">
+		  	 and b.category_id = #{categoryId},
+		  </if>
+		  <if test="sn != null and sn != '' and sn !='null' ">
+		  	 and a.sn like concat('%','${sn}','%' ) 
+		  </if>
+		  <if test="startQty != null   ">
+		  	 and a.stock_num &gt;= #{startQty},
+		  </if>
+		  <if test="endQty != null   ">
+		  	 and a.stock_num &lt; #{endQty}
+		  </if>
+		  
+		  <!-- 上架状态and a.status = 3 -->
+		  
+		</where>
+	</select>
+	
+	<!-- 提供促销活动调用：根据条件查询SKU列表 -->
+	<select id="selectSkuPromotionPage" resultMap="BaseResultMap"  parameterType="map">
+      select
+		a.sku_id, a.goods_id, a.sn, a.market_price, a.sell_price,a.cost_price, a.lower_limit, a.upper_limit,
+		a.goods_name,a.ftype, a.sort, a.sales_count, a.status , a.bar_code, a.goods_code, a.create_time,
+		a.is_del,a.store_id,a.visit_count,a.subtitle,
+		(select group_concat(spec_value) from goods_sku_feature where sku_id=a.sku_id and is_spec= 1 group by sku_id ) attr_value,
+		(select stock_num from goods_stocks where sku_id = a.sku_id ) stock_num
+       from
+       	 goods_sku a left join goods b on a.goods_id=b.goods_id  left join goods_stocks c  on a.sku_id = c.sku_id left join goods_operate d on a.goods_id = d.goods_id 
+       <where>
+       	   b.is_del = 0
+	      <if test="name != null and name != '' and name !='null' ">
+	      	 and a.goods_name = #{name}
+	      </if>  
+	      
+		  <if test="storeId != null and storeId != '' and storeId !='null' ">
+		  	 and b.store_id = #{storeId}
+		  </if>
+		  <if test="categoryId != null and categoryId != ''  ">
+		  	 and b.category_id = #{categoryId}
+		  </if>
+		  <if test="brandId != null and brandId != ''  ">
+		  	 and b.brand_id = #{brandId}
+		  </if>
+		  <if test="sn != null and sn != '' and sn !='null' ">
+		  	 and a.sn = #{sn}
+		  </if>
+		  <if test="startPrice != null   ">
+		  	 and a.cost_price &gt;= #{startPrice}
+		  </if>
+		  <if test="endPrice != null   ">
+		  	 and a.cost_price &lt; #{endPrice}
+		  </if>
+		  
+		  <if test="inSkuList != null and inSkuList.size >  0 ">
+		  	  and a.sku_id  in  
+		  	<foreach item="item" index="index" collection="inSkuList" open="("
+					separator="," close=")">
+					#{item}
+			</foreach>
+		  </if>
+		  <if test="skuList != null and skuList.size >  0 ">
+		  	and a.sku_id not in  
+		  	<foreach item="item" index="index" collection="skuList" open="("
+					separator="," close=")">
+					#{item}
+			</foreach>
+		  </if>
+		  
+		  <!-- 直营，海外购 -->
+		   <if test="goodsType != null   ">
+		  	 	and b.goods_type in (2,3)
+		  </if>
+		  
+		  <!-- 上架状态 -->
+		  and a.status = 3
+       </where>
+       	  order by  ${sortColumn}  ${sortDirection}
+          limit #{startIndex}  ,   #{pageSize}
+    </select>
+    
+    <!-- 提供促销活动调用：根据条件查询SKU列表 -->
+    <select id="selectSkuPromotionPageCount"  resultType="Integer" parameterType="map">
+      select
+		 count(1)
+       from
+       	 goods_sku a left join goods b on a.goods_id=b.goods_id  left join goods_stocks c  on a.sku_id = c.sku_id
+       <where>
+       	   b.is_del = 0
+	      <if test="name != null and name != '' and name !='null' ">
+	      	 and a.goods_name = #{name}
+	      </if>  
+		  <if test="storeId != null">
+		  	 and a.store_id = #{storeId}
+		  </if>
+		  <if test="categoryId != null  ">
+		  	 and b.category_id = #{categoryId}
+		  </if>
+		  <if test="brandId != null  ">
+		  	 and b.brand_id = #{brandId}
+		  </if>
+		  <if test="sn != null and sn != '' and sn !='null' ">
+		  	 and a.sn = #{sn}
+		  </if>
+		  <if test="startPrice != null   ">
+		  	 and a.cost_price &gt;= #{startPrice}
+		  </if>
+		  <if test="endPrice != null   ">
+		  	 and a.cost_price &lt; #{endPrice}
+		  </if>
+		  <if test="inSkuList != null and inSkuList.size >  0 ">
+		  	  and a.sku_id  in  
+		  	<foreach item="item" index="index" collection="inSkuList" open="("
+					separator="," close=")">
+					#{item}
+			</foreach>
+		  </if>
+		  <if test="skuList != null and skuList.size >  0 ">
+		  	 and a.sku_id not in  
+		  	<foreach item="item" index="index" collection="skuList" open="("
+					separator="," close=")">
+					#{item}
+			</foreach>
+		  </if>
+		  
+		   <!-- 直营，海外购 -->
+		   <if test="goodsType != null   ">
+		  	 	and b.goods_type in (2,3)
+		  </if>
+		  
+		  <!-- 上架状态 -->
+		  and a.status = 3
+       </where>
+    </select>
+    <!-- 前台（PHP） 商品列表查询  -->
+    <select id="selectSkuIndexList" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"  parameterType="map">
+    	select 
+    		b.sku_id, b.goods_id, b.sn, b.market_price, 
+    		b.cost_price, b.lower_limit, b.upper_limit,
+			b.goods_name, b.full_name, b.sort, b.sales_count, b.status ,
+			a.store_id,b.visit_count,b.subtitle,a.tag_img_id,(d.stock_num-d.lock_qty) stock_num,
+			(select price from goods_sale_region where region_id = #{regionId} and sku_id = b.sku_id) region_price
+    	from goods a ,goods_sku b ,goods_operate c  ,goods_stocks d 
+		where a.goods_id = b.goods_id and a.goods_id = c.goods_id  and b.sku_id = d.sku_id 
+		<if test="categoryId != null ">
+			and a.category_id in (
+				select category_id from goods_category where category_id = #{categoryId}
+				union all 
+				select category_id from goods_category where parent_id = #{categoryId}
+				union all 
+				select category_id from goods_category where parent_id in ( select category_id from goods_category where parent_id = #{categoryId} )
+			   )
+		</if>
+		<if test="brandId != null ">
+			and a.brand_id = #{brandId}
+		</if>
+		<if test="startPrice != null ">
+			and b.cost_price &gt;= #{startPrice} 
+		</if>
+		<if test="endPrice != null ">
+			and b.cost_price &lt; #{endPrice} 
+		</if>
+		<if test="moq != null ">
+			and b.lower_limit  &gt;=  #{moq}
+		</if>
+		<if test="regionId != null ">
+			 and b.sku_id in ( select sku_id from goods_sale_region  where region_id = #{regionId} )
+		</if>
+		<!-- 上架状态 -->
+		and a.is_del =  0 
+		and a.status = 3
+		order by  ${sortColumn}  ${sortDirection}
+		limit #{startIndex} , #{pageSize}  	
+    </select>
+    
+    <select id="selectSkuIndexListCount" resultType="Integer"  parameterType="map">
+    	select 
+    		 count(a.goods_id)
+    	from goods a , goods_sku b ,goods_operate c 
+		where a.goods_id = b.goods_id and a.goods_id = c.goods_id 
+		<if test="categoryId != null ">
+			and a.category_id in (
+				select category_id from goods_category where category_id = #{categoryId}
+				union all 
+				select category_id from goods_category where parent_id = #{categoryId}
+				union all 
+				select category_id from goods_category where parent_id in ( select category_id from goods_category where parent_id = #{categoryId} )
+			   )
+		</if>
+		<if test="brandId != null ">
+			and a.brand_id = #{brandId}
+		</if>
+		<if test="startPrice != null ">
+		   	and b.cost_price &gt;= #{startPrice}  
+		</if>
+		<if test="endPrice != null ">
+		  	and b.cost_price &lt; #{endPrice}  
+		</if>
+		<if test="moq != null ">
+			and b.lower_limit  &gt;=  #{moq}
+		</if>
+		<if test="regionId != null ">
+			 and b.sku_id in ( select sku_id from goods_sale_region  where region_id = #{regionId} )
+		</if>
+		<!-- 上架状态 -->
+		and a.is_del =  0 
+		and a.status = 3
+    </select>
+    
+     <!-- 前台（PHP） 搜索商品查询  -->
+    <select id="selectSkuQueryIndexList" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"  parameterType="map">
+    	select 
+    		b.sku_id, b.goods_id, b.sn, b.market_price, 
+    		b.cost_price, b.lower_limit, b.upper_limit,
+			b.goods_name,b.full_name, b.sort, b.sales_count, a.status ,a.store_id,
+			b.store_id,b.visit_count,b.subtitle,a.tag_img_id,(d.stock_num-d.lock_qty) stock_num,
+			(select price from goods_sale_region where region_id = #{regionId} and sku_id = b.sku_id) region_price
+    	from goods a ,goods_sku b ,goods_operate c  ,goods_stocks d 
+		where a.goods_id = b.goods_id 
+			and a.goods_id = c.goods_id 
+			and b.sku_id = d.sku_id
+			and a.is_del =  0 
+		<if test="categoryId != null ">
+			and a.category_id = #{categoryId} 
+		</if>
+		<if test="brandId != null ">
+			and a.brand_id = #{brandId}
+		</if>
+		<if test="startPrice != null ">
+			and b.cost_price &gt;= #{startPrice} 
+		</if>
+		<if test="endPrice != null ">
+			and b.cost_price &lt; #{endPrice} 
+		</if>
+		<if test="moq != null ">
+			and b.lower_limit  &gt;=  #{moq}
+		</if>
+		<if test="keywords != null and keywords != '' ">
+			and  ${keywords} 
+		</if>
+		<if test="regionId != null ">
+			 and b.sku_id in ( select sku_id from goods_sale_region  where region_id = #{regionId} )
+		</if>
+		<!-- 上架状态 -->
+	    and a.status = 3
+		order by  ${sortColumn}  ${sortDirection}
+		limit #{startIndex} , #{pageSize}  	
+    </select>
+    
+     <select id="selectSkuQueryIndexListCount" resultType="Integer"  parameterType="map">
+    	select 
+    		 count(a.goods_id)
+    	from goods a ,goods_sku b ,goods_operate c 
+		where a.goods_id = b.goods_id 
+			and a.goods_id = c.goods_id 
+			and a.is_del =  0 
+		<if test="categoryId != null ">
+			and a.category_id = #{categoryId} 
+		</if>
+		<if test="brandId != null ">
+			and a.brand_id = #{brandId}
+		</if>
+		<if test="startPrice != null ">
+			and b.cost_price &gt;= #{startPrice} 
+		</if>
+		<if test="endPrice != null ">
+			and b.cost_price &lt; #{endPrice} 
+		</if>
+		<if test="moq != null ">
+			and b.lower_limit  &gt;=  #{moq}
+		</if>
+		<if test="keywords != null and keywords != '' ">
+			and ${keywords}
+		</if>
+		<if test="regionId != null ">
+			 and b.sku_id in ( select sku_id from goods_sale_region  where region_id = #{regionId} )
+		</if>
+		 <!-- 上架状态 -->
+		and a.status = 3
+    </select>
+    
+    <select id="selectSkuAndGoodsById"  resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO" parameterType="java.lang.Integer">
+    	select 
+    		a.sku_id, a.goods_id, a.sn,  a.market_price, a.sell_price,a.cost_price, a.lower_limit, a.upper_limit,
+			a.goods_name,a.ftype, a.sort, a.sales_count, b.status , a.bar_code, a.goods_code, a.create_time,
+			a.is_del,a.visit_count,a.subtitle,a.full_name,a.weight
+			,b.send_time,b.store_id,b.unit,b.tag_img_id,b.category_id,
+			(select stock_num-lock_qty  from goods_stocks where sku_id = a.sku_id) stock_num
+		from goods_sku a,goods b  where a.goods_id=b.goods_id and  a.sku_id = #{skuId}
+			 <!-- 上架状态
+			 and a.status = 3
+			 and b.is_del =  0  -->
+    </select>
+    
+    <!-- 根据skuId集合、地区查询对应的sku集合信息列表 -->
+    <select id="selectSkuByIdAndRegion"  resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO" parameterType="map">
+    	select 
+	     	a.sku_id, a.goods_id, a.sn,  a.market_price,a.cost_price, a.lower_limit, a.upper_limit,
+			a.goods_name,a.ftype, a.sort, a.sales_count, b.status , a.bar_code, a.goods_code, a.create_time,
+			a.is_del,a.visit_count,a.subtitle,a.full_name,a.weight
+			,b.send_time,b.store_id,b.tag_img_id,
+			(select stock_num-lock_qty from goods_stocks where sku_id = a.sku_id) stock_num,
+			(select price from goods_sale_region where region_id=#{regionId} and sku_id = a.sku_id ) region_price
+	    from goods_sku a ,goods b 
+		where a.goods_id = b.goods_id 
+			 
+			<if test="skuList != null and skuList.size >  0  ">
+				and  a.sku_id in 
+				<foreach item="item" index="index" collection="skuList" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			and a.sku_id in ( select sku_id from goods_sale_region where region_id=#{regionId})
+			<!-- 上架状态
+			and a.status = 3
+			and b.is_del =  0  -->
+    </select>
+    
+    <!-- 测土配肥查询 -->
+    <select id="selectSoilDistributionList" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"  parameterType="map">
+    	select 
+			a.sku_id, a.goods_id, a.sn,  a.market_price,a.cost_price, a.lower_limit, a.upper_limit,
+			a.goods_name,a.full_name,a.sales_count,b.tag_img_id,b.store_id,b.fertilizer_station,
+			(select c.price from goods_sale_region c where c.sku_id = a.sku_id and c.region_id = #{regionId}) region_price,
+			(select stock_num-lock_qty from goods_stocks where sku_id = a.sku_id) stock_num
+		from goods_sku a  left join goods b 
+			on a.goods_id = b.goods_id 
+		where   b.is_del =  0 and  a.sku_id  in ( select sku_id from goods_sale_region where region_id = #{regionId})
+			and b.goods_type=4 
+			
+			<if test="isVirtual != null and isVirtual== 1  ">
+				and b.is_virtual = #{isVirtual}
+			</if>
+			<if test="isVirtual != null and isVirtual== 2  ">
+				and b.is_virtual = #{isVirtual} and b.is_supply_area = 2 
+			</if>
+			
+			<if test="isSupplyArea != null ">
+				and b.is_supply_area = #{isSupplyArea} 
+			</if>
+			<!-- 上架状态 -->
+			and a.status = 3
+			order by b.create_time desc
+			limit #{pageSize}
+    </select>
+    
+    <!-- 海外购接口 -->
+     <select id="selectOverseasGoodsList" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"  parameterType="map">
+    	select 
+			a.sku_id, a.goods_id, a.sn,  a.market_price,a.cost_price, a.lower_limit, a.upper_limit,
+			a.goods_name,a.full_name,a.sales_count,b.tag_img_id,b.store_id,b.fertilizer_station,
+			(select c.price from goods_sale_region c where c.sku_id = a.sku_id and c.region_id = #{regionId}) region_price,
+			(select stock_num-lock_qty from goods_stocks where sku_id = a.sku_id) stock_num
+		from goods_sku a  left join goods b 
+			on a.goods_id = b.goods_id 
+		where   b.is_del =  0 and  a.sku_id  in ( select sku_id from goods_sale_region where region_id = #{regionId})
+		<if test="categoryList != null and categoryList.size >  0 ">
+			and  b.category_id in 
+				<foreach item="item" index="index" collection="categoryList" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+		</if> 
+		and b.goods_type = 3
+		<!-- 上架状态 -->
+		and b.status = 3
+		limit #{pageSize}
+    </select>
+    
+    <!-- 本周销售明星查询 -->
+    <select id="selectWeekStar" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"  parameterType="map">
+    	select 
+			max(a.sales_count),a.sku_id, a.goods_id, a.sn,  a.market_price,a.cost_price,
+			a.goods_name,a.full_name,a.sales_count,d.tag_img_id,d.store_id,d.fertilizer_station
+		from goods_sku a ,goods_operate b ,(select sku_id from goods_sale_region where region_id = #{regionId}) c ,goods d 
+		where a.goods_id = b.goods_id   and a.sku_id = c.sku_id and a.goods_id = d.goods_id 
+			  and b.release_time between  #{startDate} and #{endDate}
+			  <!-- 上架状态 -->
+			  and a.status = 3
+			  and d.is_del =  0 
+    </select>
+    
+     <!-- 查询最热商品列表[前台 php] -->
+   <select id="selectHotGoodsList" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"   parameterType="map">
+        select 
+	       	b.sku_id ,b.goods_id, a.tag_img_id,a.brand_id, a.category_id, 
+			a.sales_count,a.uuid,a.subtitle,a.send_time,a.status,
+		    b.market_price ,b.cost_price ,b.full_name ,b.goods_name,b.store_id,c.price region_price
+        from  goods a,goods_sku b  ,
+	         ( select sku_id ,price from goods_sale_region where region_id = #{regionId} ) c
+        where a.goods_id = b.goods_id and  b.sku_id = c.sku_id    
+         and a.is_hot=1  and a.status = 3 
+         and a.is_del =  0 
+        group by a.goods_id  
+        order by a.create_time desc
+        limit #{pageSize}
+    </select> 
+    
+    <!-- 查询最新商品列表[前台 php] -->
+    <select id="selectNewGoodsList" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"   parameterType="map">
+	        select 
+	        	b.sku_id ,b.goods_id, a.tag_img_id,a.brand_id, a.category_id, 
+				a.sales_count,a.uuid,a.subtitle,a.send_time,a.status,
+		    	b.market_price ,b.cost_price ,b.full_name ,b.goods_name,b.store_id,c.price region_price
+	        from  goods a ,goods_sku b ,
+	        	 ( select sku_id ,price from goods_sale_region where region_id = #{regionId} ) c
+	        where a.goods_id = b.goods_id and  b.sku_id = c.sku_id and  
+	        a.is_new=1  and a.status = 3 
+	        and a.is_del =  0 
+	        group by a.goods_id  
+	        order by a.create_time desc
+	        limit #{pageSize}
+    </select>
+    
+    <!-- 首页根据分类得到商品列表 -->
+    <select id="selectSkuListByCategoryId" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"   parameterType="map">
+    	select 
+        b.sku_id,a.goods_id, a.tag_img_id,a.brand_id, a.category_id, a.sales_count,
+	    	a.uuid,a.subtitle,a.send_time,a.status,a.store_id,
+	    	b.goods_name,b.full_name,b.market_price,b.cost_price,d.price region_price
+        from  goods a,goods_sku b , (
+			select a.category_id   from goods_category  a where a.category_id=#{categoryId}
+				union all
+			select b.category_id   from goods_category a ,goods_category b where a.category_id = b.parent_id and a.category_id=#{categoryId}
+				union all 
+			(	 select c.category_id  from goods_category c ,
+				 (select b.category_id from goods_category a ,goods_category b where a.category_id = b.parent_id and a.category_id=#{categoryId} ) d 
+			     where c.parent_id = d.category_id 
+			)
+		) c, (select sku_id,price from goods_sale_region where region_id=#{regionId})  d
+       
+        where a.goods_id = b.goods_id and 
+        	 a.category_id = c.category_id  and 
+        	 b.sku_id = d.sku_id and
+         	 a.status = 3 and a.is_del = 0 
+        limit #{pageSize}
+    </select>
+    
+    <!-- 厂家直供查询 -->
+    <select id="selectSkuListByCatAndRegionId" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"  parameterType="map">
+    	select 
+	    	b.sku_id,a.goods_id, 
+	    	a.brand_id, a.category_id, a.sales_count,a.uuid,a.subtitle,
+	    	a.store_id,a.send_time,a.tag_img_id,(d.stock_num-d.lock_qty) stock_num,
+			b.goods_name,b.full_name,b.market_price,b.cost_price,c.price region_price
+		from goods a ,goods_sku b ,(select sku_id ,price from goods_sale_region where region_id=#{regionId} ) c,goods_stocks d 
+		where 
+			a.goods_id = b.goods_id and 
+			b.sku_id = c.sku_id and 
+			b.sku_id = d.sku_id and 
+			a.status = 3 and 
+			a.store_id is null and 
+			a.fertilizer_station is null and 
+			d.stock_num >  0  
+			<if test="list != null and list.size >  0 ">
+				and a.category_id in  
+				<foreach item="item" index="index" collection="list" open="("
+						separator="," close=")">
+						#{item}
+				</foreach>   
+			</if>
+			and a.is_del = 0
+			order by b.sales_count desc
+			limit #{pageSize}
+    </select>
+    
+    <select id="selectSkuListByCatAndRegionIdNext" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"  parameterType="map">
+    	select 
+	    	b.sku_id,a.goods_id, a.status,
+	    	a.brand_id, a.category_id, a.sales_count,a.uuid,a.subtitle,
+	    	a.store_id,a.send_time,a.tag_img_id,(d.stock_num-d.lock_qty) stock_num,
+			b.goods_name,b.full_name,b.market_price,b.cost_price,c.price region_price
+		from goods a ,goods_sku b ,(select sku_id ,price from goods_sale_region where region_id=#{regionId} ) c,goods_stocks d 
+		where 
+			a.goods_id = b.goods_id and 
+			b.sku_id = c.sku_id and 
+			b.sku_id = d.sku_id and 
+			a.status = 3 and 
+			a.store_id is null and
+			a.is_del = 0 and 
+			d.stock_num >  0  
+			<if test="list != null and list.size >  0 ">
+				and a.category_id in  
+				<foreach item="item" index="index" collection="list" open="("
+						separator="," close=")">
+						#{item}
+				</foreach>   
+			</if>
+			order by b.sales_count desc
+			limit #{startIndex},#{pageSize}
+    </select>
+    
+    <select id="selectSkuListByCatAndRegionIdNextCount" resultType="Integer"  parameterType="map">
+    	select 
+	    	count(b.sku_id)
+		from goods a ,goods_sku b ,(select sku_id ,price from goods_sale_region where region_id=#{regionId} ) c,goods_stocks d 
+		where 
+			a.goods_id = b.goods_id and 
+			b.sku_id = c.sku_id and 
+			b.sku_id = d.sku_id and 
+			a.status = 3 and 
+			a.store_id is null and
+			a.is_del = 0 and 
+			d.stock_num >  0  
+			<if test="list != null and list.size >  0 ">
+				and  a.category_id in  
+				<foreach item="item" index="index" collection="list" open="("
+						separator="," close=")">
+						#{item}
+				</foreach>   
+			</if>
+    </select>
+    
+    <select id="selectRandomSkuList" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"   parameterType="map">
+    	select
+	      t1.sku_id,t3.goods_id, t1.lower_limit, t1.upper_limit,
+	    	t3.brand_id, t3.category_id, t3.sales_count, 
+	    	t3.store_id,t3.send_time,t3.tag_img_id, t3.fertilizer_station,(t5.stock_num -t5.lock_qty) stock_num,
+			t1.goods_name,t1.full_name,t1.market_price,t1.cost_price 
+		from
+			goods_sku as t1
+		join (
+			select  round(rand() * ((select max(sku_id) from goods_sku) - (select min(sku_id) from goods_sku)) + (select min(sku_id) from goods_sku )) as sku_id
+		   ) as t2 join goods t3 on t1.goods_id = t3.goods_id   join goods_stocks t5 on t1.sku_id = t5.sku_id
+		where
+			t1.sku_id >= t2.sku_id 
+			and t1.is_del =  0  and t1.status = 3
+		order by
+			t1.sku_id
+		limit #{pageSize}
+    
+    </select>
+    
+    <select id="selectProductListByStoreId" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"   parameterType="map">
+    	select 
+	    	b.sku_id,a.goods_id, 
+	    	a.brand_id, a.category_id, a.sales_count,a.uuid,a.subtitle,
+	    	a.store_id,a.send_time,a.tag_img_id,(d.stock_num-d.lock_qty) stock_num,
+			b.goods_name,b.full_name,b.market_price,b.cost_price
+		from goods a ,goods_sku b ,goods_stocks d 
+		where 
+			a.goods_id = b.goods_id and 
+			b.sku_id = d.sku_id and 
+			a.status = 3 and 
+			a.store_id = #{storeId} and 
+			d.stock_num >  0  and
+			a.is_del = 0
+			order by b.create_time desc
+			limit #{pageSize}
+    </select>
+    
+    <!-- 店铺查询 -->
+    <select id="selectProductListByStore" resultType="com.ync365.seed.bussiness.modules.goods.bo.SkuBO"   parameterType="map">
+    	select 
+	    	b.sku_id,a.goods_id, 
+	    	a.brand_id, a.category_id, a.sales_count,a.uuid,a.subtitle,
+	    	a.store_id,a.send_time,a.tag_img_id,(c.stock_num-c.lock_qty) stock_num,
+			b.goods_name,b.full_name,b.market_price,b.cost_price
+		from goods a ,goods_sku b ,goods_stocks c ,goods_operate d
+		where 
+			a.goods_id = b.goods_id and 
+			b.sku_id = c.sku_id and 
+			a.goods_id = d.goods_id and 
+			a.store_id = #{storeId}  and
+			<!-- 上架状态 -->
+		     a.status = 3
+			<if test="categoryId != null ">
+				and a.category_id = #{categoryId} 
+			</if>
+			<if test="moq != null ">
+				and b.lower_limit  &gt;=  #{moq}
+			</if>
+			
+			order by  ${sortColumn}  ${sortDirection}
+			limit #{startIndex} , #{pageSize}  	
+    </select>
+    
+     <select id="selectProductListByStoreCount" resultType="Integer"  parameterType="map">
+    	select 
+	    	count(a.goods_id)
+		from goods a ,goods_sku b ,goods_stocks c ,goods_operate d
+		where 
+			a.goods_id = b.goods_id and 
+			b.sku_id = c.sku_id and 
+			a.goods_id = d.goods_id and 
+			a.store_id = #{storeId}  and
+			<!-- 上架状态 -->
+		     a.status = 3
+			<if test="categoryId != null ">
+				and a.category_id = #{categoryId} 
+			</if>
+			<if test="moq != null ">
+				and b.lower_limit  &gt;=  #{moq}
+			</if>
+    </select>
+    
+    	
+	<update id="recoverByGoodsId" parameterType="java.lang.Integer">
+		update goods_sku
+		set	is_del = 0
+		where goods_id = #{goodsId}
+	</update>
+	
+</mapper>

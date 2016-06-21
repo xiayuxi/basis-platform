@@ -1,0 +1,263 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" type="text/css"
+	href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<link rel="stylesheet" media="screen" type="text/css"
+	href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<!-- js -->
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript"
+	src="${staticCtx}/jqGrid/js/jquery.treegrid.js"></script>
+</head>
+<body>
+	<div style="margin: 20px 0 10px 20px;">
+		满减活动：<input type="text" name="qName" id="qName" />
+		<button type="submit" class="btn btn-primary" id="btnSearch">查询
+
+		
+	</div>
+	<div style="margin-left: 20px">
+		<table id="list"></table>
+		<div id="pager"></div>
+	</div>
+	</br>
+</body>
+<script type="text/javascript">
+	$(function() {
+		$("#list").jqGrid({
+			url : '${ctx}/promotionGift/grid',// 获取数据的url,action
+			datatype : "json",//后台返回的数据格式
+			mtype : "post",//提交的方式,默认是get
+			//width:1024,//这个宽度不能为百分比,
+			autowidth : true,//自动宽
+			colNames : [ '123', '活动名称', '活动开始时间', '活动结束时间', '状态', '设置活动商品','','' ],
+			colModel : [ {
+				name : 'promotionId',
+				index : 'promotionId',
+				editable : true,
+				align : true,
+				sortable : true
+			}, {
+				name : 'promotionName',
+				index : 'promotionName',
+				editable : true,
+				sortable : true
+			}, {
+				name : 'startTime',
+				index : 'startTime',
+				width : 100,
+				editable : true,
+				formatter : "date",
+				formatoptions : {
+					srcformat : 'u',
+					newformat : 'Y-m-d H:i:s'
+				}
+			}, {
+				name : 'endTime',
+				index : 'endTime',
+				align : "center",
+				editable : true,
+				formatter : "date",
+				formatoptions : {
+					srcformat : 'u',
+					newformat : 'Y-m-d H:i:s'
+				}
+			}, {
+				name : 'status',
+				index : 'status',
+				align : "center",
+				editable : true,
+				formatter : promotionType
+			}, {
+				name : 'promotionId',
+				index : 'promotionId',
+				align : "center",
+				sortable : false,
+				editable : true,
+			} , {
+				name : 'version',
+				index : 'version',
+				align : "center",
+				sortable : false,
+				editable : true,
+			} , {
+				name : 'promotionType',
+				index : 'promotionType',
+				align : "center",
+				sortable : false,
+				editable : true,
+			}],
+			postData : {
+				page : 1,
+				hahah : 123
+			},//此参数用来向后台提交数据*****可以自己添加需要的参数
+			//styleUI : 'Bootstrap',
+			//caption:"品牌列表",//表名称
+			//multiselect: true,//开启多选
+			rowNum : 10,//每页显示的条数,此参数会被传递到后台
+			rowList : [ 10, 20, 30, 50 ],//定义每页显示的条数下拉框选择,会覆盖rowNum
+			viewrecords : true,//定义是否显示总的数据条数
+			pager : '#pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+			height : "auto",
+		//rownumbers:true,//添加左侧行号
+		});
+		// $("#list").jqGrid('navGrid','#pager', {edit:true,add:true,del:true,search:true,refresh:true,addtext:'添加'});  
+		//$("#list").jqGrid("navGrid","#pager",{view :true}); 
+		jQuery("#list").navGrid('#pager', {
+			edit : false,
+			add : false,
+			del : false,
+			search : false,
+			refresh : true
+		})
+		//自定义添加按钮
+		.navButtonAdd('#pager', {
+			caption : "新增",
+			buttonicon : "ui-icon-add",
+			onClickButton : function() {
+				addFun();
+			},
+			position : "last"
+		})
+
+		
+		//自定义编辑按钮
+		.navButtonAdd('#pager', {
+			caption : "编辑",
+			buttonicon : "ui-icon-edit",
+			onClickButton : function() {
+				editFun();
+			},
+			position : "last"
+		})
+		//自定义编辑按钮
+		.navButtonAdd('#pager', {
+			caption : "活动商品",
+			buttonicon : "ui-icon-edit",
+			onClickButton : function() {
+				preView();
+			},
+			position : "last"
+		})
+		//自定义编辑按钮
+		.navButtonAdd('#pager', {
+			caption : "设置活动商品",
+			buttonicon : "ui-icon-edit",
+			onClickButton : function() {
+				preView();
+			},
+			position : "last"
+		})
+		//自定义删除按钮
+		.navButtonAdd('#pager', {
+			caption : "删除",
+			buttonicon : "ui-icon-del",
+			onClickButton : function() {
+				delFun();
+			},
+			position : "last"
+		});
+
+		$("#btnSearch").click(function() {
+			var qName = $("#qName").val();
+			//alert(qName);
+			$("#list").jqGrid('setGridParam', {
+				url : "${ctx}/category/grid",
+				postData : {
+					'qName' : qName,
+				}, //发送数据 
+				page : 1
+			}).trigger("reloadGrid"); //重新载入 
+		});
+
+	});
+
+	
+	//新增
+	function addFun() {
+		window.location.href = "${ctx}/promotionGift/addPage";
+	}
+	//设置商品
+	function preView(promotionId){
+		var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+		var rowData = $("#list").jqGrid('getRowData', id);//获取选中所有数据
+		if (null == rowData || '' == rowData || rowData.length > 0) {
+			alert("请选择需要编辑的行！");
+		} else {
+			var val = rowData.promotionId;//获取每一行制定的列的数据
+			var versionval = rowData.version;//获取每一行version
+			var promotionType = rowData.promotionType;//获取每一行version
+			window.location.href = "${ctx}/promotionGoodsSku/list?id=" + val+"&version="+ versionval+"&promotionType="+promotionType;
+		}
+	 }
+	//修改善品
+	function changeGood(promotionId) {
+		var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+		var rowData = $("#list").jqGrid('getRowData', id);//获取选中所有数据
+		if (null == rowData || '' == rowData || rowData.length > 0) {
+			alert("请选择需要编辑的行！");
+		} else {
+			var val = rowData.promotionId;//获取每一行制定的列的数据
+			var versionval = rowData.version;//获取每一行version
+			var promotionType = rowData.promotionType;//获取每一行version
+			window.location.href = "${ctx}/promotionGoodsSku/changeList?id=" + val+"&version="+ versionval+"&promotionType="+promotionType;
+		}
+	}
+
+	//编辑
+	function editFun() {
+		var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+		var rowData = $("#list").jqGrid('getRowData', id);//获取选中所有数据
+		if (null == rowData || '' == rowData || rowData.length > 0) {
+			alert("请选择需要编辑的行！");
+		} else {
+			var val = rowData.promotionId;//获取每一行制定的列的数据
+			window.location.href = "${ctx}/promotionGift/editPage?id=" + val;
+		}
+	}
+
+	//删除
+	function delFun() {
+		var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+		var rowData = $("#list").jqGrid('getRowData', id);//获得所选中数据信息
+
+		if (null == rowData || '' == rowData || rowData.length > 0) {
+			return;
+		} else {
+			var val = rowData.promotionId;//获取每一行制定的列的数据
+			window.location.href = "${ctx}/promotionGift/delete?id=" + val;
+		}
+	}
+	function promotionType(cellvalue, options, rowObject) {
+		var temp = null;
+		if (cellvalue == 0) {
+			temp = "团购活动"
+		} else if (cellvalue == 2) {
+			temp = "红包活动"
+		} else if (cellvalue == 3) {
+			temp = "满减活动"
+		} else if (cellvalue == 4) {
+			temp = "满返活动"
+		} else if (cellvalue == 5) {
+			temp = "满赠活动"
+		} else if (cellvalue == 6) {
+			temp = "秒杀活动"
+		}
+		return temp;
+	}
+</script>
+</html>

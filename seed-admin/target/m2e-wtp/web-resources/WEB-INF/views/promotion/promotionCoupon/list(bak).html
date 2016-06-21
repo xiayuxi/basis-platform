@@ -1,0 +1,202 @@
+<#assign ctx="${request.contextPath}" /> <#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<!-- js -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/pagination.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/tooldate.js"></script>
+<script type="text/javascript" src="${staticCtx}/js/toolenum.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+	<div style="margin: 20px;">
+		<div class="btn-group" data-toggle="buttons" style="margin: 10px;">
+			<label class="btn btn-default"> <input type="radio" name="status" value="-1"> 全部
+			</label> <label class="btn btn-default"> <input type="radio" name="status" value="1"> 进行中
+			</label> <label class="btn btn-default"> <input type="radio" name="status" value="0"> 未开始
+			</label> <label class="btn btn-default"> <input type="radio" name="status" value="2"> 已结束
+			</label>
+		</div>
+		<div style="margin: 10px;">
+			<form class="form-inline" role="form">
+				名称：<input type="text" class="form-control" name="qName" id="qName" placeholder="要查找的活动名称" /> 起始时间 <input class="Wdate"
+					onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" type="text" id="startTime" name="startTime" />至<input class="Wdate"
+					onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" type="text" id="endTime" name="endTime" />
+				<button id="btnSearch" type="button" class="btn btn-primary" onclick="getList(1)">查询</button>
+				&nbsp;&nbsp;&nbsp;<a href="${ctx}/promotion/promotionCoupon/addPage">创建新活动</a>
+				&nbsp;&nbsp;&nbsp;
+			</form>
+		</div>
+		<div class="panel-body col-xs-8">
+			<table id="list" class="table table-hover">
+				<thead>
+					<tr align="center">						
+						<th>活动名称</th>
+						<th>开始时间</th>
+						<th>结束时间</th>
+						<th>活动状态</th>
+						<th>相关操作</th>
+						<th>活动商品</th>
+					</tr>
+				</thead>
+				<tbody id="tbodyList">
+				</tbody>
+			</table>
+			<div id="pager"></div>
+		</div>
+</body>
+<#noparse>
+<!-- 列表模板  -->
+<script type="text/x-jquery-tmpl" id="tmplList">
+{{each(i,row) data.rows}}
+	<tr>		
+		<td>${row.promotionName}</td>
+		<td>${timestampToTime(row.startTime)}</td>
+		<td>${timestampToTime(row.endTime)}</td>
+		<td>${getPromotionStatusName(row.status)}</td>
+		<td>
+			<a href="${data.ctx}/promotion/promotionCoupon/editPage?id=${row.promotionId}&opera=2">查看</a>
+			{{if row.status==1}}
+				<a href="javascript:void(0);" onclick="end(${row.promotionId})" >终止</a>
+			{{/if}}
+			{{if row.status==0}}
+				<a href="${data.ctx}/promotion/promotionCoupon/editPage?id=${row.promotionId}&opera=1">编辑</a>				
+				<a href="javascript:void(0);" onclick="del(${row.promotionId})" >删除</a>				
+				<a href="javascript:void(0);" onclick="start(${row.promotionId})" >启动</a>				
+			{{/if}}
+		</td>
+		<td>
+		{{if row.status==0}}
+			<a href="${data.ctx}/promotionGoodsSku/list?id=${row.promotionId}&version=${row.version}&promotionType=6">添加</a>
+			<a href="${data.ctx}/promotionGoodsSku/changeList?id=${row.promotionId}&version=${row.version}&promotionType=6">编辑</a>
+		{{/if}}		
+		{{if row.status!=0}}
+			<a href="${data.ctx}/promotionGoodsSku/view?id=${row.promotionId}&version=${row.version}&promotionType=6">查看</a>
+			
+		{{/if}}	
+</td>
+	</tr>
+{{/each}}
+</script>
+</#noparse>
+<script type="text/javascript">
+	$(function() {
+		//活动状态按钮组 默认选择第一个
+		$("input[name='status']:eq(0)").attr("checked", 'checked');
+		$("input[name='status']:eq(0)").parent().addClass("active");
+		//活动状态按钮，绑定点击事件
+		$("input:radio[name='status']").change(function() {
+			$("#btnSearch").click();
+		});
+
+		//首次加载页面，需要加载一次数据
+		$("#btnSearch").click();
+	});
+	//获取活动列表
+	function getList(pageIndex) {
+		$.ajax({
+			type : "get",
+			url : "${ctx}/promotion/promotionCoupon/grid",
+			data : {
+				promotionType :2,
+				status : $("input:radio[name='status']:checked").val(),//活动状态
+				key : encodeURI($("#qName").val(), "UTF-8"),//活动名称关键字
+				startTime : $("#startTime").val(),
+				endTime : $("#endTime").val(),
+				pageIndex : pageIndex,// 当前页
+				pageSize : 5,//每页显示记录数				
+				sort : "start_time",//排序字段
+				order : "desc"//asc||desc
+			},
+			success : function(data) {
+				if (data == null || data.records == 0) {
+					$("#tbodyList").html("暂无记录");
+				} else {
+					data.ctx = "${ctx}";
+					$("#tbodyList").html($("#tmplList").tmpl({
+						data : data
+					}));
+					//分页控件
+					var pager = new pagination(function() {
+						getList($(this).attr("data-index"));
+					});
+					pager.pageIndex = data.page;//当前页码
+					pager.pageSize = data.pageSize;//页大小
+					pager.totalCount = data.records;//总条数
+					pager.totalPage = data.total;//总页数
+					$("#pager").html(pager.creat());
+				}
+			}
+		});
+	};
+	//根据活动id，删除活动
+	function del(id) {
+		if (confirm("您确认要删除此活动吗？") == true) {
+			$.ajax({
+				type : "post",
+				url : "${ctx}/promotion/promotionCoupon/delete",				
+				data : {
+					id : id
+				},
+				success : function(data) {					
+					if (data == "OK") {
+						alert("删除成功");
+						$("#btnSearch").click();
+					} else {
+						alert("删除失败");
+					}
+				}
+			});
+		}
+	}
+	//根据活动id，启动活动
+	function start(id) {
+		if (confirm("您确认要启动此活动吗？") == true) {
+			$.ajax({
+				type : "post",
+				url : "${ctx}/promotion/promotionCoupon/start",
+				data : {
+					id : id
+				},
+				success : function(data) {
+					if (data == "OK") {
+						alert("启动成功");
+						$("#btnSearch").click();
+					} else {
+						alert("启动失败");
+					}
+				}
+			});
+		}
+	}
+	//根据活动id，终止活动
+	function end(id) {
+		if (confirm("您确认要终止此活动吗？") == true) {
+			$.ajax({
+				type : "post",
+				url : "${ctx}/promotion/promotionCoupon/end",
+				data : {
+					id : id
+				},
+				success : function(data) {
+					if (data == true) {
+						alert("终止成功");
+						$("#btnSearch").click();
+					} else {
+						alert("终止失败");
+					}
+				}
+			});
+		}
+	}
+</script>
+</html>

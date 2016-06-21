@@ -1,0 +1,73 @@
+<#assign ctx="${request.contextPath}" /> 
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css" />
+<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+
+<!-- <script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script> -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<!-- artDialog -->
+<script type="text/javascript"   src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<body>
+	<div>
+		<input type ="hidden" name ="status" id = "status" value="2"/>
+		<table id="tb" class="view">
+			<tr>
+				<th><label for="goodsId"><font color="red"></font></label></th>
+				<td><input type="hidden" id="goodsId" name="goodsId" value="${auditGoods.goodsId!''}"/></td>
+			</tr>
+			<tr>
+				<th><label for="reason"><font color="red">*</font>审核意见：</label></th>
+				<td><input class="easyui-validatebox" type="text" id="reason" name="reason" />
+				</td>
+			</tr>			
+		<!-- 	<tr>
+				<th><label for="status">是否通过审核：</label></th>
+				<td><input   type="radio" id="status"	name="status" value="1" />审核通过 
+					<input   type="radio" id="status"   name="status" value="2" />审核不通过
+				</td>
+			</tr>	 -->
+		
+		</table>
+		<button class="focus_button" onclick="submit1()">提交</button>
+		
+	</div>
+</body>
+<script type="text/javascript">
+	function submit1(e){
+		var status = 2;
+		var goodsId = document.getElementById("goodsId").value;
+		var reason = document.getElementById("reason").value;
+    	if(reason != ""){
+    		var postData = {
+    				status : 2,
+    				goodsId : goodsId,
+    				reason :reason
+    			};
+    			//alert("111");
+    			 $.post("${ctx}/goodsAudit/disPassAudit", postData, function(data) {
+    				//alert(data);
+    				if (data.success) {
+    					alert("操作成功");
+    						if(e == null)
+    						parent.updrAttrValue();
+    						return false;
+    				} else {
+    					alert("操作失败");
+    				}
+    			}, 'JSON') 
+    	}else{
+			alert("请输入原因");
+		}
+	 }
+
+</script>
+</html>

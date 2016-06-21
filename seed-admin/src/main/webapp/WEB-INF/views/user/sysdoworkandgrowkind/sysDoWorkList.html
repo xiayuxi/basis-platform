@@ -1,0 +1,125 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+	<!-- js -->
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+
+	<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+	<!-- 弹框 js -->
+	<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+	<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+	<script type="text/javascript">
+	 	//种植种类
+		 function bindingGrowFun(){
+			  art.dialog({
+				  title:"添加种植种类",
+				  width:400,
+				  height:300,
+				  padding:0,
+				  lock:true,
+				  content:$("#bindinggrow").html(),
+				  ok:function(){
+					  var content = $(this.DOM.content[0]);
+					  var t = $("#teee").val();
+					  if(t != ""){
+					  		content.find("#bindingGrowForm").submit();//提交
+					  }else{
+						  $("#span_id").show();
+						  return false;
+					  }
+				  },
+				  cancel:true
+			  }).show();
+		 }
+	 	
+		//从事工作
+		 function bindingDoWordFun(){
+			  art.dialog({
+				  title:"添加从事工作",
+				  width:400,
+				  height:300,
+				  padding:0,
+				  lock:true,
+				  content:$("#bindingdowork").html(),
+				  ok:function(){
+					  var content = $(this.DOM.content[0]);
+					  
+					  var t = $("#teee_id").val();
+					  if(t != ""){
+						  content.find("#bindingDoWorkForm").submit();//提交
+					  }else{
+						  $("#span_idd").show();
+						  return false;
+					  }
+				  },
+				  cancel:true
+			  }).show();
+		 }
+	</script>
+</head>
+<body>
+	<div style="margin-left: 2px">
+        	<div style="margin-left: 2px">
+        		种植种类:
+        		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+        		<#if listGrowKind??>
+					 <#list listGrowKind as value>
+					 <tr>
+					 	<th style="width: 80%">
+				           ${value.name!''} 
+				        </th>
+				        <td>
+				        	<a href="${ctx}/sysdowork/deleteByGrowKindId?id=${value.id!''}">删除</a>
+				        </td>
+				     </tr> 
+				     </#list>
+				 </#if>
+				 
+				 <a href=" javascript:void(0)" onclick="bindingGrowFun();">添加</a>
+				</table>
+        	</div>
+        	
+        	<div style="margin-left: 2px">
+        		从事工作:
+        		<table style= "margin : auto;border: 3px"  class="table table-bordered table-hover definewidth m10">
+        		<#if listDoWork??>
+					 <#list listDoWork as valueTemp>
+					 <tr>
+					 	<th  style="width: 80%">
+				           ${valueTemp.workName!''} 
+				        </th>
+				        <td>
+				        	<a href="${ctx}/sysdowork/deleteByDoWorkId?id=${valueTemp.id!''} ">删除</a>
+				        </td>
+				     </tr> 
+				     </#list>
+				 </#if>
+				 <a href=" javascript:void(0)" onclick="bindingDoWordFun();">添加</a>
+				</table>
+        	</div>
+	</div>
+	<div style="display:none;" id="bindinggrow">
+		<form action="${ctx}/sysdowork/addgrowkind" method="post" id="bindingGrowForm">
+			种植种类名称：<input type="text" name="name" id = "teee" /><br/>
+			<span style="display:none;" id ="span_id"><font color="red">*名称不能为空</font></span>
+		</form>
+	</div>
+
+
+	<div style="display:none;" id="bindingdowork">
+		<form action="${ctx}/sysdowork/adddoword" method="post" id="bindingDoWorkForm">
+			从事工作名称：<input type="text" name="workName" id = "teee_id" /><br/>
+			<span style="display:none;" id ="span_idd"><font color="red">*名称不能为空</font></span>
+		</form>
+	</div>
+</body>
+
+</html>

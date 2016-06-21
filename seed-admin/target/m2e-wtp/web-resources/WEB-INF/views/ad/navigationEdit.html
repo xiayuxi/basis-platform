@@ -1,0 +1,106 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<!-- jquery-form.js -->
+ 
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+
+//图片是否关联url时的隐藏与显示url
+/* $(function(){
+	if()
+} */
+
+$(function(){
+	 if(${navigation.type}==0){
+		 $(".uuu").hide();
+	 }
+});	 
+
+function closeUrl(obj){
+	$(".uuu").hide();
+	$("#link").val("");
+	$("#parentId").val("");
+	
+}
+function openUrl(obj){
+	$(".uuu").show();
+}
+
+$(function () {       
+	$('#backid').click(function(){
+		window.location.href="list.html";
+	});
+
+});
+</script>
+
+<body>
+<div style="margin-left: 20px">
+	<form id="navigationFormAdd" action="${ctx}/navigation/edit" method="post" enctype="multipart/form-data"  >
+	<input type="hidden" id="id" name="id" value="${navigation.id}"> 
+		<br>
+		<h3>导航</h3><br>
+		<table>
+			<tr><td>类型：</td>
+				<td>
+					<input type="radio" id="type" name="type" value="1" <#if (navigation.type==1)> checked="checked" </#if>  onclick="openUrl(this)"/>导航
+				    <input type="radio" id="type" name="type" value="0"  <#if (navigation.type==0)> checked="checked" </#if> onclick="closeUrl(this)"/>导航分类
+				</td>
+			</tr>
+			<tr>
+				<td>*导航名称：</td>
+				<td>
+					<input type="text" name="name" id="name" value="${navigation.name!''}"></input>
+				</td>
+			</tr>
+		  	<tr>
+				<td>排序：</td>
+				<td>
+					<input type="text" name="sort" id="sort"  onkeyup="this.value=this.value.replace(/\D/g,'')" maxLength=6 onafterpaste="this.value=this.value.replace(/\D/g,'')" value="${navigation.sort!''}"></input>
+				</td>
+			</tr>
+			<tr>
+				<td>是否开启：</td>
+				<td>
+					<input type="radio" id="enable" name="enable" value="1" <#if (navigation.enable==1)> checked="checked" </#if>   />启用
+				    <input type="radio" id="enable" name="enable" value="0" <#if (navigation.enable==0)> checked="checked" </#if>   />关闭
+				</td>
+			</tr>
+			<tr class="uuu">
+				<td>链接地址</td>
+				<td>
+					<input type="text" id="link" name="link" value="${navigation.link!''}">
+				</td>
+			</tr>
+			<tr class="uuu">
+				<td>导航类别</td>
+				<td>
+					<select id="parentId" name="partneId">
+						<option value="${navigation.parentId!''}">请选择</option>
+						<#list nCList as value>
+							<#if value.id!=navigation.parentId >
+								<option value="${value.id}">${value.name}</option>
+							<#else>
+								<option value="${value.id}" selected="selected">${value.name}</option>
+							</#if>
+						</#list>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit"  class="btn btn-primary" value="完成">
+					<button type="button" class="btn btn-success" name="backid" id="backid">取消</button>
+				</td>
+			</tr>
+		</table>
+
+	</form>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="${staticCtx}/validate/jquery.validator.js"></script>
+<script type="text/javascript" src="${staticCtx}/validate/page/ad/navigationAdd.js"></script>

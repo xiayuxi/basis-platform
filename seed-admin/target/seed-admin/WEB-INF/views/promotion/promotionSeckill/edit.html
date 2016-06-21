@@ -1,0 +1,174 @@
+<#assign ctx="${request.contextPath}" /> <#assign
+staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--  css  -->
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${staticCtx}/css/style.css" />
+<!--  js  -->
+<script type="text/javascript" src="${staticCtx}/js/jquery-1.11.0.min.js"></script>
+<!--  WdatePicker  -->
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        th{
+        	width: 150px;
+        }      
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 500px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+</style> 
+<script type="text/javascript">
+
+$(function(){	
+	$("#seckillType").change(function(){
+		var type = $(this).val();		
+		if(type == 1){
+			$('#limitPerCount1').attr("disabled", true);			
+			$('#limitTotalCount1').attr("disabled", true);
+			$('#limitPerCount2').attr("disabled", "disabled");			
+			$('#limitTotalCount2').attr("disabled", "disabled");
+			$('#startTime2').attr("disabled", "disabled");	
+			$('#endTime2').attr("disabled", "disabled");
+			
+			$('#seckillRegs1').css("display",'block');
+			$('#seckillRegs2').css("display",'none');
+			$('#seckillRegs3').css("display",'none');
+			//div1中input框可用
+			$('#startTime1').attr("disabled", "");	
+			$('#endTime1').attr("disabled", "");
+			//div2，3中input框禁用
+			
+			
+		}
+		
+		if(type == 2){
+			
+			$('#seckillRegs1').css("display",'none');
+			$('#seckillRegs2').css("display",'block');
+			$('#seckillRegs3').css("display",'none');
+			//div2中input框可用
+			//$('#limitPerCount1').attr("disabled", "");			
+			//$('#limitTotalCount1').attr("disabled", "");
+			$('#limitPerCount1').removeAttr("disabled"); 
+			$('#limitTotalCount1').removeAttr("disabled"); 
+			//div1，3中input框禁用seckillRegs3
+			
+			$('#startTime1').attr("disabled", "disabled");	
+			$('#endTime1').attr("disabled", "disabled");			
+			$('#limitPerCount2').attr("disabled", "disabled");			
+			$('#limitTotalCount2').attr("disabled", "disabled");
+			$('#startTime2').attr("disabled", "disabled");	
+			$('#endTime2').attr("disabled", "disabled");	
+		}
+		if(type == 3){
+			$('#seckillRegs1').css("display",'none');
+			$('#seckillRegs2').css("display",'none');
+			$('#seckillRegs3').css("display",'block');
+			//div3中input框可用
+			$('#limitPerCount2').attr("disabled", "");			
+			$('#limitTotalCount2').attr("disabled", "");
+			$('#startTime2').attr("disabled", "");	
+			$('#endTime2').attr("disabled", ""); 
+			//div1，2中input框禁用
+			
+			$('#startTime1').attr("disabled", "disabled");	
+			$('#endTime1').attr("disabled", "disabled");
+			$('#limitPerCount1').attr("disabled", "disabled");			
+			$('#limitTotalCount1').attr("disabled", "disabled");
+		}
+	});		
+})
+
+</script> 
+<body>
+	<form action="${ctx}/promotion/promotionSeckill/edit"  method="post"
+		novalidate="novalidate">
+		<table class="table table-bordered table-hover definewidth m10">
+ 
+			<tr>
+				<th>活动名称：</th>
+				<td><input class="" type="text" id="promotionName"
+					name="promotionName" value="${promotionSeckillVo.promotionName}"/></td>
+					<!-- 放一个活动id的隐藏域 -->
+					<input type="hidden" name="promotionId" value="${promotionSeckillVo.promotionId}"/>
+			</tr>
+			
+			<tr >
+				<th>促销类型：</th>
+				<td>
+				<select id="seckillType" name="seckillType">
+				
+					<option value="1" <#if (promotionSeckillVo.seckillType==1)> selected="selected"</#if>>限时</option>
+                	<option value="2" <#if (promotionSeckillVo.seckillType==2)> selected="selected"</#if>>限量</option>
+                	<option value="3" <#if (promotionSeckillVo.seckillType==3)> selected="selected"</#if>>限时限量</option>
+                </select>
+                </td>
+			</tr>		
+		
+			<tr>
+				<th><label for="promotionReg">活动规则：</label></th>
+				<td>
+				
+				<div id="seckillRegs">
+					<div id="seckillRegs1" <#if (promotionSeckillVo.seckillType==3)>style="display:none"</#if> <#if (promotionSeckillVo.seckillType==2)>style="display:none"</#if>>					
+						开始时间：<input class="Wdate"  onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+						type="text" id="startTime1"  name="startTime"  <#if (promotionSeckillVo.seckillType==1)> value="${promotionSeckillVo.startTime?string("yyyy-MM-dd HH:mm:ss")!'无数据'}"</#if> />	<br/>							  							
+					
+						结束时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+						type="text" id="endTime1" name="endTime" <#if (promotionSeckillVo.seckillType==1)> value="${(promotionSeckillVo.endTime?string("yyyy-MM-dd HH:mm:ss"))!'无数据'}"</#if> />								
+					</div>				
+				
+					<div id="seckillRegs2" <#if (promotionSeckillVo.seckillType==3)>style="display:none"</#if> <#if (promotionSeckillVo.seckillType==1)>style="display:none"</#if>>					
+						每人限买<input class=""  type="text" id="limitPerCount1" name="limitPerCount" <#if (promotionSeckillVo.seckillType==2)> value="${promotionSeckillVo.limitPerCount!''}"</#if> />件<br/>
+						活动限购<input class=""  type="text" id="limitTotalCount1" name="limitTotalCount" <#if (promotionSeckillVo.seckillType==2)> value="${promotionSeckillVo.limitTotalCount!''}"</#if> />件		 	
+					</div>
+					
+					
+					<div id="seckillRegs3" <#if (promotionSeckillVo.seckillType==2)>style="display:none"</#if> <#if (promotionSeckillVo.seckillType==1)>style="display:none"</#if>>
+						每人限买<input class=""  type="text" id="limitPerCount2" name="limitPerCount" value="${promotionSeckillVo.limitPerCount!''}"/>件<br/>
+						活动限购<input class="" type="text" id="limitTotalCount2" name="limitTotalCount" value="${promotionSeckillVo.limitTotalCount!''}"/>件<br/>
+						
+						开始时间：<input class="Wdate"  onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+						type="text" id="startTime2" name="startTime" value="${(promotionSeckillVo.startTime?string("yyyy-MM-dd HH:mm:ss"))!'无数据'}" />	<br/>							  							
+					
+						结束时间：<input class="Wdate"  onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+						type="text" id="endTime2" name="endTime" value="${(promotionSeckillVo.endTime?string("yyyy-MM-dd HH:mm:ss"))!'无数据'}"/>		
+								
+					</div>
+				
+				</div>		
+				</td>	
+					
+			</tr>
+			<tr>
+				<th><label for="remark">活动备注：</label></th>
+				<td>
+					<textarea rows="3" cols="40" id="remark"
+					name="remark">${promotionSeckillVo.remark}</textarea>
+				</td>
+			</tr>
+			<tr>
+				 
+				<td colspan="2"><input type="submit" style="margin-left: 260px" name="submit" class="btn btn-primary" value="提交"></td>
+			</tr>
+		</table>
+	</form>
+
+</body>
+
+
+</html>

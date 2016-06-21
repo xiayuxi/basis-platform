@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.CategoryDao">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.goods.entity.Category">
+		<id column="category_id" property="categoryId" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="parent_id" property="parentId" jdbcType="INTEGER" />
+		<result column="keywords" property="keywords" jdbcType="VARCHAR" />
+		<result column="mark" property="mark" jdbcType="VARCHAR" />
+		<result column="path" property="path" jdbcType="VARCHAR" />
+		<result column="ftype" property="ftype" jdbcType="DECIMAL" />
+		<result column="is_display" property="isDisplay" jdbcType="DECIMAL" />
+		<result column="seq" property="seq" jdbcType="DECIMAL" />
+		<result column="opt_user" property="optUser" jdbcType="INTEGER" />
+		<result column="opt_date" property="optDate" jdbcType="TIMESTAMP" />
+		<result column="opt_term" property="optTerm" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDel" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		category_id, name, code, remark, parent_id, keywords, mark,
+		path, ftype,
+		is_display,
+		seq, opt_user, opt_date, opt_term,is_del
+	</sql>
+	
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from goods_category d where d.is_del =0  order by d.seq asc
+	</select>
+	
+	<select id="selectPage" resultMap="BaseResultMap" parameterType="map">
+
+		select
+		<include refid="Base_Column_List"></include>
+		from
+		goods_category d
+		<where>
+			d.is_del = 0
+			<if test="name != null ">
+				and name like '%${name}%'
+			</if>
+		</where>
+		limit #{pageIndex} , #{pageSize}
+	</select>
+
+	<!-- 按条件查询交易记录数 -->
+	<select id="selectPageCount" resultType="Integer" parameterType="map">
+		select count(1) cnt from goods_category
+		<where>
+			is_del = 0
+			<if test="name != null and name !='null' and name != ''">
+				and name like concat('%',#{name},'%' ) 
+			</if>
+		</where>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_category
+		where is_del = 0 and category_id = #{categoryId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		goods_category
+		where category_id = #{categoryId,jdbcType=INTEGER}
+	</delete>
+	<update id="deleteByCategoryId" parameterType="java.lang.Integer">
+		update goods_category
+		set is_del = 1
+		where category_id = #{categoryId,jdbcType=INTEGER}
+	</update>
+	<!--useGeneratedKeys="true" keyProperty="categoryId"  返回 主键自增id   -->
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="categoryId"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Category">
+		insert into goods_category ( name, code,
+		remark, parent_id, keywords,
+		mark, path, ftype,
+		is_display, seq,
+		opt_user,
+		opt_date, opt_term,is_del)
+		values (
+		#{name,jdbcType=VARCHAR},
+		#{code,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER},
+		#{keywords,jdbcType=VARCHAR},
+		#{mark,jdbcType=VARCHAR},
+		#{path,jdbcType=VARCHAR},
+		#{ftype,jdbcType=DECIMAL},
+		#{isDisplay,jdbcType=DECIMAL}, #{seq,jdbcType=DECIMAL},
+		#{optUser,jdbcType=INTEGER},
+		#{optDate,jdbcType=TIMESTAMP},
+		#{optTerm,jdbcType=VARCHAR},
+		0)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Category">
+		insert into goods_category
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="categoryId != null">
+				category_id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="code != null">
+				code,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="parentId != null">
+				parent_id,
+			</if>
+			<if test="keywords != null">
+				keywords,
+			</if>
+			<if test="mark != null">
+				mark,
+			</if>
+			<if test="path != null">
+				path,
+			</if>
+			<if test="ftype != null">
+				ftype,
+			</if>
+			<if test="isDisplay != null">
+				is_display,
+			</if>
+			<if test="seq != null">
+				seq,
+			</if>
+			<if test="optUser != null">
+				opt_user,
+			</if>
+			<if test="optDate != null">
+				opt_date,
+			</if>
+			<if test="optTerm != null">
+				opt_term,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="categoryId != null">
+				#{categoryId,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="parentId != null">
+				#{parentId,jdbcType=INTEGER},
+			</if>
+			<if test="keywords != null">
+				#{keywords,jdbcType=VARCHAR},
+			</if>
+			<if test="mark != null">
+				#{mark,jdbcType=VARCHAR},
+			</if>
+			<if test="path != null">
+				#{path,jdbcType=VARCHAR},
+			</if>
+			<if test="ftype != null">
+				#{ftype,jdbcType=DECIMAL},
+			</if>
+			<if test="isDisplay != null">
+				#{isDisplay,jdbcType=DECIMAL},
+			</if>
+			<if test="seq != null">
+				#{seq,jdbcType=DECIMAL},
+			</if>
+			<if test="optUser != null">
+				#{optUser,jdbcType=INTEGER},
+			</if>
+			<if test="optDate != null">
+				#{optDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optTerm != null">
+				#{optTerm,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Category">
+		update goods_category
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="parentId != null">
+				parent_id = #{parentId,jdbcType=INTEGER},
+			</if>
+			<if test="keywords != null">
+				keywords = #{keywords,jdbcType=VARCHAR},
+			</if>
+			<if test="mark != null">
+				mark = #{mark,jdbcType=VARCHAR},
+			</if>
+			<if test="path != null">
+				path = #{path,jdbcType=VARCHAR},
+			</if>
+			<if test="ftype != null">
+				ftype = #{ftype,jdbcType=DECIMAL},
+			</if>
+			<if test="isDisplay != null">
+				is_display = #{isDisplay,jdbcType=DECIMAL},
+			</if>
+			<if test="seq != null">
+				seq = #{seq,jdbcType=DECIMAL},
+			</if>
+			<if test="optUser != null">
+				opt_user = #{optUser,jdbcType=INTEGER},
+			</if>
+			<if test="optDate != null">
+				opt_date = #{optDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="optTerm != null">
+				opt_term = #{optTerm,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+		</set>
+		where category_id = #{categoryId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.ync365.seed.bussiness.modules.goods.entity.Category">
+		update goods_category
+		set name =
+		#{name,jdbcType=VARCHAR},
+		code = #{code,jdbcType=VARCHAR},
+		remark =
+		#{remark,jdbcType=VARCHAR},
+		parent_id = #{parentId,jdbcType=INTEGER},
+		keywords = #{keywords,jdbcType=VARCHAR},
+		mark =
+		#{mark,jdbcType=VARCHAR},
+		path = #{path,jdbcType=VARCHAR},
+		ftype =
+		#{ftype,jdbcType=DECIMAL},
+		is_display = #{isDisplay,jdbcType=DECIMAL},
+		seq = #{seq,jdbcType=DECIMAL},
+		opt_user = #{optUser,jdbcType=INTEGER},
+		opt_date = #{optDate,jdbcType=TIMESTAMP},
+		opt_term =
+		#{optTerm,jdbcType=VARCHAR},
+		is_del = #{isDel,jdbcType=INTEGER}
+		where category_id =
+		#{categoryId,jdbcType=INTEGER}
+	</update>
+
+	<select id="selectCategoryAll" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category">
+		select * from goods_category where is_del = 0  order by seq asc;
+	</select>
+	
+	<!-- 通过parentId查询是否有子分类 -->
+	<select id="selectCountByParentId" resultType="Integer" parameterType="java.lang.Integer">
+		select count(*) from goods_category where is_del = 0 and parent_id = #{parentId,jdbcType=INTEGER} order by seq asc;
+	</select>
+	<!-- 根据brandId查询销售种类 -->
+	<select id="getCategoryByBrandId" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category" parameterType="java.lang.Integer">
+		select t1.* from goods_category t1 left join goods_brand_category t2 on t1.category_id=t2.category_id
+		where t1.is_del = 0 and t2.brand_id=#{brandId}  order by t1.seq asc
+	</select>
+    <!-- 根据父id获取所有种类 -->
+	<select id="getCategoryByParentId" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_category 
+		where is_del = 0 and parent_id = #{parentId} order by seq asc;
+	</select>
+	
+	<!-- 根据父id，层级取得对应的分类列表 -->
+	<select id="selectCategoryList" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from goods_category 
+		where is_del = 0 and parent_id = #{parentId} order by seq asc ;
+	</select>
+	
+	
+	<select id="selectRootCategoryList" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category" >
+		select
+		<include refid="Base_Column_List" />
+		from goods_category 
+		where is_del = 0 and parent_id = 0 order by seq asc ;
+	</select>
+	
+	<!-- 根据categoryId取得对应的所有下级categoryId （只包含三级） -->
+	<select id="selectCategoryListAllByParentId" resultType="Integer"  parameterType="java.lang.Integer">
+		select a.category_id from goods_category a where a.is_del = 0 and a.category_id = #{categoryId}
+		union all 
+		select a.category_id from goods_category a where a.is_del = 0 and a.parent_id = #{categoryId}
+		union all 
+		select a.category_id from goods_category a where a.is_del = 0 and a.parent_id in ( select a.category_id from goods_category a where a.is_del = 0 and a.parent_id = #{categoryId} )
+	</select>
+	
+
+
+	<select id="selectCategoryListByPopStoreNum" parameterType="string" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category">
+		select * from goods_category c 
+			left join sys_pop_store_category_relationship r on c.category_id = r.category_id
+			left join sys_pop_store p on p.pop_store_num = r.pop_store_num
+		where p.pop_store_num=#{popStoreNum, jdbcType=VARCHAR}
+	</select> 
+
+
+	<!-- 搜索根据关键查询对应的分类列表 -->
+	<select id="selectCategoryListByKeywords" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category"  parameterType="map">
+		select f.* 
+		from goods_category f,
+			(
+				select a.category_id from goods a ,goods_sku b,(select c.sku_id from goods_sale_region c where     c.region_id =#{regionId} ) d
+				where a.goods_id = b.goods_id  and b.sku_id = d.sku_id and  
+					(  ${keywords}   )   group by a.category_id 
+			) e
+		where f.category_id= e.category_id  order by f.seq asc
+		
+	</select>
+	
+	<select id="selectCategoryListByStoreId" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category"  parameterType="map">
+		select f.* 
+		from goods_category f,
+			(
+				select a.category_id from goods a ,goods_sku b
+				where a.goods_id = b.goods_id   and a.store_id = #{storeId}   group by a.category_id 
+			) e
+		where f.category_id= e.category_id  order by f.seq asc
+	</select>
+	
+	<select id="selectCategoryListByIds" resultType="com.ync365.seed.bussiness.modules.goods.entity.Category"  parameterType="map">
+		select a.* 
+		from goods_category a
+		<where>
+			<if test="list != null and list.size >  0 ">
+				a.category_id in  
+				<foreach item="item" index="index" collection="list" open="("
+						separator="," close=")">
+						#{item}
+				</foreach>   
+			</if>
+		</where>
+	</select>
+
+</mapper>

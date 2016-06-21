@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.ad.dao.AdDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.ad.entity.Ad" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="begin_date" property="beginDate" jdbcType="TIMESTAMP" />
+    <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="ad_position" property="adPosition" jdbcType="INTEGER" />
+    <result column="ad_position_name" property="adPositionName" jdbcType="VARCHAR" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="subject" property="subject" jdbcType="INTEGER" />
+    <result column="page" property="page" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.ync365.seed.bussiness.modules.ad.entity.Ad" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_date, modify_date, orders, begin_date, end_date, path, title, type, status, url, 
+    ad_position,is_del,subject,page
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ad
+    where 
+    	is_del = 0 
+    	and id = #{id,jdbcType=INTEGER}
+  </select>
+  
+   <!-- 分页查询 -->
+   <select id="selectPage" resultMap="BaseResultMap" parameterType="map">
+		select a.*, b.name as ad_position_name
+		from ad a,ad_position b
+		<where>
+			a.is_del = 0
+			and a.ad_position = b.id
+			<if test="name != null and name !='null' and name != ''">
+				and name like '%${name}%'
+			</if>
+			<if test="adPosition != null and adPosition !='null' and adPosition != ''">
+				and a.ad_position=#{adPosition,jdbcType=INTEGER}
+			</if>
+			<if test="status != null and status !='null' and status != ''">
+				and a.status=#{status,jdbcType=INTEGER}
+			</if>
+		</where>
+		order by a.create_date desc
+		limit #{startIndex}  ,   #{pageSize}
+		
+  </select>
+
+  <!-- 按条件查询交易记录数 -->
+  <select id="selectPageCount" resultType="Integer" parameterType="map">
+	select count(1) cnt from ad
+	<where>
+		is_del = 0
+		<if test="name != null and name !='null' and name != ''">
+			and name like '%${name}%';
+		</if>
+	</where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ad
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <update id="deleteById" parameterType="java.lang.Integer">
+  	update ad
+  	set is_del = 1 
+  	where id=#{id,jdbcType=INTEGER}
+  </update>
+  
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Ad" >
+    insert into ad (id, create_date, modify_date, 
+      orders, begin_date, end_date, 
+      path, title, type, status, 
+      url, ad_position, content,is_del,subject,page
+      )
+    values (#{id,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{modifyDate,jdbcType=TIMESTAMP}, 
+      #{orders,jdbcType=INTEGER}, #{beginDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, 
+      #{path,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},  #{status,jdbcType=INTEGER}, 
+      #{url,jdbcType=VARCHAR}, #{adPosition,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{isDel,jdbcType=INTEGER},
+      #{subject,jdbcType=INTEGER},#{page,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Ad" >
+    insert into ad
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="modifyDate != null" >
+        modify_date,
+      </if>
+      <if test="orders != null" >
+        orders,
+      </if>
+      <if test="beginDate != null" >
+        begin_date,
+      </if>
+      <if test="endDate != null" >
+        end_date,
+      </if>
+      <if test="path != null" >
+        path,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="adPosition != null" >
+        ad_position,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+       <if test="subject != null" >
+        subject,
+      </if>
+       <if test="page != null" >
+        page,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orders != null" >
+        #{orders,jdbcType=INTEGER},
+      </if>
+      <if test="beginDate != null" >
+        #{beginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null" >
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="adPosition != null" >
+        #{adPosition,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="subject != null" >
+        #{subject,jdbcType=INTEGER},
+      </if>
+      <if test="page != null" >
+        #{page,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Ad" >
+    update ad
+    <set >
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orders != null" >
+        orders = #{orders,jdbcType=INTEGER},
+      </if>
+      <if test="beginDate != null" >
+        begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null" >
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null" >
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="adPosition != null" >
+        ad_position = #{adPosition,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="subject != null" >
+        subject = #{subject,jdbcType=INTEGER},
+      </if>
+      <if test="page != null" >
+        page = #{page,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Ad" >
+    update ad
+    set create_date = #{createDate,jdbcType=TIMESTAMP},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      orders = #{orders,jdbcType=INTEGER},
+      begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      end_date = #{endDate,jdbcType=TIMESTAMP},
+      path = #{path,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      ad_position = #{adPosition,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      subject = #{subject,jdbcType=INTEGER},
+      page = #{page,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.ad.entity.Ad" >
+    update ad
+    set create_date = #{createDate,jdbcType=TIMESTAMP},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      orders = #{orders,jdbcType=INTEGER},
+      begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      end_date = #{endDate,jdbcType=TIMESTAMP},
+      path = #{path,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      ad_position = #{adPosition,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=INTEGER},
+      subject = #{subject,jdbcType=INTEGER},
+      page = #{page,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 根据显示条数，广告区域查询对应的广告 -->
+  <select id="selectAdList"  resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+			ad
+		<where>
+			is_del = 0
+			<!-- 在投放状态 -->
+			and status = 1
+			<if test="adPosition != null">
+				and ad_position =#{adPosition}
+			</if>
+		</where>
+		limit  #{pageSize}
+  </select>
+  
+</mapper>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.StocksDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.Stocks" >
+    <id column="stocks_id" property="stocksId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="stock_num" property="stockNum" jdbcType="INTEGER" />
+    <result column="out_qty" property="outQty" jdbcType="INTEGER" />
+    <result column="in_qty" property="inQty" jdbcType="INTEGER" />
+    <result column="opt_user" property="optUser" jdbcType="INTEGER" />
+    <result column="opt_date" property="optDate" jdbcType="DATE" />
+    <result column="opt_term" property="optTerm" jdbcType="VARCHAR" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="lock_qty" property="lockQty" jdbcType="INTEGER" />
+    <result column="lock_qty" property="lockQty" jdbcType="INTEGER" />
+    <result column="version"  property="version" jdbcType="INTEGER" /> 
+  </resultMap>
+  <sql id="Base_Column_List" >
+    stocks_id, sku_id, region_id, stock_num, out_qty, in_qty, opt_user, opt_date, opt_term, 
+    goods_id,lock_qty,version
+  </sql>
+ 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_stocks
+    where stocks_id = #{stocksId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectStocksBySkuId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from goods_stocks
+    where sku_id = #{skuId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from goods_stocks
+    where stocks_id = #{stocksId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Stocks" >
+    insert into goods_stocks
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stocksId != null" >
+        stocks_id,
+      </if>
+      <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="stockNum != null" >
+        stock_num,
+      </if>
+      <if test="outQty != null" >
+        out_qty,
+      </if>
+      <if test="inQty != null" >
+        in_qty,
+      </if>
+      <if test="optUser != null" >
+        opt_user,
+      </if>
+      <if test="optDate != null" >
+        opt_date,
+      </if>
+      <if test="optTerm != null" >
+        opt_term,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="lockQty != null" >
+        lock_qty,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stocksId != null" >
+        #{stocksId,jdbcType=INTEGER},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="regionId != null" >
+        #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="stockNum != null" >
+        #{stockNum,jdbcType=INTEGER},
+      </if>
+      <if test="outQty != null" >
+        #{outQty,jdbcType=INTEGER},
+      </if>
+      <if test="inQty != null" >
+        #{inQty,jdbcType=INTEGER},
+      </if>
+      <if test="optUser != null" >
+        #{optUser,jdbcType=INTEGER},
+      </if>
+      <if test="optDate != null" >
+        #{optDate,jdbcType=DATE},
+      </if>
+      <if test="optTerm != null" >
+        #{optTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="lockQty != null" >
+        #{lockQty,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Stocks" >
+    update goods_stocks
+    <set >
+      <if test="skuId != null" >
+        sku_id = #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="regionId != null" >
+        region_id = #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="stockNum != null" >
+        stock_num = #{stockNum,jdbcType=INTEGER},
+      </if>
+      <if test="outQty != null" >
+        out_qty = #{outQty,jdbcType=INTEGER},
+      </if>
+      <if test="inQty != null" >
+        in_qty = #{inQty,jdbcType=INTEGER},
+      </if>
+      <if test="optUser != null" >
+        opt_user = #{optUser,jdbcType=INTEGER},
+      </if>
+      <if test="optDate != null" >
+        opt_date = #{optDate,jdbcType=DATE},
+      </if>
+      <if test="optTerm != null" >
+        opt_term = #{optTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="lockQty != null" >
+        lock_qty = #{lockQty,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+    </set>
+    where stocks_id = #{stocksId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 更新库存 批量设置为新的库存 -->
+  <update id="updateStocksNew" parameterType="Map" >
+     <if test="skuIds != null and skuIds.size > 0 ">
+  	 	update goods_stocks
+    	set stock_num = #{stockNum,jdbcType=INTEGER}
+    	<where>
+            <if test="skuIds !=null and skuIds.size >  0 ">
+                 sku_id in 
+                <foreach collection="skuIds" item="skuId"
+                    index="index" open="(" close=")" separator=",">
+                    #{skuId}
+                </foreach>
+            </if>
+        </where>
+  	</if>
+  </update>
+  
+  <!-- 更新库存 批量增加库存 -->
+  <update id="updateStocksAdd" parameterType="Map" >
+    <if test="skuIds != null and skuIds.size > 0 ">
+  	 	update goods_stocks
+    	set stock_num = stock_num + #{stockNum,jdbcType=INTEGER}
+    	<where>
+            <if test="skuIds !=null and skuIds.size >  0 ">
+                 sku_id in 
+                <foreach collection="skuIds" item="skuId"
+                    index="index" open="(" close=")" separator=",">
+                    #{skuId}
+                </foreach>
+            </if>
+        </where>
+  	</if>
+  </update>
+  
+  <!-- 更新库存 减少库存 -->
+  <update id="updateStocksReduce" parameterType="Map" >
+  	<if test="skuIds != null and skuIds.size > 0 ">
+  	 	update goods_stocks
+    	set stock_num = stock_num - #{stockNum,jdbcType=INTEGER}
+    	<where>
+            <if test="skuIds !=null and skuIds.size >  0 ">
+                 sku_id in 
+                <foreach collection="skuIds" item="skuId"
+                    index="index" open="(" close=")" separator=",">
+                    #{skuId}
+                </foreach>
+            </if>
+            and  stock_num - #{stockNum,jdbcType=INTEGER}  >= 0 
+        </where>
+  	</if>
+  </update>
+  
+  
+  <update id="updateStocksLockQty" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Stocks"  >
+  	 update goods_stocks
+     <set >
+      <if test="lockQty != null" >
+        lock_qty = #{lockQty},
+      </if>
+      <if test="version != null" >
+        version = version +1,
+      </if>
+    </set>
+     where sku_id = #{skuId,jdbcType=INTEGER} and  version = #{version,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateStocksNumByOrder" parameterType="com.ync365.seed.bussiness.modules.goods.entity.Stocks"  >
+  	 update goods_stocks
+     <set >
+      <if test="lockQty != null" >
+        lock_qty = #{lockQty},
+      </if>
+      <if test="version != null" >
+        version = version +1,
+      </if>
+      <if test="stockNum != null" >
+        stock_num = #{stockNum},
+      </if>
+    </set>
+     where sku_id = #{skuId,jdbcType=INTEGER} and  version = #{version,jdbcType=INTEGER} and stock_num >=  0 
+  </update>
+   
+</mapper>

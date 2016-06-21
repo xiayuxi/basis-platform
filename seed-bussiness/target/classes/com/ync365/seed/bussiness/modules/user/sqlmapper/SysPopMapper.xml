@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysPop">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="pop_num" property="popNum" jdbcType="VARCHAR" />
+		<result column="pop_login_name" property="popLoginName"
+			jdbcType="VARCHAR" />
+		<result column="pop_password" property="popPassword" jdbcType="VARCHAR" />
+		<result column="safe_score" property="safeScore" jdbcType="INTEGER" />
+		<result column="pop_mobile" property="popMobile" jdbcType="VARCHAR" />
+		<result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="last_opt_name" property="lastOptName" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDel" jdbcType="BIT" />
+		<result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+		<result column="is_authentication" property="isAuthentication"
+			jdbcType="BIT" />
+		<result column="before_login_time" property="beforeLoginTime"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, pop_num, pop_login_name, pop_password, pop_mobile,
+		pop_store_num,
+		create_time,
+		safe_score,
+		update_time, last_opt_name, is_del,
+		is_frozen, is_authentication,
+		before_login_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectByPopNum" resultMap="BaseResultMap"
+		parameterType="string">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop
+		where pop_num = #{popNum,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_pop
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPop">
+		insert into sys_pop
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="popNum != null">
+				pop_num,
+			</if>
+			<if test="popLoginName != null">
+				pop_login_name,
+			</if>
+			<if test="popPassword != null">
+				pop_password,
+			</if>
+			<if test="popMobile != null">
+				pop_mobile,
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num,
+			</if>
+			<!-- <if test="createTime != null" > -->
+			create_time,
+			<!-- </if> -->
+			<!-- <if test="updateTime != null" > -->
+			update_time,
+			<!-- </if> -->
+			<if test="lastOptName != null">
+				last_opt_name,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+			<if test="isFrozen != null">
+				is_frozen,
+			</if>
+			<if test="isAuthentication != null">
+				is_authentication,
+			</if>
+			<if test="safeScore != null">
+				safe_score,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="popNum != null">
+				#{popNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popLoginName != null">
+				#{popLoginName,jdbcType=VARCHAR},
+			</if>
+			<if test="popPassword != null">
+				#{popPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="popMobile != null">
+				#{popMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreNum != null">
+				#{popStoreNum,jdbcType=VARCHAR},
+			</if>
+			<!-- <if test="createTime != null" > -->
+			<!-- #{createTime,jdbcType=TIMESTAMP}, -->
+			<!-- </if> -->
+			<!-- <if test="updateTime != null" > -->
+			<!-- #{updateTime,jdbcType=TIMESTAMP}, -->
+			<!-- </if> -->
+			now(),
+			now(),
+			<if test="lastOptName != null">
+				#{lastOptName,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=BIT},
+			</if>
+			<if test="isFrozen != null">
+				#{isFrozen,jdbcType=BIT},
+			</if>
+			<if test="isAuthentication != null">
+				#{isAuthentication,jdbcType=BIT},
+			</if>
+			<if test="safeScore != null">
+				#{safeScore,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPop">
+		update sys_pop
+		<set>
+			<if test="popNum != null">
+				pop_num = #{popNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popLoginName != null">
+				pop_login_name = #{popLoginName,jdbcType=VARCHAR},
+			</if>
+			<if test="popPassword != null">
+				pop_password = #{popPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="popMobile != null">
+				pop_mobile = #{popMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num = #{popStoreNum,jdbcType=VARCHAR},
+			</if>
+			<!-- <if test="createTime != null" > -->
+			<!-- create_time = #{createTime,jdbcType=TIMESTAMP}, -->
+			<!-- </if> -->
+			<!-- <if test="updateTime != null" > -->
+			update_time = now(),
+			<!-- </if> -->
+			<if test="lastOptName != null">
+				last_opt_name = #{lastOptName,jdbcType=VARCHAR},
+			</if>
+			<if test="beforeLoginTime != null">
+				before_login_time =
+				#{beforeLoginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT},
+			</if>
+			<if test="isFrozen != null">
+				is_frozen = #{isFrozen,jdbcType=BIT},
+			</if>
+			<if test="isAuthentication != null">
+				is_authentication = #{isAuthentication,jdbcType=BIT},
+			</if>
+			<if test="safeScore != null">
+				safe_score = #{safeScore,jdbcType=INTEGER},
+			</if>
+		</set>
+		<where>
+			<if test="popNum != null and popNum!='' ">
+				and pop_num = #{popNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null and popStoreNum!='' ">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</update>
+	
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop
+		<where>
+			<if test="id != null">
+				and id = #{id,jdbcType=INTEGER}
+			</if>
+			<if test="popNum != null">
+				and pop_num = #{popNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popLoginName != null">
+				and pop_login_name = #{popLoginName,jdbcType=VARCHAR}
+			</if>
+			<if test="popPassword != null">
+				and pop_password = #{popPassword,jdbcType=VARCHAR}
+			</if>
+			<if test="popMobile != null">
+				and pop_mobile = #{popMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="lastOptName != null">
+				and last_opt_name = #{lastOptName,jdbcType=VARCHAR}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel,jdbcType=BIT}
+			</if>
+			<if test="isFrozen != null">
+				and is_frozen = #{isFrozen,jdbcType=BIT}
+			</if>
+			<if test="isAuthentication != null">
+				and is_authentication = #{isAuthentication,jdbcType=BIT}
+			</if>
+			<if test="safeScore != null">
+				and safe_score = #{safeScore,jdbcType=INTEGER}
+			</if>
+			<if test="beforeLoginTime != null">
+				before_login_time =
+				#{beforeLoginTime,jdbcType=TIMESTAMP},
+			</if>
+		</where>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+	<select id="selectPageCount" parameterType="map" resultType="int">
+		select
+		count(1)
+		from sys_pop
+		<where>
+			<if test="id != null">
+				and id = #{id,jdbcType=INTEGER}
+			</if>
+			<if test="popNum != null">
+				and pop_num = #{popNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popLoginName != null">
+				and pop_login_name = #{popLoginName,jdbcType=VARCHAR}
+			</if>
+			<if test="popPassword != null">
+				and pop_password = #{popPassword,jdbcType=VARCHAR}
+			</if>
+			<if test="popMobile != null">
+				and pop_mobile = #{popMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="lastOptName != null">
+				and last_opt_name = #{lastOptName,jdbcType=VARCHAR}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel,jdbcType=BIT}
+			</if>
+			<if test="isFrozen != null">
+				and is_frozen = #{isFrozen,jdbcType=BIT}
+			</if>
+			<if test="isAuthentication != null">
+				and is_authentication = #{isAuthentication,jdbcType=BIT}
+			</if>
+			<if test="safeScore != null">
+				and safe_score = #{safeScore,jdbcType=INTEGER}
+			</if>
+			<if test="beforeLoginTime != null">
+				before_login_time =
+				#{beforeLoginTime,jdbcType=TIMESTAMP},
+			</if>
+		</where>
+	</select>
+	<update id="updateByPopStoreNum" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPop">
+		update sys_pop
+		<set>
+			<if test="popLoginName != null">
+				pop_login_name = #{popLoginName,jdbcType=VARCHAR},
+			</if>
+			<if test="popPassword != null">
+				pop_password = #{popPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="popMobile != null">
+				pop_mobile = #{popMobile,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 根据popStoreNum 查询用户 -->
+	<select id="selectByPopStoreNum" parameterType="string"
+		resultType="com.ync365.seed.bussiness.modules.user.entity.SysPop">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop
+		where pop_store_num = #{_parameter, jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="selectBySysPop"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPop"
+		resultType="com.ync365.seed.bussiness.modules.user.entity.SysPop">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop
+		<where>
+			<if test="id != null">
+				and id = #{id,jdbcType=INTEGER}
+			</if>
+			<if test="popNum != null">
+				and pop_num = #{popNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popLoginName != null">
+				and pop_login_name = #{popLoginName,jdbcType=VARCHAR}
+			</if>
+			<if test="popPassword != null">
+				and pop_password = #{popPassword,jdbcType=VARCHAR}
+			</if>
+			<if test="popMobile != null">
+				and pop_mobile = #{popMobile,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="lastOptName != null">
+				and last_opt_name = #{lastOptName,jdbcType=VARCHAR}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel,jdbcType=BIT}
+			</if>
+			<if test="isFrozen != null">
+				and is_frozen = #{isFrozen,jdbcType=BIT}
+			</if>
+			<if test="isAuthentication != null">
+				and is_authentication = #{isAuthentication,jdbcType=BIT}
+			</if>
+			<if test="safeScore != null">
+				and safe_score = #{safeScore,jdbcType=INTEGER}
+			</if>
+			<if test="beforeLoginTime != null">
+				before_login_time =
+				#{beforeLoginTime,jdbcType=TIMESTAMP},
+			</if>
+		</where>
+	</select>
+</mapper>

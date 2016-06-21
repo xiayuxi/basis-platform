@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.promotion.dao.PromotionSeckillDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.promotion.entity.PromotionSeckill" >
+    <id column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+    <result column="seckill_type" property="seckillType" jdbcType="INTEGER" />
+    <result column="limit_person" property="limitPerson" jdbcType="INTEGER" />
+    <result column="limit_per_count" property="limitPerCount" jdbcType="INTEGER" />
+    <result column="limit_total_count" property="limitTotalCount" jdbcType="INTEGER" />
+    <result column="current_count" property="currentCount" jdbcType="INTEGER" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    promotion_id, seckill_type, limit_person, limit_per_count, limit_total_count, current_count, 
+    is_delete
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from promotion_seckill
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from promotion_seckill
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionSeckill" >
+    insert into promotion_seckill (promotion_id, seckill_type, limit_person, 
+      limit_per_count, limit_total_count, current_count, 
+      is_delete)
+    values (#{promotionId,jdbcType=INTEGER}, #{seckillType,jdbcType=INTEGER}, #{limitPerson,jdbcType=INTEGER}, 
+      #{limitPerCount,jdbcType=INTEGER}, #{limitTotalCount,jdbcType=INTEGER}, #{currentCount,jdbcType=INTEGER}, 
+      #{isDelete,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionSeckill" >
+    insert into promotion_seckill
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="promotionId != null" >
+        promotion_id,
+      </if>
+      <if test="seckillType != null" >
+        seckill_type,
+      </if>
+      <if test="limitPerson != null" >
+        limit_person,
+      </if>
+      <if test="limitPerCount != null" >
+        limit_per_count,
+      </if>
+      <if test="limitTotalCount != null" >
+        limit_total_count,
+      </if>
+      <if test="currentCount != null" >
+        current_count,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="promotionId != null" >
+        #{promotionId,jdbcType=INTEGER},
+      </if>
+      <if test="seckillType != null" >
+        #{seckillType,jdbcType=INTEGER},
+      </if>
+      <if test="limitPerson != null" >
+        #{limitPerson,jdbcType=INTEGER},
+      </if>
+      <if test="limitPerCount != null" >
+        #{limitPerCount,jdbcType=INTEGER},
+      </if>
+      <if test="limitTotalCount != null" >
+        #{limitTotalCount,jdbcType=INTEGER},
+      </if>
+      <if test="currentCount != null" >
+        #{currentCount,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionSeckill" >
+    update promotion_seckill
+    <set >
+      <if test="seckillType != null" >
+        seckill_type = #{seckillType,jdbcType=INTEGER},
+      </if>
+      <if test="limitPerson != null" >
+        limit_person = #{limitPerson,jdbcType=INTEGER},
+      </if>
+      <if test="limitPerCount != null" >
+        limit_per_count = #{limitPerCount,jdbcType=INTEGER},
+      </if>
+      <if test="limitTotalCount != null" >
+        limit_total_count = #{limitTotalCount,jdbcType=INTEGER},
+      </if>
+      <if test="currentCount != null" >
+        current_count = #{currentCount,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=INTEGER},
+      </if>
+    </set>
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionSeckill" >
+    update promotion_seckill
+    set seckill_type = #{seckillType,jdbcType=INTEGER},
+      limit_person = #{limitPerson,jdbcType=INTEGER},
+      limit_per_count = #{limitPerCount,jdbcType=INTEGER},
+      limit_total_count = #{limitTotalCount,jdbcType=INTEGER},
+      current_count = #{currentCount,jdbcType=INTEGER},
+      is_delete = #{isDelete,jdbcType=INTEGER}
+    where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </update>
+  <!-- 根据活动id进行逻辑删除 -->
+  <update id="updatePromotionStatusToDelete" parameterType="java.lang.Integer">
+   update promotion_seckill set is_delete=1 where promotion_id = #{promotionId,jdbcType=INTEGER}
+  </update>
+</mapper>

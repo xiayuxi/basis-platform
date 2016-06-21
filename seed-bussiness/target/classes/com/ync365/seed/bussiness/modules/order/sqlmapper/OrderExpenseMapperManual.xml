@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderExpenseMapperManual" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderExpense" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+    <result column="village_expense" property="villageExpense" jdbcType="DECIMAL" />
+    <result column="platform_expense" property="platformExpense" jdbcType="DECIMAL" />
+    <result column="lc_expense" property="lcExpense" jdbcType="DECIMAL" />
+    <result column="integral_expense" property="integralExpense" jdbcType="DECIMAL" />
+    <result column="plan_expense" property="planExpense" jdbcType="DECIMAL" />
+    <result column="se_expense" property="seExpense" jdbcType="DECIMAL" />
+    <result column="a_expense" property="aExpense" jdbcType="DECIMAL" />
+    <result column="vs_num" property="vsNum" jdbcType="CHAR" />
+    <result column="lc_num" property="lcNum" jdbcType="CHAR" />
+    <result column="se_num" property="seNum" jdbcType="CHAR" />
+    <result column="a_num" property="aNum" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, order_no, order_type, village_expense, platform_expense, lc_expense, 
+    integral_expense, plan_expense, se_expense, a_expense, vs_num, lc_num, se_num, a_num, 
+    create_time
+  </sql>
+
+	<select id = "selectOrderExpenseByOrderId" resultMap="BaseResultMap" parameterType="map">
+ 	select 
+ 	<include refid="Base_Column_List"/>
+ 	from order_expense
+ 	where
+ 			 order_id = #{orderId,jdbcType=INTEGER}
+ 			 and order_type = #{orderType,jdbcType=INTEGER}
+ 	</select> 
+</mapper>

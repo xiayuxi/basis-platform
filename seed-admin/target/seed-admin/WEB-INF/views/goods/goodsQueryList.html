@@ -1,0 +1,143 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+<!--  My97DatePicker -->
+<script type="text/javascript" src="${staticCtx}/My97DatePicker/WdatePicker.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticCtx}/My97DatePicker/skin/WdatePicker.css" />
+</head>
+<body>
+	<div style=" margin:20px 0 10px 20px;">
+		商品名称：<input type="text" name="name" id="name"/>
+		上架时间：<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+		             type="text" name="startTime" id="startTime"/> -
+		      <input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+		             type="text" name="endTime" id="endTime"/>					
+		所属分类： <select class="category1" name="categoryIds1" id = "category1" onchange="">
+		            <option value="">请选择</option>
+		            <#list catList as cat>
+		            	<option value="${cat.categoryId}">${cat.name}</option>
+		            </#list>
+		        </select>
+		        <select class="category2" name="categoryIds2" id = "category2">
+		            <option value="">请选择</option>
+		        </select>
+		        <select class="category3" name="categoryIds3" id = "category3">
+		            <option value="">请选择</option>
+		        </select>
+		<br/>
+	      店铺名称：<input type="text" name="storeId" id="storeId"  value="请输入店铺编号或关键字" 
+	      style="color:#ddd" onfocus="if (this.value=='请输入店铺编号或关键字')this.value=''" onblur="if (this.value=='')this.value='请输入店铺编号或关键字'">
+	     上架人：<input type="text" name="releaseUseId" id="releaseUseId" />
+	     品牌：<input type="text" name="brandName" id="brandName"/> 
+	 	 <button type="submit" class="btn btn-primary" id="btnSearch">查询
+	</div>
+	<div style="margin-left:20px">
+	    <table id="list"></table>
+	    <div id="pager"></div>
+	</div>
+</body>
+<script type="text/javascript">
+ $(function(){
+     $("#list").jqGrid({
+           url:'${ctx}/goodsQuery/grid',// 获取数据的url,action
+           datatype: "json",//后台返回的数据格式
+           mtype:"post",//提交的方式,默认是get
+           //width:1024,//这个宽度不能为百分比,
+           autowidth:true,//自动宽
+           colNames:['id','商品名称', '品牌名称 ', '属性名称','属性值'],
+           colModel:[
+                      {name:"id",hidden:true,align:"center",sortable:false},
+                      {name:'name',index:'name', editable:true,sortable:true},
+                      {name:'brandName',index:'brandName', width:100,editable:true},
+                      {name:'featureName',index:'featureName', align:"center",editable:true},
+                      {name:'featureValue',index:'featureValue', align:"center",editable:true}
+                    
+                  ],
+           postData:{page:1,hahah:123},//此参数用来向后台提交数据*****可以自己添加需要的参数
+           //styleUI : 'Bootstrap',
+           //caption:"商品列表",//表名称
+           //multiselect: true,//开启多选
+           rowNum:10,//每页显示的条数,此参数会被传递到后台
+           rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+           viewrecords: true,//定义是否显示总的数据条数
+           pager: 'pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+           height : "auto",
+           rownumbers:true//添加左侧行号
+       }); 
+      $("#list").jqGrid("navGrid","#pager",{edit:false,add:false,del:false,search:false,refresh:true}); 
+      
+    //一级分类
+      $(".category1").change(function(){
+    	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+    		  setHtml(data,".category2");
+    	  });
+      });
+      
+      //二级分类联动三级
+      $(".category2").change(function(){
+    	   
+    	  $.getJSON("${ctx}/category/getCategoryList?id="+this.value,function(data){
+    		  setHtml(data,".category3");
+    	  });
+      });
+  	 
+      //查询按钮
+      $("#btnSearch").click(function () {
+	  		var name = $("#name").val();//商品名称
+	  		var category1 = $("#category1").val();//一级分类id
+	  		var category2 = $("#category2").val();//二级分类id
+	  		var category3 = $("#category3").val();//三级分类id
+	  		var startTime = $("#startTime").val();
+	  		var endTime = $("#endTime").val();
+	  		
+	  		var categoryId = "";
+	    	if(category3.length >  0  ){
+	    		categoryId = category3;
+	    	}else if( (category2.length > 0 ) && ( category3.length <= 0  ) ){
+	    		categoryId = category2;
+	    	}else if( ( category1.length > 0 ) && (category2.length <= 0 ) && (category3.length <= 0 ) ){
+	    		categoryId = category1 ;
+	    	}
+	 		
+	 		var storeId=$("#storeId").val();//店铺名称
+	 		var releaseUseId=$("#releaseUseId").val();//上架人
+	 		var brandName=$("#brandName").val();//品牌
+		   	$("#list").jqGrid('setGridParam',{ 
+		             url:"${ctx}/goodsQuery/grid", 
+		             postData:{'name':name,'startTime':startTime,'endTime':endTime,'categoryId':categoryId,'storeId':storeId,'releaseUseId':releaseUseId,'brandName':brandName}, //发送数据 
+		             page:1 
+		         	}).trigger("reloadGrid"); //重新载入 
+		});
+});
+ 
+//三级联动分类设值
+	function setHtml(data, selectId) {
+		var temp_html = "<option value=''>请选择</option>";
+		$.each(data, function(i, category1) {
+			temp_html += "<option value='"+category1.categoryId+"'>"
+					+ category1.name + "</option>";
+		});
+		$(selectId).html(temp_html);
+	}
+
+ //更新上下架状态
+ function formatStatus(cellvalue){
+	 if(cellvalue == 1 ){
+		 return "<font color=blue >已上架</font>";
+	 }
+	 return "<font color=red >已下架</font>";
+ }
+ 
+</script>
+</html>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysLargeCustomerInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysLargeCustomerInfo" >
+    <result column="user_num" property="userNum" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="authentication_time" property="authenticationTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMap"  type="com.ync365.seed.bussiness.modules.user.bo.LargeCustomerInfoBO" extends="BaseResultMap"> 
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="authentication_time" property="authenticationTime" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="user_num" property="userNum" jdbcType="VARCHAR" />
+    <result column="sys_user_real_name" property="sysUserRealName" jdbcType="VARCHAR" />
+    <result column="user_mobile" property="userMobile" jdbcType="VARCHAR" />
+    <result column="sys_user_address" property="sysUserAddress" jdbcType="INTEGER" />
+    <result column="sys_user_address_detail" property="sysUserAddressDetail" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+  	user_num, 
+      state,create_time,authentication_time
+  </sql>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLargeCustomerInfo" >
+    insert into sys_large_customer_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+<!--       <if test="createTime != null" > -->
+        create_time,
+<!--       </if> -->
+      <if test="authenticationTime != null" >
+        authentication_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        #{userNum,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      now(),
+<!--       <if test="createTime != null" > -->
+<!--         #{createTime,jdbcType=TIMESTAMCP}, -->
+<!--       </if> -->
+      <if test="authenticationTime != null" >
+        #{authenticationTime,jdbcType=TIMESTAMCP},
+      </if>
+    </trim>
+  </insert>
+  <delete id="deleteByPrimaryKey" parameterType="string">
+		delete from
+		sys_large_customer_info
+		where  user_num = #{userNum,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectByPrimaryKey" parameterType="string" resultType="com.ync365.seed.bussiness.modules.user.entity.SysLargeCustomerInfo">
+  	select <include refid="Base_Column_List" />
+  	from sys_large_customer_info
+  	where user_num = #{userNum}
+  </select>
+  <select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+  	from sys_large_customer_info
+  	<where>
+  	  <if test="userNum != null and userNum != ''">
+      and  user_num = #{userNum,jdbcType=VARCHAR}
+      </if>
+      <if test="state != null" >
+     and   state = #{state,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+      and  create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+  	</where>
+  	<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+	</if>
+  </select>
+  <select id="selectPageCount" parameterType="map" resultType="integer">
+  	select count(1)
+  	from sys_large_customer_info
+  	<where>
+  	  <if test="userNum != null and userNum != ''">
+      and  user_num = #{userNum,jdbcType=VARCHAR}
+      </if>
+      <if test="state != null" >
+      and  state = #{state,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+     and   create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+  	</where>
+  	<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+	</if>
+  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLargeCustomerInfo">
+    update sys_large_customer_info
+    <set>
+     <if test="userNum != null and userNum != ''">
+        user_num = #{userNum,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+<!--       <if test="createTime != null" > -->
+<!--         create_time = #{createTime,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+      <if test="authenticationTime != null" >
+        authentication_time = #{authenticationTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_num = #{userNum,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!-- 
+  	此为查询大客户列表 
+   -->
+  <select id="selectlargeCustomerInfoByPrimary" resultMap="ResultMap" parameterType="com.ync365.seed.bussiness.modules.user.bo.LargeCustomerInfoSearchBO">
+	SELECT
+				a.create_time,a.authentication_time,a.state,a.user_num ,h.sys_user_real_name ,
+				f.user_mobile ,h.sys_user_address,h.sys_user_address_detail,
+				k.sys_user_real_name as vsUserName ,n.sys_user_real_name as lcUserName,
+				q.`name` as seUserName ,x.`name` as aUserName
+	FROM 
+				sys_large_customer_info a
+	LEFT JOIN sys_us_vs_relationship b on a.user_num = b.us_num
+	LEFT JOIN sys_vs_lc_relationship c on b.vs_num = c.vs_num
+	LEFT JOIN sys_lc_se_relationship d on c.lc_num = d.lc_num
+	LEFT JOIN sys_se_a_relationship e on d.se_num = e.se_num
+	LEFT JOIN sys_user f on a.user_num = f.user_num
+	LEFT JOIN sys_user_info h on a.user_num = h.user_num
+	LEFT JOIN sys_user j on j.user_num = b.vs_num
+	LEFT JOIN sys_user_info k on k.user_num = b.vs_num
+	LEFT JOIN sys_user m on m.user_num = d.lc_num
+	LEFT JOIN sys_user_info n on n.user_num = d.lc_num
+	LEFT JOIN sys_admin p on p.admin_num = d.se_num
+	LEFT JOIN sys_admin_info q on q.admin_num = d.se_num
+	LEFT JOIN sys_admin w on w.admin_num = e.a_num
+	LEFT JOIN sys_admin_info x on x.admin_num = e.a_num
+	<where>
+	<if test="nameSearch != null and nameSearch != ''">
+		AND h.sys_user_real_name = #{nameSearch}
+	</if>
+	<if test="userMobileSearch != null and userMobileSearch != ''">
+		AND f.user_mobile = #{userMobileSearch}
+	</if>
+	<if test="userNumSearch != null and userNumSearch !=''">
+		AND a.user_num = #{userNumSearch}
+	</if>
+	<if test="stateSearch != null">
+		AND a.state = #{stateSearch}
+	</if>
+	<if test="beginDateSearch != null">
+		<![CDATA[AND a.create_time >= #{beginDateSearch}]]>
+	</if>
+	<if test="endDateSearch != null">
+		<![CDATA[AND a.create_time <= #{endDateSearch}]]>
+	</if> 
+	<!-- vs查询条件 名称或手机号  -->
+	<if test="vsInfoSearch !=null and vsInfoSearch != '' ">
+		and   (k.sys_user_real_name = #{vsInfoSearch,jdbcType=VARCHAR} or j.user_mobile = #{vsInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- lc查询条件 名称或手机号  -->
+	<if test="lcInfoSearch !=null and lcInfoSearch != '' ">
+		and   (n.sys_user_real_name = #{lcInfoSearch,jdbcType=VARCHAR} or m.user_mobile = #{lcInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- se查询条件 名称或手机号  -->
+	<if test="seInfoSearch !=null and seInfoSearch != '' ">
+		and   (q.name = #{seInfoSearch,jdbcType=VARCHAR} or p.admin_mobile = #{seInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- a+查询条件 名称或手机号  -->
+	<if test="aInfoSearch !=null and aInfoSearch != '' ">
+		and   (x.name = #{aInfoSearch,jdbcType=VARCHAR} or w.admin_mobile = #{aInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- 地址查询  -->  
+	<if test="userAddressSearch != null">
+		AND h.sys_user_address = #{userAddressSearch}
+	</if>
+	<!--se编号查询  -->
+	<if test="seAdminNumSearch != null and seAdminNumSearch !=''">
+		AND p.admin_num = #{seAdminNumSearch}
+	</if>
+	</where>
+	order by a.create_time desc
+	<if test="pageIndex !=null and pageSize != null">
+		limit ${pageIndex},${pageSize}
+	</if>
+  </select>
+  
+  <!-- 
+  	此为查询大客户列表数量
+   -->
+  <select id="selectlargeCustomerInfoByPrimaryCount" resultType="int" parameterType="com.ync365.seed.bussiness.modules.user.bo.LargeCustomerInfoSearchBO">
+	SELECT
+		count(1)
+	FROM 
+		sys_large_customer_info a
+	LEFT JOIN sys_us_vs_relationship b on a.user_num = b.us_num
+	LEFT JOIN sys_vs_lc_relationship c on b.vs_num = c.vs_num
+	LEFT JOIN sys_lc_se_relationship d on c.lc_num = d.lc_num
+	LEFT JOIN sys_se_a_relationship e on d.se_num = e.se_num
+	LEFT JOIN sys_user f on a.user_num = f.user_num
+	LEFT JOIN sys_user_info h on a.user_num = h.user_num
+	LEFT JOIN sys_user j on j.user_num = b.vs_num
+	LEFT JOIN sys_user_info k on k.user_num = b.vs_num
+	LEFT JOIN sys_user m on m.user_num = d.lc_num
+	LEFT JOIN sys_user_info n on n.user_num = d.lc_num
+	LEFT JOIN sys_admin p on p.admin_num = d.se_num
+	LEFT JOIN sys_admin_info q on q.admin_num = d.se_num
+	LEFT JOIN sys_admin w on w.admin_num = e.a_num
+	LEFT JOIN sys_admin_info x on x.admin_num = e.a_num
+	<where>
+	<if test="nameSearch != null and nameSearch != ''">
+		AND h.sys_user_real_name = #{nameSearch}
+	</if>
+	<if test="userMobileSearch != null and userMobileSearch != ''">
+		AND f.user_mobile = #{userMobileSearch}
+	</if>
+	<if test="userNumSearch != null and userNumSearch !=''">
+		AND a.user_num = #{userNumSearch}
+	</if>
+	<if test="stateSearch != null">
+		AND a.state = #{stateSearch}
+	</if>
+	<if test="beginDateSearch != null">
+		<![CDATA[AND a.create_time >= #{beginDateSearch}]]>
+	</if>
+	<if test="endDateSearch != null">
+		<![CDATA[AND a.create_time <= #{endDateSearch}]]>
+	</if> 
+	<!-- vs查询条件 名称或手机号  -->
+	<if test="vsInfoSearch !=null and vsInfoSearch != '' ">
+		and   (k.sys_user_real_name = #{vsInfoSearch,jdbcType=VARCHAR} or j.user_mobile = #{vsInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- lc查询条件 名称或手机号  -->
+	<if test="lcInfoSearch !=null and lcInfoSearch != '' ">
+		and   (n.sys_user_real_name = #{lcInfoSearch,jdbcType=VARCHAR} or m.user_mobile = #{lcInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- se查询条件 名称或手机号  -->
+	<if test="seInfoSearch !=null and seInfoSearch != '' ">
+		and   (q.name = #{seInfoSearch,jdbcType=VARCHAR} or p.admin_mobile = #{seInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- a+查询条件 名称或手机号  -->
+	<if test="aInfoSearch !=null and aInfoSearch != '' ">
+		and   (x.name = #{aInfoSearch,jdbcType=VARCHAR} or w.admin_mobile = #{aInfoSearch,jdbcType=VARCHAR})
+	</if>
+	<!-- 地址查询  -->  
+	<if test="userAddressSearch != null">
+		AND h.sys_user_address = #{userAddressSearch}
+	</if>
+	<!--se编号查询  -->
+	<if test="seAdminNumSearch != null and seAdminNumSearch !=''">
+		AND p.admin_num = #{seAdminNumSearch}
+	</if>
+	</where>
+	
+  </select>
+  
+</mapper>

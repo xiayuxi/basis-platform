@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.user.dao.SysSsPopStoreRelationshipMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysSsPopStoreRelationship">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="ss_num" property="ssNum" jdbcType="VARCHAR" />
+		<result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, ss_num, pop_store_num
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_ss_pop_store_relationship
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_ss_pop_store_relationship
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysSsPopStoreRelationship">
+		insert into sys_ss_pop_store_relationship
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="ssNum != null">
+				ss_num,
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="ssNum != null">
+				#{ssNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreNum != null">
+				#{popStoreNum,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysSsPopStoreRelationship">
+		update sys_ss_pop_store_relationship
+		<set>
+			<if test="ssNum != null">
+				ss_num = #{ssNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popStoreNum != null">
+				pop_store_num = #{popStoreNum,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_ss_pop_store_relationship
+		<where>
+			<if test="ssNum != null">
+				and ss_num = #{ssNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

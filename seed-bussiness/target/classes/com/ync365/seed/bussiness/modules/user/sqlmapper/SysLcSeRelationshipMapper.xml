@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ync365.seed.bussiness.modules.user.dao.SysLcSeRelationshipMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysLcSeRelationship">
+		<result column="lc_num" property="lcNum" jdbcType="VARCHAR" />
+		<result column="se_num" property="seNum" jdbcType="VARCHAR" />
+	</resultMap>
+	<insert id="insert"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLcSeRelationship">
+		insert into sys_lc_se_relationship (lc_num, se_num)
+		values (#{lcNum,jdbcType=VARCHAR}, #{seNum,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLcSeRelationship">
+		insert into sys_lc_se_relationship
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lcNum != null">
+				lc_num,
+			</if>
+			<if test="seNum != null">
+				se_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lcNum != null">
+				#{lcNum,jdbcType=VARCHAR},
+			</if>
+			<if test="seNum != null">
+				#{seNum,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<delete id="deleteByLcNum" parameterType="java.lang.String">
+		delete from
+		sys_lc_se_relationship where lc_num = #{lcNum,jdbcType=VARCHAR}
+	</delete>
+	<update id="update"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysLcSeRelationship">
+		update sys_lc_se_relationship
+		<set>
+			<if test="lcNum != null">
+				lc_num= #{lcNum,jdbcType=VARCHAR},
+			</if>
+			<if test="seNum != null">
+				se_num= #{seNum,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where lc_num = #{lcNum,jdbcType=VARCHAR}
+	</update>
+	<select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select lc_num, se_num from sys_lc_se_relationship
+		<where>
+			<if test="lcNum != null">
+				and lc_num= #{lcNum,jdbcType=VARCHAR}
+			</if>
+			<if test="seNum != null">
+				and se_num= #{seNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="selectPageCount" parameterType="map" resultType="java.lang.Integer">
+		select
+		count(1)
+		from sys_lc_se_relationship
+		<where>
+			<if test="lcNum != null">
+				and lc_num= #{lcNum,jdbcType=VARCHAR}
+			</if>
+			<if test="seNum != null">
+				and se_num= #{seNum,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

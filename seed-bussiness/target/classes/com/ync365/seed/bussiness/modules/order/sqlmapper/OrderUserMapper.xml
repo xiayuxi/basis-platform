@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderUserMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="user_num" property="userNum" jdbcType="CHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="user_tel" property="userTel" jdbcType="CHAR" />
+    <result column="user_address" property="userAddress" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_no, user_num, username, user_tel, user_address, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderUser" >
+    insert into order_user (id, order_no, user_num, 
+      username, user_tel, user_address, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=CHAR}, #{userNum,jdbcType=CHAR}, 
+      #{username,jdbcType=VARCHAR}, #{userTel,jdbcType=CHAR}, #{userAddress,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderUser" >
+    insert into order_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="userTel != null" >
+        user_tel,
+      </if>
+      <if test="userAddress != null" >
+        user_address,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="userNum != null" >
+        #{userNum,jdbcType=CHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        #{userTel,jdbcType=CHAR},
+      </if>
+      <if test="userAddress != null" >
+        #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderUser" >
+    update order_user
+    <set >
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="userNum != null" >
+        user_num = #{userNum,jdbcType=CHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        user_tel = #{userTel,jdbcType=CHAR},
+      </if>
+      <if test="userAddress != null" >
+        user_address = #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderUser" >
+    update order_user
+    set order_no = #{orderNo,jdbcType=CHAR},
+      user_num = #{userNum,jdbcType=CHAR},
+      username = #{username,jdbcType=VARCHAR},
+      user_tel = #{userTel,jdbcType=CHAR},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

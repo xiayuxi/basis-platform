@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysVsInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysVsInfo" >
+    <result column="user_num" property="userNum" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="work_year" property="workYear" jdbcType="INTEGER" />
+    <result column="local_farmer_count" property="localFarmerCount" jdbcType="INTEGER" />
+    <result column="local_cropland_area" property="localCroplandArea" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="authentication_state" property="authenticationState" jdbcType="INTEGER" />
+    <result column="authentication_time" property="authenticationTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="ResultMap"  type="com.ync365.seed.bussiness.modules.user.bo.VsInfoBO" extends="BaseResultMap"> 
+  	<result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+    <result column="user_mobile" property="userMobile" jdbcType="VARCHAR" />
+    <result column="user_login_name" property="userLoginName" jdbcType="VARCHAR" />
+    <result column="safe_score" property="safeScore" jdbcType="INTEGER" />
+    <result column="sys_user_real_name" property="name" jdbcType="VARCHAR" />
+  	<result column="sys_user_birthday" property="birthday" jdbcType="TIMESTAMP"/>
+  	<result column="sys_user_photo_path" property="photoPath" jdbcType="VARCHAR"/>
+  	<result column="sys_nickname" property="sysNickname" jdbcType="VARCHAR"/>
+  	<result column="sys_user_address" property="address" jdbcType="INTEGER"/>
+  	<result column="sys_user_address_detail" property="addressDetail" jdbcType="VARCHAR"/>
+  	<result column="sys_user_farm_area" property="farmArea" jdbcType="INTEGER"/>
+  	<result column="sys_user_gender" property="gender" jdbcType="INTEGER"/>
+  	<result column="sys_user_photo_path" property="photoPath" jdbcType="VARCHAR"/>
+  	<result column="sys_user_ID_card" property="idCard" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	  user_num,telephone,work_year,local_farmer_count,
+	  local_cropland_area,create_time,authentication_state,authentication_time
+  </sql>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysVsInfo" >
+    insert into sys_vs_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="workYear != null" >
+        work_year,
+      </if>
+      <if test="localFarmerCount != null" >
+        local_farmer_count,
+      </if>
+      <if test="localCroplandArea != null" >
+        local_cropland_area,
+      </if>
+<!--       <if test="createTime != null" > -->
+        create_time,
+<!--       </if> -->
+      <if test="authenticationState != null" >
+        authentication_state,
+      </if>
+      <if test="authenticationTime != null" >
+        authentication_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userNum != null" >
+        #{userNum,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="workYear != null" >
+        #{workYear,jdbcType=INTEGER},
+      </if>
+      <if test="localFarmerCount != null" >
+        #{localFarmerCount,jdbcType=INTEGER},
+      </if>
+      <if test="localCroplandArea != null" >
+        #{localCroplandArea,jdbcType=INTEGER},
+      </if>
+<!--       <if test="createTime != null" > -->
+        now(),
+<!--       </if> -->
+      <if test="authenticationState != null" >
+        #{authenticationState,jdbcType=INTEGER},
+      </if>
+      <if test="authenticationTime != null" >
+        #{authenticationTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  
+   <!-- 通过map参数查询记录  list记录-->
+  <select id="selectPageByMap" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List"></include>
+    from sys_vs_info
+    <where>
+		<if test="userNum != null" >
+	        and user_num = #{userNum,jdbcType=VARCHAR}
+	      </if>
+	      <if test="telephone != null" >
+	        and telephone = #{telephone,jdbcType=VARCHAR}
+	      </if>
+	      <if test="workYear != null" >
+	        and work_year = #{workYear,jdbcType=INTEGER}
+	      </if>
+	      <if test="localFarmerCount != null" >
+	        and local_farmer_count =  #{localFarmerCount,jdbcType=INTEGER}
+	      </if>
+	      <if test="localCroplandArea != null" >
+	        and local_cropland_area =  #{localCroplandArea,jdbcType=INTEGER}
+	      </if>
+	      <if test="createTime != null" >
+	        and create_time = #{createTime,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="authenticationState != null" >
+	        and authentication_state = #{authenticationState,jdbcType=INTEGER}
+	      </if>
+	      <if test="authenticationTime != null" >
+	        and  authentication_time = #{authenticationTime,jdbcType=TIMESTAMP}
+	      </if>
+	</where>
+  </select>
+  
+  <!-- 通过userNum删除-->
+  	<delete id="deleteSysVsInfoByUserNum" parameterType="java.lang.String">
+		delete from
+		sys_vs_info
+		where  user_num = #{userNum,jdbcType=VARCHAR}
+	</delete>
+	
+	
+	<select id="selectByPrimaryKeyUserNum" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from sys_vs_info
+	    where user_num = #{userNum,jdbcType=VARCHAR}
+  	</select>
+	
+  <update id="update" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysVsInfo">
+		update sys_vs_info
+		<set>
+			<if test="userNum != null" >
+		        user_num = #{userNum,jdbcType=VARCHAR},
+		      </if>
+		      <if test="telephone != null" >
+		        telephone = #{telephone,jdbcType=VARCHAR},
+		      </if>
+		      <if test="workYear != null" >
+		         work_year = #{workYear,jdbcType=INTEGER},
+		      </if>
+		      <if test="localFarmerCount != null" >
+		         local_farmer_count =  #{localFarmerCount,jdbcType=INTEGER},
+		      </if>
+		      <if test="localCroplandArea != null" >
+		         local_cropland_area =  #{localCroplandArea,jdbcType=INTEGER},
+		      </if>
+<!-- 		      <if test="createTime != null" > -->
+<!-- 		         create_time = #{createTime,jdbcType=TIMESTAMP}, -->
+<!-- 		      </if> -->
+		      <if test="authenticationState != null" >
+		         authentication_state = #{authenticationState,jdbcType=INTEGER},
+		      </if>
+		      <if test="authenticationTime != null" >
+		         authentication_time = #{authenticationTime,jdbcType=TIMESTAMP},
+		      </if>
+			</set>
+		where user_num = #{userNum,jdbcType=VARCHAR}
+	</update>
+	<select id="getSysVsInfoByAddressCode" parameterType="map" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/> 
+		FROM sys_vs_info su 
+		WHERE su.user_num in (
+			SELECT sas.admin_num FROM sys_admin_service sas WHERE sas.admin_service_distinct = #{addressCode}
+		) 
+	</select>
+	<select id="getSysVsInfoByUserNum" parameterType="map" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/>  FROM sys_vs_info su WHERE su.user_num = #{userNum} 
+	</select>
+  
+  <!-- 通过LC 编号lcNum查询VS列表-->
+  <select id="selectSysVsInfoListByLcNum" resultMap="BaseResultMap" parameterType="map" >
+    select * from 
+    			sys_vs_info a ,
+    			sys_vs_lc_relationship b ,
+    			sys_user c 
+    			where a.user_num = b.vs_num 
+    			and b.lc_num = c.user_num
+    	 <if test="lcNum != null ">
+			   and  c.user_num =#{lcNum,jdbcType=VARCHAR}
+		  </if>
+	      <if test="name != null" >
+	        and a.name = #{name,jdbcType=VARCHAR}
+	      </if>
+	      <if test="telephone != null" >
+	        and a.telephone = #{telephone,jdbcType=VARCHAR}
+	      </if>
+	      <if test="createTime != null" >
+	        and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+	      </if>
+	      
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+  </select>
+  
+  <!-- 通过LC 编号lcNum查询VS列表 数量-->
+  <select id="selectCountSysVsInfoByLcNum" resultType="int" parameterType="map" >
+    select count(1) from 
+    			sys_vs_info a ,
+    			sys_vs_lc_relationship b ,
+    			sys_user c 
+    			where a.user_num = b.vs_num 
+    			and b.lc_num = c.user_num
+    	  <if test="lcNum != null ">
+			   and  c.user_num =#{lcNum,jdbcType=VARCHAR}
+		  </if>
+	      <if test="name != null" >
+	        and a.name = #{name,jdbcType=VARCHAR}
+	      </if>
+	      <if test="telephone != null" >
+	        and a.telephone = #{telephone,jdbcType=VARCHAR}
+	      </if>
+	      <if test="createTime != null" >
+	        and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+	      </if>
+  </select>
+  
+  
+  <!-- 通过us 编userNum查询VS-->
+  <select id="selectSysVsInfoByUserNum" resultMap="BaseResultMap" parameterType="map" >
+    		select b.* from 
+    					sys_user a ,
+    					sys_vs_info b,
+    					sys_us_vs_relationship c 
+    				where 
+    					a.user_num = c.us_num 
+    					and b.user_num = c.vs_num 
+    			<if test="userNum != null ">
+			  		and  a.user_num =#{userNum,jdbcType=VARCHAR}
+		  		</if>
+  </select>
+  
+  <select id="selectVsInfoByNumOrMobile" resultMap="ResultMap" parameterType="string">
+  	SELECT
+		svi.user_num 'userNum',
+		svi.authentication_state,
+		sui.sys_user_address 'userAddress',
+		sui.`sys_user_real_name` 'name',
+		su.user_mobile 'userMobile',
+		su.user_login_name 'userLoginName',
+		su.is_frozen
+	FROM
+		sys_vs_info svi
+	LEFT JOIN sys_user su ON su.user_num = svi.user_num
+	LEFT JOIN sys_user_info sui ON sui.user_num = svi.user_num
+  	WHERE 
+  		su.user_mobile = #{userNum}
+  		OR svi.user_num = #{userNum}
+  </select>
+  
+ 
+	
+	<!-- 通过se用户编号  查询此se下vs数量 -->
+	<select id="selectCountSysVsInfoBySenum" parameterType="map" resultType="int">
+		select count(1) from sys_user a 
+			INNER JOIN sys_vs_info b on a.user_num = b.user_num
+			LEFT JOIN sys_vs_lc_relationship c on a.user_num = c.vs_num
+			LEFT JOIN sys_lc_se_relationship d on c.lc_num = d.lc_num
+			
+			LEFT JOIN sys_lc_info f on f.user_num = d.lc_num
+			LEFT JOIN sys_user k on k.user_num = d.lc_num
+			
+			LEFT JOIN sys_admin e on d.se_num = e.admin_num
+			
+			LEFT JOIN sys_admin_info h on h.admin_num = e.admin_num
+			where 1=1 
+				<if test="adminNum !=null and  adminNum != '' ">
+					and  e.admin_num = #{adminNum,jdbcType=VARCHAR}
+				</if>
+			  
+	</select>
+	
+	
+	 <!-- 通过编号  查询详细vs信息  -->
+	<select id="selectVsInfoByUserNum" parameterType="string"  resultMap="ResultMap">
+		SELECT
+			vs.user_mobile 'userMobile',
+			vs.user_login_name 'userLoginName',
+			vs.safe_score 'safeScore',
+			vs.is_frozen,
+			vsi.*, lci.sys_user_real_name 'lcInfoName',
+			lc.user_num 'lcNum',
+			lc.user_mobile 'lcMobile',
+			sei.NAME 'seInfoName',
+			se.admin_num 'seNum',
+			se.admin_mobile 'seMobile',
+			ai.`name` 'aInfoName',
+			a.admin_mobile 'aMobile',
+			a.admin_num 'aNum',
+			vs.register_location 'registerLocation'
+<!-- 			,usnum.num 'usCount' -->
+		FROM
+			(SELECT * FROM 
+			(SELECT
+				a1.user_num
+				,a1.work_year
+				,a1.telephone
+				,a1.local_farmer_count
+				,a1.local_cropland_area
+				,a1.create_time
+				,a1.authentication_time
+				,a1.authentication_state
+				,a2.sys_nickname
+				,a2.sys_user_address
+				,a2.sys_user_address_detail
+				,a2.sys_user_birthday
+				,a2.sys_user_farm_area
+				,a2.sys_user_gender
+				,a2.sys_user_ID_card
+				,a2.sys_user_photo_path
+				,a2.sys_user_real_name
+			FROM sys_vs_info a1 
+			LEFT JOIN sys_user_info a2 ON a1.user_num=a2.user_num)
+			
+			svi1 WHERE svi1.user_num=#{userNum}) vsi
+<!-- 		LEFT JOIN ( -->
+<!-- 			SELECT -->
+<!-- 				count(1) num, -->
+<!-- 				vs_num -->
+<!-- 			FROM -->
+<!-- 				sys_us_vs_relationship -->
+<!-- 			GROUP BY -->
+<!-- 				vs_num -->
+<!-- 		) usnum ON usnum.vs_num = vsi.user_num -->
+		LEFT JOIN sys_vs_lc_relationship svlr ON vsi.user_num = svlr.vs_num
+		LEFT JOIN sys_lc_se_relationship slsr ON slsr.lc_num = svlr.lc_num
+		LEFT JOIN sys_se_a_relationship ssar ON ssar.se_num = slsr.se_num
+		LEFT JOIN sys_user vs ON vs.user_num = vsi.user_num
+		LEFT JOIN sys_user lc ON lc.user_num = svlr.lc_num
+		LEFT JOIN sys_user_info lci ON lci.user_num = lc.user_num
+		LEFT JOIN sys_admin se ON se.admin_num = slsr.se_num
+		LEFT JOIN sys_admin a ON a.admin_num = ssar.a_num
+		LEFT JOIN sys_admin_info sei ON sei.admin_num = slsr.se_num
+		LEFT JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+	</select>
+	 <!-- 通过参数编号  查询vs列表信息  -->
+	<select id="selectSysVsInfoListByPrimary" parameterType="com.ync365.seed.bussiness.modules.user.bo.VsInfoSearchBO" resultMap="ResultMap">
+			SELECT
+					vs.user_mobile 'userMobile',
+					vs.user_login_name 'userLoginName',
+					vs.safe_score 'safeScore',
+			vs.is_frozen ,
+			vsi.*, lci.sys_user_real_name 'lcInfoName',
+			lc.user_num 'lcNum',
+			lc.user_mobile 'lcMobile',
+			sei.NAME 'seInfoName',
+			se.admin_num 'seNum',
+			se.admin_mobile 'seMobile',
+			ai.`name` 'aInfoName',
+			a.admin_mobile 'aMobile',
+			a.admin_num 'aNum',
+			vs.register_location 'registerLocation' 
+				FROM
+				 (SELECT
+					a1.user_num
+					,a1.work_year
+					,a1.telephone
+					,a1.local_farmer_count
+					,a1.local_cropland_area
+					,a1.create_time
+					,a1.authentication_time
+					,a1.authentication_state
+					,a2.sys_nickname
+					,a2.sys_user_address
+					,a2.sys_user_address_detail
+					,a2.sys_user_birthday
+					,a2.sys_user_farm_area
+					,a2.sys_user_gender
+					,a2.sys_user_ID_card
+					,a2.sys_user_photo_path
+					,a2.sys_user_real_name
+				FROM sys_vs_info a1 
+				LEFT JOIN sys_user_info a2 ON a1.user_num=a2.user_num) vsi
+				<!-- left join (select count(1) num,vs_num from sys_us_vs_relationship GROUP BY vs_num) usnum on usnum.vs_num=vsi.user_num -->
+				 left JOIN sys_vs_lc_relationship svlr ON vsi.user_num = svlr.vs_num
+				 left JOIN sys_lc_se_relationship slsr ON slsr.lc_num = svlr.lc_num
+				 left JOIN sys_se_a_relationship ssar ON ssar.se_num = slsr.se_num
+				 left JOIN sys_user vs on vs.user_num=vsi.user_num
+				 left JOIN sys_user lc ON lc.user_num = svlr.lc_num
+				 left JOIN sys_user_info lci ON lci.user_num = lc.user_num
+				
+				 left JOIN sys_admin se ON se.admin_num = slsr.se_num
+				 left JOIN sys_admin a ON a.admin_num = ssar.a_num
+				 left JOIN sys_admin_info sei ON sei.admin_num = slsr.se_num
+				 left JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+				<where>
+				<if test="seAdminNum !=null and seAdminNum != '' ">
+					and  se.admin_num = #{seAdminNum,jdbcType=VARCHAR}
+				</if>
+				<!-- 角色为A+时 查询 信息-->
+				<if test="aAdminNum !=null and aAdminNum != '' ">
+					and  a.admin_num = #{aAdminNum,jdbcType=VARCHAR}
+				</if>
+				<if test="lcNum !=null and lcNum != '' ">
+					and  lc.user_num = #{lcNum,jdbcType=VARCHAR}
+				</if>
+				<!-- 名称 -->
+				<if test="nameSearch !=null and nameSearch != '' ">
+					and  vsi.sys_user_real_name = #{nameSearch,jdbcType=VARCHAR}
+				</if>
+				<!-- 手机号 -->
+				<if test="userMobileSearch !=null and userMobileSearch != '' ">
+					and  vs.user_mobile = #{userMobileSearch,jdbcType=VARCHAR}
+				</if>
+				<!-- 编号 -->
+				<if test="userNumSearch !=null and userNumSearch != '' ">
+					and  vsi.user_num = #{userNumSearch,jdbcType=VARCHAR}
+				</if>
+				<!-- 激活状态 -->
+				<if test="isFrozenSearch !=null and isFrozenSearch != '' ">
+					and vs.is_frozen = #{isFrozenSearch,jdbcType=BIT}
+				</if>
+				<!-- 搜索  注册时间 区间  -->
+				<if test="beginTimeSearch !=null and beginTimeSearch != '' ">
+					and   <![CDATA[vs.create_time >= #{beginTimeSearch}]]>
+				</if>
+				<if test="endTimeSearch !=null and endTimeSearch != '' ">
+					and  <![CDATA[vs.create_time < #{endTimeSearch}]]>
+				</if>
+				<!-- lc查询条件 名称或手机号  -->
+				<if test="lcInfoSearch !=null and lcInfoSearch != '' ">
+					and   (lci.sys_user_real_name = #{lcInfoSearch,jdbcType=VARCHAR} or lc.user_mobile = #{lcInfoSearch,jdbcType=VARCHAR})
+				</if>
+				<!-- se查询条件 名称或手机号  -->
+				<if test="seInfoSearch !=null and seInfoSearch != '' ">
+					and   (sei.name = #{seInfoSearch,jdbcType=VARCHAR} or se.admin_mobile = #{seInfoSearch,jdbcType=VARCHAR})
+				</if>
+				<!-- a+查询条件 名称或手机号  -->
+				<if test="aInfoSearch !=null and aInfoSearch != '' ">
+					and   (ai.name = #{aInfoSearch,jdbcType=VARCHAR} or a.admin_mobile = #{aInfoSearch,jdbcType=VARCHAR})
+				</if>
+				<!-- 服务区域查询  -->
+				<if test="serviceDistinct !=null">
+					and vsi.user_num in (select admin_num from sys_admin_service where admin_service_distinct=#{serviceDistinct})
+				</if>
+				<!-- vs审核状态  -->
+				<if test="authenticationStateSearch !=null  ">
+					and   (vsi.authentication_state = #{authenticationStateSearch,jdbcType=INTEGER} )
+				</if>
+				
+				<!-- 绑定us数量 区间 
+				<if test="usCountBegin !=null and usCountBegin != '' ">
+					and   <![CDATA[usnum.num >= #{usCountBegin}]]>
+				</if>
+				<if test="usCountEnd !=null and usCountEnd != '' ">
+					and  <![CDATA[usnum.num < #{usCountEnd}]]>
+				</if>-->
+			 	 </where>
+			 	 order by vsi.create_time desc
+				<if test="pageIndex !=null and pageSize != null">
+					limit ${pageIndex},${pageSize}
+				</if>
+		
+	</select>
+	
+	<!-- 通过se用户编号  查询此se下vs数量 -->
+	<select id="selectCountSysVsInfoByPrimary" parameterType="com.ync365.seed.bussiness.modules.user.bo.VsInfoSearchBO" resultType="int">
+		select count(1) FROM
+				 (SELECT
+					a1.user_num
+					,a1.work_year
+					,a1.telephone
+					,a1.local_farmer_count
+					,a1.local_cropland_area
+					,a1.create_time
+					,a1.authentication_time
+					,a1.authentication_state
+					,a2.sys_nickname
+					,a2.sys_user_address
+					,a2.sys_user_address_detail
+					,a2.sys_user_birthday
+					,a2.sys_user_farm_area
+					,a2.sys_user_gender
+					,a2.sys_user_ID_card
+					,a2.sys_user_photo_path
+					,a2.sys_user_real_name
+				FROM sys_vs_info a1 
+				LEFT JOIN sys_user_info a2 ON a1.user_num=a2.user_num) vsi
+				<!-- left join (select count(1) num,vs_num from sys_us_vs_relationship GROUP BY vs_num) usnum on usnum.vs_num=vsi.user_num -->
+				 left JOIN sys_vs_lc_relationship svlr ON vsi.user_num = svlr.vs_num
+				 left JOIN sys_lc_se_relationship slsr ON slsr.lc_num = svlr.lc_num
+				 left JOIN sys_se_a_relationship ssar ON ssar.se_num = slsr.se_num
+				 left JOIN sys_user vs on vs.user_num=vsi.user_num
+				 left JOIN sys_user lc ON lc.user_num = svlr.lc_num
+				 left JOIN sys_user_info lci ON lci.user_num = lc.user_num
+				
+				 left JOIN sys_admin se ON se.admin_num = slsr.se_num
+				 left JOIN sys_admin a ON a.admin_num = ssar.a_num
+				 left JOIN sys_admin_info sei ON sei.admin_num = slsr.se_num
+				 left JOIN sys_admin_info ai ON ai.admin_num = ssar.a_num
+				<where>
+				<if test="seAdminNum !=null and seAdminNum != '' ">
+					and  se.admin_num = #{seAdminNum,jdbcType=VARCHAR}
+				</if>
+				<!-- 角色为A+时 查询 信息-->
+				<if test="aAdminNum !=null and aAdminNum != '' ">
+					and  a.admin_num = #{aAdminNum,jdbcType=VARCHAR}
+				</if>
+				<if test="lcNum !=null and lcNum != '' ">
+					and  lc.user_num = #{lcNum,jdbcType=VARCHAR}
+				</if>
+				<!-- 名称 -->
+				<if test="nameSearch !=null and nameSearch != '' ">
+					and  vsi.sys_user_real_name = #{nameSearch,jdbcType=VARCHAR}
+				</if>
+				<!-- 手机号 -->
+				<if test="userMobileSearch !=null and userMobileSearch != '' ">
+					and  vs.user_mobile = #{userMobileSearch,jdbcType=VARCHAR}
+				</if>
+				<!-- 编号 -->
+				<if test="userNumSearch !=null and userNumSearch != '' ">
+					and  vsi.user_num = #{userNumSearch,jdbcType=VARCHAR}
+				</if>
+				<!-- 激活状态 -->
+				<if test="isFrozenSearch !=null and isFrozenSearch != '' ">
+					and vs.is_frozen = #{isFrozenSearch,jdbcType=BIT}
+				</if>
+				<!-- 搜索  注册时间 区间  -->
+				<if test="beginTimeSearch !=null and beginTimeSearch != '' ">
+					and   <![CDATA[vs.create_time >= #{beginTimeSearch}]]>
+				</if>
+				<if test="endTimeSearch !=null and endTimeSearch != '' ">
+					and  <![CDATA[vs.create_time < #{endTimeSearch}]]>
+				</if>
+				<!-- lc查询条件 名称或手机号  -->
+				<if test="lcInfoSearch !=null and lcInfoSearch != '' ">
+					and   (lci.sys_user_real_name = #{lcInfoSearch,jdbcType=VARCHAR} or lc.user_mobile = #{lcInfoSearch,jdbcType=VARCHAR})
+				</if>
+				<!-- se查询条件 名称或手机号  -->
+				<if test="seInfoSearch !=null and seInfoSearch != '' ">
+					and   (sei.name = #{seInfoSearch,jdbcType=VARCHAR} or se.admin_mobile = #{seInfoSearch,jdbcType=VARCHAR})
+				</if>
+				<!-- a+查询条件 名称或手机号  -->
+				<if test="aInfoSearch !=null and aInfoSearch != '' ">
+					and   (ai.name = #{aInfoSearch,jdbcType=VARCHAR} or a.admin_mobile = #{aInfoSearch,jdbcType=VARCHAR})
+				</if>
+				<if test="serviceDistinct !=null">
+					and vsi.user_num in (select admin_num from sys_admin_service where admin_service_distinct=#{serviceDistinct})
+				</if>
+				<!-- vs审核状态  -->
+				<if test="authenticationStateSearch !=null  ">
+					and   (vsi.authentication_state = #{authenticationStateSearch,jdbcType=INTEGER} )
+				</if>
+				<!-- 绑定us数量 区间 
+				<if test="usCountBegin !=null and usCountBegin != '' ">
+					and   <![CDATA[usnum.num >= #{usCountBegin}]]>
+				</if>
+				<if test="usCountEnd !=null and usCountEnd != '' ">
+					and  <![CDATA[usnum.num < #{usCountEnd}]]>
+				</if>-->
+			  	</where>
+	</select>
+</mapper>

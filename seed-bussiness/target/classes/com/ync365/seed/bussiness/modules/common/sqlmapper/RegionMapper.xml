@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.common.dao.RegionDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.common.entity.Region" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="CHAR" />
+    <result column="code_v" property="codeV" jdbcType="CHAR" />
+    <result column="level" property="level" jdbcType="TINYINT" />
+    <result column="is_show" property="isShow" jdbcType="TINYINT" />
+    <result column="points" property="points" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pid, name, code, code_v, level, is_show, points
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_region
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_region
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.common.entity.Region" >
+    insert into sys_region (id, pid, name, code, 
+      code_v, level, is_show, 
+      points)
+    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{name,jdbcType=CHAR}, #{code,jdbcType=CHAR}, 
+      #{codeV,jdbcType=CHAR}, #{level,jdbcType=TINYINT}, #{isShow,jdbcType=TINYINT}, 
+      #{points,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.common.entity.Region" >
+    insert into sys_region
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="codeV != null" >
+        code_v,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="isShow != null" >
+        is_show,
+      </if>
+      <if test="points != null" >
+        points,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=CHAR},
+      </if>
+      <if test="codeV != null" >
+        #{codeV,jdbcType=CHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=TINYINT},
+      </if>
+      <if test="isShow != null" >
+        #{isShow,jdbcType=TINYINT},
+      </if>
+      <if test="points != null" >
+        #{points,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.common.entity.Region" >
+    update sys_region
+    <set >
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=CHAR},
+      </if>
+      <if test="codeV != null" >
+        code_v = #{codeV,jdbcType=CHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=TINYINT},
+      </if>
+      <if test="isShow != null" >
+        is_show = #{isShow,jdbcType=TINYINT},
+      </if>
+      <if test="points != null" >
+        points = #{points,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.common.entity.Region" >
+    update sys_region
+    set pid = #{pid,jdbcType=INTEGER},
+      name = #{name,jdbcType=CHAR},
+      code = #{code,jdbcType=CHAR},
+      code_v = #{codeV,jdbcType=CHAR},
+      level = #{level,jdbcType=TINYINT},
+      is_show = #{isShow,jdbcType=TINYINT},
+      points = #{points,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <select id="selectListByLevel" resultMap="BaseResultMap" parameterType="java.util.List">        
+        select
+			<include refid="Base_Column_List" />
+        from
+       	 sys_region a
+        <if test="levelList.size() > 0">
+         	 where a.level in  
+	         <foreach collection="levelList" item="level" index="index"
+	            open="(" close=")" separator=",">
+	            #{level}
+	        </foreach>
+        </if>
+    </select> 
+	<select id="searchPage" resultMap="BaseResultMap" parameterType="map">        
+	        select
+		<include refid="Base_Column_List" />
+	        from sys_region a
+	    <where>
+			<if test="name != null and name !='null' and name != ''">
+				and name like '%${name}%'
+			</if>
+	    </where>
+<!--      	<if test="pageIndex != null and pageIndex != '' and pageSize != null and pageSize != ''"> -->
+			limit #{pageIndex}  ,   #{pageSize}
+<!-- 		</if> -->
+	</select> 
+    <select id="searchPageCount" resultType="Integer" parameterType="map">
+		select count(*) cnt from sys_region
+		<where>
+			<if test="name != null and name !='null' and name != ''">
+				and name like concat('%',#{name},'%' )  
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="selectRegionByParentId" resultMap="BaseResultMap" parameterType="INTEGER">        
+        select
+			<include refid="Base_Column_List" />
+        from
+       	 sys_region a
+         where pid = #{pid,jdbcType=INTEGER}
+    </select> 
+    
+    <!-- 根据编码得到地区 -->
+    <select id="selectRegionByCode" resultMap="BaseResultMap" >
+    	select
+			<include refid="Base_Column_List" />
+        from
+       	 sys_region a
+         where code = #{code}
+    </select>
+    
+    <!-- 省市列表 -->
+    <select id="selectRegionProvinceCityList" resultMap="BaseResultMap" >
+    	 select 
+    	 <include refid="Base_Column_List" />
+    	 from 
+    	 (select 
+    	 	<include refid="Base_Column_List" />
+    	  from sys_region b where b.pid  in ( select a.id from sys_region a where a.pid= 0  )
+			union all
+		  select 
+		  <include refid="Base_Column_List" />
+		  from sys_region a where a.pid = 0 )  a order by a.code
+    </select>
+    
+    <!-- 省市县列表 -->
+    <select id="selectRegionProvinceCityCountyList" resultMap="BaseResultMap">
+    	select * from sys_region a where a.pid = 0 
+		union all
+		select * from sys_region b where b.pid in (select a.id from sys_region a where a.pid = 0 )
+		union all
+		select * from sys_region c where c.pid in ( select b.id from sys_region b where b.pid in (select a.id from sys_region a where a.pid = 0 ))
+    </select>
+    
+    
+    <select id="selectAllRegion" parameterType="com.ync365.seed.bussiness.modules.common.entity.Region" resultType="com.ync365.seed.bussiness.modules.common.entity.Region">
+    	SELECT * FROM sys_region
+    	<where>
+    	  <if test="pid != null" >
+	        AND pid = #{pid,jdbcType=INTEGER}
+	      </if>
+	      <if test="name != null" >
+	        AND name = #{name,jdbcType=CHAR}
+	      </if>
+	      <if test="code != null" >
+	        AND code = #{code,jdbcType=CHAR}
+	      </if>
+	      <if test="codeV != null" >
+	        AND code_v = #{codeV,jdbcType=CHAR}
+	      </if>
+	      <if test="level != null" >
+	        AND level = #{level,jdbcType=TINYINT}
+	      </if>
+	      <if test="isShow != null" >
+	        AND is_show = #{isShow,jdbcType=TINYINT}
+	      </if>
+	      <if test="points != null" >
+	        AND points = #{points,jdbcType=CHAR}
+	      </if>
+    	</where>
+    </select>
+</mapper>

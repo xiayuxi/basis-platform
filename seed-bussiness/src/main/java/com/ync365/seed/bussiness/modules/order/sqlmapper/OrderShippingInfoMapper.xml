@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderShippingInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderShippingInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+    <result column="prepared_no" property="preparedNo" jdbcType="CHAR" />
+    <result column="prepared_time" property="preparedTime" jdbcType="TIMESTAMP" />
+    <result column="stock_no" property="stockNo" jdbcType="CHAR" />
+    <result column="stock_time" property="stockTime" jdbcType="TIMESTAMP" />
+    <result column="delively_no" property="delivelyNo" jdbcType="CHAR" />
+    <result column="delively_time" property="delivelyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, order_no, order_type, prepared_no, prepared_time, stock_no, stock_time, 
+    delively_no, delively_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_shipping_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_shipping_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderShippingInfo" >
+    insert into order_shipping_info (id, order_id, order_no, 
+      order_type, prepared_no, prepared_time, 
+      stock_no, stock_time, delively_no, 
+      delively_time)
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{orderNo,jdbcType=CHAR}, 
+      #{orderType,jdbcType=INTEGER}, #{preparedNo,jdbcType=CHAR}, #{preparedTime,jdbcType=TIMESTAMP}, 
+      #{stockNo,jdbcType=CHAR}, #{stockTime,jdbcType=TIMESTAMP}, #{delivelyNo,jdbcType=CHAR}, 
+      #{delivelyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderShippingInfo" >
+    insert into order_shipping_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="orderType != null" >
+        order_type,
+      </if>
+      <if test="preparedNo != null" >
+        prepared_no,
+      </if>
+      <if test="preparedTime != null" >
+        prepared_time,
+      </if>
+      <if test="stockNo != null" >
+        stock_no,
+      </if>
+      <if test="stockTime != null" >
+        stock_time,
+      </if>
+      <if test="delivelyNo != null" >
+        delively_no,
+      </if>
+      <if test="delivelyTime != null" >
+        delively_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="preparedNo != null" >
+        #{preparedNo,jdbcType=CHAR},
+      </if>
+      <if test="preparedTime != null" >
+        #{preparedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stockNo != null" >
+        #{stockNo,jdbcType=CHAR},
+      </if>
+      <if test="stockTime != null" >
+        #{stockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delivelyNo != null" >
+        #{delivelyNo,jdbcType=CHAR},
+      </if>
+      <if test="delivelyTime != null" >
+        #{delivelyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderShippingInfo" >
+    update order_shipping_info
+    <set >
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderType != null" >
+        order_type = #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="preparedNo != null" >
+        prepared_no = #{preparedNo,jdbcType=CHAR},
+      </if>
+      <if test="preparedTime != null" >
+        prepared_time = #{preparedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stockNo != null" >
+        stock_no = #{stockNo,jdbcType=CHAR},
+      </if>
+      <if test="stockTime != null" >
+        stock_time = #{stockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delivelyNo != null" >
+        delively_no = #{delivelyNo,jdbcType=CHAR},
+      </if>
+      <if test="delivelyTime != null" >
+        delively_time = #{delivelyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderShippingInfo" >
+    update order_shipping_info
+    set order_id = #{orderId,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=CHAR},
+      order_type = #{orderType,jdbcType=INTEGER},
+      prepared_no = #{preparedNo,jdbcType=CHAR},
+      prepared_time = #{preparedTime,jdbcType=TIMESTAMP},
+      stock_no = #{stockNo,jdbcType=CHAR},
+      stock_time = #{stockTime,jdbcType=TIMESTAMP},
+      delively_no = #{delivelyNo,jdbcType=CHAR},
+      delively_time = #{delivelyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

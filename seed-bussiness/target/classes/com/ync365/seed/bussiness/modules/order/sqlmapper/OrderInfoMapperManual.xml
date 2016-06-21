@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderInfoMapperManual">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.order.entity.OrderInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+		<result column="coupon_amount" property="couponAmount"
+			jdbcType="DECIMAL" />
+		<result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+		<result column="actual_amount" property="actualAmount"
+			jdbcType="DECIMAL" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+		<result column="order_source" property="orderSource" jdbcType="INTEGER" />
+		<result column="has_sub" property="hasSub" jdbcType="INTEGER" />
+		<result column="user_num" property="userNum" jdbcType="CHAR" />
+		<result column="pay_type" property="payType" jdbcType="INTEGER" />
+		<result column="pay_way" property="payWay" jdbcType="INTEGER" />
+		<result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+		<result column="signin_time" property="signinTime" jdbcType="TIMESTAMP" />
+		<result column="is_del" property="isDel" jdbcType="INTEGER" />
+		<result column="del_time" property="delTime" jdbcType="TIMESTAMP" />
+		<result column="is_rec_del" property="isRecDel" jdbcType="INTEGER" />
+		<result column="rec_del_time" property="recDelTime" jdbcType="TIMESTAMP" />
+		<result column="version" property="version" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, order_no, total_amount, coupon_amount, save_amount, actual_amount,
+		create_time,
+		order_status, order_source, has_sub, user_num, pay_type, pay_way, pay_time,
+		signin_time,
+		is_del, del_time, is_rec_del, rec_del_time, version
+	</sql>
+
+	<resultMap id="OrderInfoBOMap"
+		type="com.ync365.seed.bussiness.modules.order.bo.OrderInfoBO">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="CHAR" />
+		<result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+		<result column="coupon_amount" property="couponAmount"
+			jdbcType="DECIMAL" />
+		<result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+		<result column="actual_amount" property="actualAmount"
+			jdbcType="DECIMAL" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+		<result column="order_source" property="orderSource" jdbcType="INTEGER" />
+		<result column="has_sub" property="hasSub" jdbcType="INTEGER" />
+		<result column="user_num" property="userNum" jdbcType="CHAR" />
+		<result column="pay_type" property="payType" jdbcType="INTEGER" />
+		<result column="pay_way" property="payWay" jdbcType="INTEGER" />
+		<result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+		<result column="signin_time" property="signinTime" jdbcType="TIMESTAMP" />
+		<result column="is_del" property="isDel" jdbcType="INTEGER" />
+		<result column="del_time" property="delTime" jdbcType="TIMESTAMP" />
+		<result column="is_rec_del" property="isRecDel" jdbcType="INTEGER" />
+		<result column="rec_del_time" property="recDelTime" jdbcType="TIMESTAMP" />
+		<result column="version" property="version" jdbcType="INTEGER" />
+		<!-- 以下是供应商或入驻商或pop的订单表字段信息 -->
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_sub_no" property="orderSubNo" jdbcType="CHAR" />
+		<result column="store_id" property="storeId" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- 根据订单id取消订单 -->
+	<update id="cancleOrder" parameterType="java.lang.Integer">
+		update order_info set
+		is_del = 1 where order_id =
+		#{orderId,jdbcType=INTEGER}
+	</update>
+	<!-- 根据订单id修改订单状态 -->
+	<update id="updateOrderStatusByOrderId" parameterType="map">
+		update order_info
+		<set>
+			<if test="toStatus != null">
+				order_status = #{toStatus,jdbcType=INTEGER}
+			</if>
+		</set>
+		<where>
+			<if test="orderId != null">
+				and id = #{orderId,jdbcType=INTEGER}
+			</if>
+			<if test="orderInfoBefStatus">
+				and order_status =
+				#{orderInfoBefStatus,jdbcType=INTEGER}
+			</if>
+
+		</where>
+	</update>
+	<!-- 根据用户编号获取订单列表 -->
+	<select id="getOrderListByUserNum" parameterType="string"
+		resultMap="OrderInfoBOMap">
+		SELECT t1.*,t2.* FROM order_info AS t1
+		LEFT JOIN order_store AS t2 ON t2.order_id=t1.id
+		WHERE t1.user_num = #{userNum,jdbcType=CHAR}
+	</select>
+	<!-- 根据供应商的店铺id获取供应商的订单列表 -->
+	<select id="getSupplierOrderListByStoreId" parameterType="java.lang.Integer"
+		resultMap="OrderInfoBOMap">
+		SELECT t1.*,t2.* FROM order_info AS t1
+		LEFT JOIN order_store AS t2 ON t2.order_id = t1.id
+		WHERE t2.store_id = #{storeId,jdbcType=INTEGER} and t2.store_id !=-1
+	</select>
+	<select id="selectOrderListByIds" resultMap="BaseResultMap"
+		parameterType="list">
+		select
+		<include refid="Base_Column_List" />
+		from order_info
+		where
+		1=1
+		<if test="list != null and list.size > 0">
+			and id in
+			<foreach item="item" collection="list" open="(" close=")"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<!-- 根据订单id查询已退货的订单 -->
+	<select id="selectReturnOrderById" parameterType="Integer"
+		resultMap="BaseResultMap">
+		SELECT * FROM order_info WHERE order_status = 12 and id =
+		#{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectOrderByOrderNo" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		order_info
+		WHERE
+		order_no = #{orderNo}
+	</select>
+	<select id="selectOrderNeedCancel" parameterType="map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_info
+		<where>
+			<if test="currentDate != null">
+				and create_time &lt;
+				#{currentDate,jdbcType=TIMESTAMP}
+			</if>
+			<if test="status != null">
+				and order_status = #{status,jdbcType=TIMESTAMP}
+			</if>
+		</where>
+	</select>
+</mapper>

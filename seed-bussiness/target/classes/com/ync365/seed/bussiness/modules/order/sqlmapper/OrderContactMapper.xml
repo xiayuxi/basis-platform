@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderContactMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderContact" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="CHAR" />
+    <result column="lc_num" property="lcNum" jdbcType="CHAR" />
+    <result column="vs_num" property="vsNum" jdbcType="CHAR" />
+    <result column="us_num" property="usNum" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_no, lc_num, vs_num, us_num, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_contact
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_contact
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderContact" >
+    insert into order_contact (id, order_no, lc_num, 
+      vs_num, us_num, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=CHAR}, #{lcNum,jdbcType=CHAR}, 
+      #{vsNum,jdbcType=CHAR}, #{usNum,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderContact" >
+    insert into order_contact
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="lcNum != null" >
+        lc_num,
+      </if>
+      <if test="vsNum != null" >
+        vs_num,
+      </if>
+      <if test="usNum != null" >
+        us_num,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="lcNum != null" >
+        #{lcNum,jdbcType=CHAR},
+      </if>
+      <if test="vsNum != null" >
+        #{vsNum,jdbcType=CHAR},
+      </if>
+      <if test="usNum != null" >
+        #{usNum,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderContact" >
+    update order_contact
+    <set >
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="lcNum != null" >
+        lc_num = #{lcNum,jdbcType=CHAR},
+      </if>
+      <if test="vsNum != null" >
+        vs_num = #{vsNum,jdbcType=CHAR},
+      </if>
+      <if test="usNum != null" >
+        us_num = #{usNum,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.order.entity.OrderContact" >
+    update order_contact
+    set order_no = #{orderNo,jdbcType=CHAR},
+      lc_num = #{lcNum,jdbcType=CHAR},
+      vs_num = #{vsNum,jdbcType=CHAR},
+      us_num = #{usNum,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

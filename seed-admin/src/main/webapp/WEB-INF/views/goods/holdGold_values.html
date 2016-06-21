@@ -1,0 +1,145 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<!-- jquery-form.js -->
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>  
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>  
+
+<body>
+	<div>添加佣金</div></br>
+	<div>
+		<table id="t2">
+			<tr>
+				<td>村站佣金（元）:</td>
+				<td><input name="holdGold.vsAmount" id="vsAmount" pattern="required" value="0.000" onblur="check(this)"/></td>
+			</tr>
+			<tr>
+				<td>LC佣金（元）:</td>
+				<td><input name="holdGold.lcAmount" id="lcAmount" pattern="required" value="0.000" onblur="check(this)"/>
+				<input type="hidden" name="holdGold.engineerAmount" id="engineerAmount" pattern="required" value="0.000"/>
+				<input type="hidden" name="holdGold.aAmount" id="aAmount" pattern="required" value="0.000"/>
+				<input type="hidden" name="holdGold.integrationCosts" id="integrationCosts" pattern="required" value="0.000"/>
+				<input type="hidden" name="holdGold.supplierAmount" id="supplierAmount" pattern="required" value="0.000"/>
+				</td>
+			</tr>
+			<tr>
+				<td>平台价:</td>
+				<td><input name="costPrice" id="costPrice" pattern="required" readonly="readonly"/> * <input type="text" name="holdGold.percent" id="percent" onkeyup="calc()">%</input>
+ 				</td>
+			</tr>
+			<tr>
+				<td>统筹促销费（元）:</td>
+				<td><input name="holdGold.manpowerCosts" id="manpowerCosts" pattern="required" value="0.000" readonly="readonly"
+				style="color:RED" onfocus="if(this.value=='')this.value=''" onblur="if (this.value=='')this.value=''"/></td>
+			</tr>
+			
+			<tr>
+				<td> 备注:</td>
+				<td>统筹促销费的结算，平台价乘以%值，得出统筹促销费；如不是百分%，可直接输入价格，公式不做变动；</td>
+			</tr>
+		</table>
+	</div>
+	<div class="alone_footer tc">
+		<button class="focus_button" onclick="formatValue()">保存佣金</button>
+	</div>
+	<script type="text/javascript">
+	function check(e){
+		var re=/^[0-9]\d{0,7}(.\d{0,3})?$/;
+	    if (e.value != "") { 
+	        if (!re.test(e.value)) { 
+	            alert("请输入八位之内整数，小数不超过三位"); 
+	            e.value = ""; 
+	            e.focus(); 
+	        } 
+	    }  
+	}
+	  	function calc(){
+	 	   var calcCostPrice =$("#costPrice").val();
+	 	   var calcPercent =$("#percent").val();
+	 	   
+	 	   if(calcPercent != ""){
+	 		  var c=calcCostPrice*(calcPercent/100);
+			  c=c.toFixed(3);
+			  $("#manpowerCosts").val(c);
+	 	   }
+	  	}
+	  	
+	   $(function (){
+		   var cost_price = art.dialog.data('cost_price');
+		   $("#costPrice").val(cost_price);
+		   var cost_price_artdialog=$("#costPrice").val();
+		   var current_value = art.dialog.data('current_value');
+		   var status=art.dialog.data('preview');
+		   if(status!=null){
+			    var values = new Array();
+				values = current_value.split(",");
+				$("#percent").val(values[7]);
+				$("#manpowerCosts").val(values[6]);
+				$("input").prop("readonly", true);
+		   }
+		   
+		if (current_value != "") {
+				var values = new Array();
+				values = current_value.split(",");
+				$("#costPrice").val(cost_price);
+				$("#manpowerCosts").val(values[6]);
+				$("#percent").val(values[7]);
+			} else {
+				$("#costPrice").val(cost_price);
+			}
+		})
+		
+		function formatValue(e) {
+
+			var attr_values = new Array();
+			var num = 0;
+			var vsAmount = $("#vsAmount").val();
+			var supplierAmount = $("#supplierAmount").val();
+			var lcAmount = $("#lcAmount").val();
+			var engineerAmount = $("#engineerAmount").val();
+			var aAmount = $("#aAmount").val();
+			var integrationCosts = $("#integrationCosts").val();
+			var manpowerCosts = $("#manpowerCosts").val();
+			var percent =$("#percent").val();
+			
+			var cost_price = art.dialog.data('cost_price');
+			
+			if(eval(manpowerCosts) >  eval(cost_price)){
+				alert("统筹促销费不能大于平台价格");
+				return false;
+			}
+
+			attr_values[0] = vsAmount;
+			attr_values[1] = supplierAmount;
+			attr_values[2] = lcAmount;
+			attr_values[3] = engineerAmount;
+			attr_values[4] = aAmount;
+			attr_values[5] = integrationCosts;
+			attr_values[6] = manpowerCosts;
+			attr_values[7] = percent;
+
+			if (e == null)
+				parent.updAttrValue(attr_values);
+			return false;
+		}
+
+		//回显部分	
+		var current_value = art.dialog.data('current_value');
+		var row = art.dialog.data('attr_num');
+
+		if (current_value != "") {
+			var values = new Array();
+			values = current_value.split(",");
+			$("#vsAmount").val(values[0]);
+			$("#supplierAmount").val(values[1]);
+			$("#lcAmount").val(values[2]);
+			$("#engineerAmount").val(values[3]);
+			$("#aAmount").val(values[4]);
+			$("#integrationCosts").val(values[5]);
+		}
+	</script>
+</body>
+</html>

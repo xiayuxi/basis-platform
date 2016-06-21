@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopInfoMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ync365.seed.bussiness.modules.user.entity.SysPopInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="pop_num" property="popNum" jdbcType="VARCHAR" />
+		<result column="pop_real_name" property="popRealName" jdbcType="VARCHAR" />
+		<result column="pop_nickname" property="popNickname" jdbcType="VARCHAR" />
+		<result column="pop_gender" property="popGender" jdbcType="INTEGER" />
+		<result column="pop_ID_card" property="popIdCard" jdbcType="VARCHAR" />
+		<result column="pop_birthday" property="popBirthday" jdbcType="TIMESTAMP" />
+		<result column="pop_photo_path" property="popPhotoPath"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="ResultMap"
+		type="com.ync365.seed.bussiness.modules.user.bo.PopInfoBO" extends="BaseResultMap">
+		<result column="pop_login_name" property="popLoginName"
+			jdbcType="VARCHAR" />
+		<result column="pop_password" property="popPassword" jdbcType="VARCHAR" />
+		<result column="safe_score" property="safeScore" jdbcType="INTEGER" />
+		<result column="pop_mobile" property="popMobile" jdbcType="VARCHAR" />
+		<result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="last_opt_name" property="lastOptName" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDel" jdbcType="BIT" />
+		<result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+		<result column="is_authentication" property="isAuthentication"
+			jdbcType="BIT" />
+		<result column="before_login_time" property="beforeLoginTime"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, pop_num, pop_real_name, pop_nickname,pop_gender,
+		pop_ID_card, pop_birthday,
+		pop_photo_path
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_info
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		sys_pop_info
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopInfo">
+		insert into sys_pop_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="popNum != null">
+				pop_num,
+			</if>
+			<if test="popRealName != null">
+				pop_real_name,
+			</if>
+			<if test="popNickname != null">
+				pop_nickname,
+			</if>
+			<if test="popGender != null">
+				pop_gender,
+			</if>
+			<if test="popIdCard != null">
+				pop_ID_card,
+			</if>
+			<if test="popBirthday != null">
+				pop_birthday,
+			</if>
+			<if test="popPhotoPath != null">
+				pop_photo_path,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="popNum != null">
+				#{popNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popRealName != null">
+				#{popRealName,jdbcType=VARCHAR},
+			</if>
+			<if test="popNickname != null">
+				#{popNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="popGender != null">
+				#{popGender,jdbcType=INTEGER},
+			</if>
+			<if test="popIdCard != null">
+				#{popIdCard,jdbcType=VARCHAR},
+			</if>
+			<if test="popBirthday != null">
+				#{popBirthday,jdbcType=TIMESTAMP},
+			</if>
+			<if test="popPhotoPath != null">
+				#{popPhotoPath,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopInfo">
+		update sys_pop_info
+		<set>
+			<if test="popNum != null">
+				pop_num= #{popNum,jdbcType=VARCHAR},
+			</if>
+			<if test="popRealName != null">
+				pop_real_name = #{popRealName,jdbcType=VARCHAR},
+			</if>
+			<if test="popNickname != null">
+				pop_nickname = #{popNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="popGender != null">
+				pop_gender = #{popGender,jdbcType=INTEGER},
+			</if>
+			<if test="popIdCard != null">
+				pop_ID_card = #{popIdCard,jdbcType=VARCHAR},
+			</if>
+			<if test="popBirthday != null">
+				pop_birthday = #{popBirthday,jdbcType=TIMESTAMP},
+			</if>
+			<if test="popPhotoPath != null">
+				pop_photo_path = #{popPhotoPath,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where pop_num = #{popNum,jdbcType=INTEGER}
+	</update>
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_info
+		<where>
+			<if test="popNum != null">
+				and pop_num = #{popNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popRealName != null">
+				and pop_real_name = #{popRealName,jdbcType=VARCHAR}
+			</if>
+			<if test="popNickname != null">
+				and pop_nickname = #{popNickname,jdbcType=VARCHAR}
+			</if>
+			<if test="popGender != null">
+				and pop_gender = #{popGender,jdbcType=INTEGER}
+			</if>
+			<if test="popIdCard != null">
+				and pop_ID_card = #{popIdCard,jdbcType=VARCHAR}
+			</if>
+			<if test="popBirthday != null">
+				and pop_birthday = #{popBirthday,jdbcType=TIMESTAMP}
+			</if>
+			<if test="popPhotoPath != null">
+				and pop_photo_path = #{popPhotoPath,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+
+
+
+	<!-- 查询popinfo信息列表 -->
+	<select id="selectPopInfoByPrimary"
+		parameterType="com.ync365.seed.bussiness.modules.user.bo.PopInfoSearchBO"
+		resultMap="ResultMap">
+		select
+		a.pop_num ,a.pop_login_name,a.safe_score,
+		a.pop_mobile ,a.pop_store_num,
+		a.create_time,a.before_login_time,
+		a.is_authentication,a.is_del,
+		a.is_frozen,a.last_opt_name,
+		a.update_time,a.pop_password,
+		b.pop_birthday,b.pop_gender,
+		b.pop_ID_card,b.pop_nickname,
+		b.pop_photo_path,b.pop_real_name,
+		b.id
+		from sys_pop a
+		LEFT JOIN sys_pop_info b on a.pop_num = b.pop_num
+		<where>
+			<if test="popNum != null and popNum !=''">
+				AND a.pop_num = #{popNum}
+			</if>
+			<if test="popLoginName != null and popLoginName !=''">
+				AND a.pop_login_name = #{popLoginName}
+			</if>
+			<if test="popMobile != null and popMobile !=''">
+				AND a.pop_mobile = #{popMobile}
+			</if>
+			<if test="popStoreNum != null and popStoreNum !=''">
+				AND a.pop_store_num = #{popStoreNum}
+			</if>
+			<if test="createTimeBegin != null">
+					<![CDATA[AND a.create_time >= #{createTimeBegin}]]>
+			</if>
+			<if test="createTimeEed != null">
+					<![CDATA[AND a.create_time <= #{createTimeEed}]]>
+			</if>
+			<if test="isFrozen != null">
+				AND is_frozen = #{isFrozen,jdbcType=BIT}
+			</if>
+			<if test="isAuthentication != null">
+				AND is_authentication = #{isAuthentication,jdbcType=BIT}
+			</if>
+			<if test="popRealName != null and popRealName !=''">
+				AND b.pop_real_name = #{popRealName}
+			</if>
+			<if test="popNickname != null and popNickname !=''">
+				AND b.pop_nickname = #{popNickname}
+			</if>
+		</where>
+	</select>
+
+</mapper>

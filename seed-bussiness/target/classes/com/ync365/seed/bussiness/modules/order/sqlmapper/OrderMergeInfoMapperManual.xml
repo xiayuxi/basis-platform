@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.order.dao.OrderMergeInfoMapperManual" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.order.entity.OrderMergeInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_merge_no" property="orderMergeNo" jdbcType="CHAR" />
+    <result column="user_num" property="userNum" jdbcType="CHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="goods_amount" property="goodsAmount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_merge_no, user_num, username, create_time, order_status, goods_amount
+  </sql>
+  
+  <!-- 根据合并订单号查询合并订单 -->
+  <select id="getOrderMergeInfoByOrderMergeNo" parameterType="string" resultMap="BaseResultMap">
+  	SELECT * FROM order_merge_info WHERE order_merge_no = #{order_merge_no,jdbcType=CHAR}
+  </select>
+</mapper>

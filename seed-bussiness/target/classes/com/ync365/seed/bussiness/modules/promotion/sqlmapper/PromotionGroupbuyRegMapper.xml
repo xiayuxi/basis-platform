@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.promotion.dao.PromotionGroupbuyRegDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGroupbuyReg" >
+    <result column="level_price" property="levelPrice" jdbcType="DECIMAL" />
+    <result column="goods_price" property="goodsPrice" jdbcType="DECIMAL" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+    <result column="promotion_id" property="promotionId" jdbcType="INTEGER" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGroupbuyReg" >
+    insert into promotion_groupbuy_reg (level_price, goods_price, is_delete, 
+      promotion_id, sort)
+    values (#{levelPrice,jdbcType=DECIMAL}, #{goodsPrice,jdbcType=DECIMAL}, #{isDelete,jdbcType=INTEGER}, 
+      #{promotionId,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.promotion.entity.PromotionGroupbuyReg" >
+    insert into promotion_groupbuy_reg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="levelPrice != null" >
+        level_price,
+      </if>
+      <if test="goodsPrice != null" >
+        goods_price,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+      <if test="promotionId != null" >
+        promotion_id,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="levelPrice != null" >
+        #{levelPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsPrice != null" >
+        #{goodsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="promotionId != null" >
+        #{promotionId,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="selectByPromotionId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select *   
+    from promotion_groupbuy_reg
+    where promotion_id = #{promotionId,jdbcType=INTEGER} and is_delete=0
+  </select>
+  <update id="updatePromotionStatusToDelete" parameterType="java.lang.Integer">
+   update promotion_groupbuy_reg set is_delete=1 where promotion_id = #{promotionId,jdbcType=INTEGER} 
+  </update>
+</mapper>

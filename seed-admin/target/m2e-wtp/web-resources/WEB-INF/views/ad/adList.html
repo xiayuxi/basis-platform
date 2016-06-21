@@ -1,0 +1,305 @@
+<#assign ctx="${request.contextPath}" />
+<#assign staticCtx="${request.contextPath}/resources" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/ui.jqgrid.css"/>
+<link rel="stylesheet" media="screen" type="text/css" href="${staticCtx}/jqGrid/css/jquery-ui-1.9.2.custom.min.css" />
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery.jqGrid.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jqGrid/js/jquery-ui-1.9.2.custom.min.js"></script>
+</head>
+<body>
+	<div idex = 99 style="margin: 20px 0 10px 20px;">
+		目标栏目： <select  name="categoryIds[0]" id="categoryId1" onchange="">
+		            <option value="">请选择</option>
+		            <option value="">商城首页</option>
+		            <option value="">商城栏目</option>
+		        </select>
+		
+		目标页面： <select  name="categoryIds[0]" id="categoryId1" onchange="">
+		            <option value="">请选择</option>
+		            <option value="">商城首页</option>
+		            <option value="">化肥栏目页</option>
+		            <option value="">农药栏目页</option>
+		        </select>
+		
+		目标广告位： <select  name="qAdPosition" id="qAdPosition" >
+		 			<option value="">请选择</option>
+		            <#list aPList as value>
+						<option value="${value.id}">${value.name} &nbsp;&nbsp;高*宽:${value.height}*${value.width}</option>
+					</#list>
+			    </select>	
+		<br/>
+		广告位名称： <select  name="categoryIds[0]" id="categoryId1" onchange="">
+		            <option value="">请选择</option>
+		            <option value="">商城栏目</option>
+		            <option value="">商城首页</option>
+		        </select>
+		
+		广告状态： <select name="qStatus" id="qStatus" >
+		            <option value="">请选择</option>
+		            <option value="0">未投放</option>
+		            <option value="1">在投放</option>
+		            <option value="2">已暂停</option>
+		            <option value="3">已关闭</option>
+		        </select>
+		<br/>
+		<button type="submit" class="btn btn-primary" id="btnSearch">查询
+	</div>
+
+			<div >
+				    <table id="list"></table>
+				    <div id="pager"></div>
+			</div>
+	
+</body>
+<script type="text/javascript">
+ $(function(){
+     $("#list").jqGrid({
+           url:'${ctx}/ad/grid',// 获取数据的url,action
+           datatype: "json",//后台返回的数据格式
+           mtype:"post",//提交的方式,默认是get
+           //width:1024,//这个宽度不能为百分比,
+           autowidth:true,//自动宽
+           colNames:['id','广告名称','状态', '广告位 ', '开始时间','结束时间'/* ,'操作' */],
+           colModel:[
+                      {name:"id",hidden:true,align:"center",sortable:false},
+                      {name:'title',index:'title', editable:true,sortable:true},
+                      {name:'status',index:'status', align:"center",editable:true,formatter:formatStatus},
+                      {name:'adPositionName',index:'adPositionName', align:"center", },
+                      {name:'beginDate',index:'beginDate', align:"center", formatter:'date' ,
+                        	  formatoptions:{srcformat:'u',newformat:'Y/m/d H:i:s'}},       
+                      {name:'endDate',index:'endDate', align:"center",formatter:'date' ,
+                              formatoptions:{srcformat:'u',newformat:'Y/m/d H:i:s'}},   
+                     /*  {name:'oprate', index:'oprate', align:"center",formatter:preView }, */
+                  ],
+           postData:{page:1,haha:1},//此参数用来向后台提交数据*****可以自己添加需要的参数
+           //styleUI : 'Bootstrap',
+           //caption:"类别列表",//表名称
+           multiselect: false,//开启多选
+           rowNum:10,//每页显示的条数,此参数会被传递到后台
+           rowList:[10,20,30,50],//定义每页显示的条数下拉框选择,会覆盖rowNum
+           viewrecords: true,//定义是否显示总的数据条数
+           pager: 'pager',//定义翻页用的导航栏,必须是有效的html元素,可以放在任意位置
+           height : "auto",
+           rownumbers:true//添加左侧行号
+       });
+      // $("#list").jqGrid('navGrid','#pager', {edit:true,add:true,del:true,search:true,refresh:true,addtext:'添加'});  
+      $("#list").jqGrid("navGrid","#pager",{edit:false,add:false,del:false,search:false,refresh:true})
+      	//新增
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"新增", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+	    		 addFun();  
+							},
+			position:"last"
+			})
+		//修改
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"修改", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+	    		 editFun();
+							},
+			position:"last"
+			})
+		//启动
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"启动", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+	    		 startFun();  
+							},
+			position:"last"
+			})
+		//暂停
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"暂停", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+	    		 pauseFun();  
+							},
+			position:"last"
+			})
+		//完成
+ 		.navButtonAdd('#pager',{ 
+	    	 caption:"完成", 
+	    	 buttonicon:"ui-icon-add",
+	    	 onClickButton: function(){ 
+	    		 completeFun();  
+							},
+			position:"last"
+			})
+		//删除 
+		.navButtonAdd('#pager',{ 
+	    	 caption:"删除", 
+	    	 buttonicon:"ui-icon-del",
+	    	 onClickButton: function(){delFun();},
+			position:"last"
+			}); 
+      
+ });
+ 
+ //显示状态
+ function formatStatus(cellvalue){
+	 if(cellvalue == 0 ){
+		 return "未投放";
+	 }else if(cellvalue == 1 ){
+		 return "在投放";
+	 }else if(cellvalue == 2 ){
+		 return "已暂停";
+	 }else if(cellvalue == 3 ){
+		 return "<font color=red >已关闭</font>";
+	 }
+ }
+
+ 
+//新增
+ function addFun(){
+ 	 window.location.href = "${ctx}/ad/addPage";
+ }
+
+ //修改
+ function editFun(){
+ 	var id=jQuery("#list").jqGrid('getGridParam','selrow');
+ 	var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+ 	
+ 	if(null == rowData || '' == rowData || rowData.length > 0){
+ 		alert("请选择需要编辑的行！")
+ 	}else{
+ 		var val= rowData.id;//获取每一行制定的列的数据
+ 	  	//window.location.href="${ctx}/ad/editPage?id="+val;
+ 	  	
+ 	  	var postData = {
+				id : val
+		};
+		//alert(status);
+		$.post("${ctx}/ad/validate", postData, function(data) {
+			var status = data.msg;
+			if(status!=0){
+				alert("当前状态不可修改");
+			}else{
+				window.location.href="${ctx}/ad/editPage?id="+val;
+			}
+		}, 'JSON')
+ 	}
+ }
+ 
+ //启动广告
+ function startFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获得所选中数据信息
+		
+		if(null==rowData || ''==rowData || rowData.length>0){
+			alert("请选择要操作的行");
+			return ;
+		}else{
+			var val= rowData.id;//获取每一行制定的列的数据
+			
+			var postData = {
+					id : val
+			};
+			//alert(status);
+			$.post("${ctx}/ad/startAd", postData, function(data) {
+				//alert(data);
+				if (data.success) {
+					alert("启动成功");
+					window.location.href="list.html";
+				} else {
+					alert(data.msg);
+				}
+			}, 'JSON')
+		}
+ }
+ 
+ //暂停广告
+ function pauseFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获得所选中数据信息
+		
+		if(null==rowData || ''==rowData || rowData.length>0){
+			alert("请选择要删除的行");
+			return ;
+		}else{
+			var val= rowData.id;//获取每一行制定的列的数据
+			//window.location.href = "${ctx}/ad/delete?id="+val;
+			
+			var postData = {
+					id : val
+			};
+			//alert(status);
+			$.post("${ctx}/ad/pauseAd", postData, function(data) {
+				//alert(data);
+				if (data.success) {
+					alert("暂停成功");
+					window.location.href="list.html";
+				} else {
+					alert(data.msg);
+				}
+			}, 'JSON')
+		}
+ }
+ 
+ 
+ function completeFun(){
+	 var id=jQuery("#list").jqGrid('getGridParam','selrow');
+ 	 var rowData = $("#list").jqGrid('getRowData',id);//获取选中所有数据
+ 	
+ 	 if(null == rowData || '' == rowData || rowData.length > 0){
+ 		alert("请选择需要操作的行！")
+ 	 }else{
+ 		var val= rowData.id;//获取每一行制定的列的数据
+ 	  	window.location.href="${ctx}/ad/complete?id="+val; 
+ 	 }
+ }
+	//删除 
+	function delFun(){
+		var id=jQuery("#list").jqGrid('getGridParam','selrow');
+		var rowData = $("#list").jqGrid('getRowData',id);//获得所选中数据信息
+		
+		if(null==rowData || ''==rowData || rowData.length>0){
+			alert("请选择要删除的行");
+			return ;
+		}else{
+			var val= rowData.id;//获取每一行制定的列的数据
+			//window.location.href = "${ctx}/ad/delete?id="+val;
+			
+			var postData = {
+					id : val
+			};
+			//alert(status);
+			$.post("${ctx}/ad/delete", postData, function(data) {
+				//alert(data);
+				if (data.success) {
+					alert("删除成功");
+					window.location.href="list.html";
+				} else {
+					alert(data.msg);
+				}
+			}, 'JSON')
+		}
+	} 
+ 	
+ // 条件查询 
+$("#btnSearch").click(function () {
+		var qName = $("#qName").val();
+		var qAdPosition = $("#qAdPosition").val();
+		var qStatus = $("#qStatus").val();
+
+		//alert("qName:"+qName+"="+"status:"+qStatus+"="+"adPosition:"+qAdPosition);
+		//alert(list+"查询");
+	$(list).jqGrid('setGridParam',{ 
+        url:"${ctx}/ad/grid", 
+        postData:{'name':qName,'status':qStatus,'adPosition':qAdPosition}, //发送数据 
+        page:1 
+    	}).trigger("reloadGrid"); //重新载入 
+}); 
+</script>
+
+</html>

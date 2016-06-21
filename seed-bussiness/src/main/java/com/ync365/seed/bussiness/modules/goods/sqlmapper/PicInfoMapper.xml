@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.goods.dao.PicInfoDao" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.goods.entity.PicInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="pic_type" property="picType" jdbcType="VARCHAR" />
+    <result column="pic_name" property="picName" jdbcType="VARCHAR" />
+    <result column="is_main" property="isMain" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uuid, pic_type, pic_name , is_main,seq
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pic_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pic_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ync365.seed.bussiness.modules.goods.entity.PicInfo" >
+    insert into pic_info (id, uuid, pic_type, 
+      pic_name,is_main,seq)
+    values (#{id,jdbcType=INTEGER}, #{uuid,jdbcType=VARCHAR}, #{picType,jdbcType=VARCHAR}, 
+      #{picName,jdbcType=VARCHAR},#{isMain,jdbcType=INTEGER},#{seq,jdbcType=INTEGER})
+  </insert>
+    
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.goods.entity.PicInfo" >
+    update pic_info
+    <set >
+      <if test="uuid != null" >
+        uuid = #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="picType != null" >
+        pic_type = #{picType,jdbcType=VARCHAR},
+      </if>
+      <if test="picName != null" >
+        pic_name = #{picName,jdbcType=VARCHAR},
+      </if>
+      <if test="isMain != null" >
+        is_main = #{isMain,jdbcType=VARCHAR},
+      </if>
+      <if test="picName != null" >
+        seq = #{seq,jdbcType=VARCHAR},
+      </if>
+      
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.ync365.seed.bussiness.modules.goods.entity.PicInfo" >
+    update pic_info
+    set uuid = #{uuid,jdbcType=VARCHAR},
+      pic_type = #{picType,jdbcType=VARCHAR},
+      pic_name = #{picName,jdbcType=VARCHAR},
+      is_main = #{isMain,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByPicInfo" parameterType="com.ync365.seed.bussiness.modules.goods.entity.PicInfo" resultType="com.ync365.seed.bussiness.modules.goods.entity.PicInfo">
+  		SELECT 
+		 <include refid="Base_Column_List" />
+		 FROM pic_info
+		 <where>
+		 	<if test="id != null">
+		 		id = #{id}
+		 	</if>
+		 	<if test="uuid != null and uuid != ''">
+		 		uuid = #{uuid}
+		 	</if>
+		 	<if test="picType != null and picType != ''">
+		 		picType = #{picType}
+		 	</if>
+		 	<if test="picName != null and picName != ''">
+		 		picName like '%#{picName}%'
+		 	</if>
+		 </where>
+  </select>
+  <!-- 根据商品对应的picName查询出所有的图片信息 -->
+  <select id="selectPicInfoByPicName"  resultMap="BaseResultMap"    parameterType="map" >
+ 	 select 
+	 	id, uuid, pic_type, pic_name , is_main,seq
+	 from pic_info
+	 WHERE pic_name = #{picName}
+  </select>
+  
+  <!-- 根据商品对应的uuid查询出所有的图片信息 -->
+  <select id="selectPicInfoListByUuid"  resultMap="BaseResultMap"    parameterType="map" >
+ 	 select 
+	 	id, uuid, pic_type, pic_name , is_main,seq
+	 from pic_info
+	 WHERE uuid = #{uuid}
+  </select>
+  <!-- 根据商品对应的uui查询详情页面预览图片 -->
+  <select id="selectPicInfoByUuid"  resultMap="BaseResultMap"    parameterType="map" >
+ 	 select 
+	 	id, uuid, pic_type, pic_name , is_main,seq
+	 from pic_info
+	 WHERE uuid = (select a.uuid from goods a where a.goods_id = (select b.goods_id from goods_sku b where b.sku_id=${skuId}))
+	 order by seq  asc
+  </select>
+  
+</mapper>

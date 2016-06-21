@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ync365.seed.bussiness.modules.user.dao.SysPopStoreMapper" >
+  <resultMap id="BaseResultMap" type="com.ync365.seed.bussiness.modules.user.entity.SysPopStore" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pop_store_num" property="popStoreNum" jdbcType="VARCHAR" />
+    <result column="pop_store_name" property="popStoreName" jdbcType="VARCHAR" />
+    <result column="pop_store_contact" property="popStoreContact" jdbcType="VARCHAR" />
+    <result column="pop_store_mobile" property="popStoreMobile" jdbcType="VARCHAR" />
+    <result column="pop_store_type" property="popStoreType" jdbcType="VARCHAR" />
+    <result column="pop_store_address" property="popStoreAddress" jdbcType="VARCHAR" />
+    <result column="pop_store_address_detail" property="popStoreAddressDetail" jdbcType="VARCHAR" />
+    <result column="pop_store_domain" property="popStoreDomain" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="is_del" property="isDel" jdbcType="BIT" />
+    <result column="is_frozen" property="isFrozen" jdbcType="BIT" />
+    <result column="is_authentication" property="isAuthentication" jdbcType="BIT" />
+    <result column="logo_path" property="logoPath" jdbcType="VARCHAR" />
+    
+  </resultMap>
+   
+  <resultMap id="ResultMap"  type="com.ync365.seed.bussiness.modules.user.bo.PopStoreBO" extends="BaseResultMap"> 
+  	<result column="name" property="popStorePrincipal" jdbcType="VARCHAR" />
+  	<result column="telephone" property="popStorePrincipalMobile" jdbcType="VARCHAR" />
+  	<result column="admin_num" property="popStorePrincipaNum" jdbcType="VARCHAR" />
+  	<result column="pop_store_decorate" property="popStoreDecorate" jdbcType="INTEGER" />
+  	<result column="pop_login_name" property="popLoginName" jdbcType="VARCHAR" />
+  	<result column="ssPopStoreRelationshipId" property="ssPopStoreRelationshipId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, pop_store_num, pop_store_name, pop_store_contact, pop_store_mobile, pop_store_type, 
+    pop_store_domain, create_time, is_del, is_frozen, is_authentication, pop_store_address
+    ,pop_store_address_detail,logo_path
+  </sql>
+
+   
+  <!-- 根据pop_store_num查询 -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_pop_store
+    where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from sys_pop_store
+    where pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 添加popstore -->
+  <insert id="insertSelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStore" >
+    insert into sys_pop_store
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="popStoreNum != null" >
+        pop_store_num,
+      </if>
+      <if test="popStoreName != null" >
+        pop_store_name,
+      </if>
+      <if test="popStoreContact != null" >
+        pop_store_contact,
+      </if>
+      <if test="popStoreMobile != null" >
+        pop_store_mobile,
+      </if>
+      <if test="popStoreType != null" >
+        pop_store_type,
+      </if>
+      <if test="popStoreDomain != null" >
+        pop_store_domain,
+      </if>
+<!--       <if test="createTime != null" > -->
+        create_time,
+<!--       </if> -->
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="isFrozen != null" >
+        is_frozen,
+      </if>
+      <if test="isAuthentication != null" >
+        is_authentication,
+      </if>
+      <if test="logoPath != null and logoPath!='' ">
+        logo_Path,
+      </if>
+       <if test="popStoreAddress != null and popStoreAddress!='' ">
+        pop_store_address,
+      </if>
+      <if test="popStoreAddressDetail != null and popStoreAddressDetail!='' ">
+        pop_store_address_detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="popStoreNum != null" >
+        #{popStoreNum,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreName != null" >
+        #{popStoreName,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreContact != null" >
+        #{popStoreContact,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreMobile != null" >
+        #{popStoreMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreType != null" >
+        #{popStoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreDomain != null" >
+        #{popStoreDomain,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="createTime != null" > -->
+<!--         #{createTime,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+		now(),
+      <if test="isDel != null" >
+        #{isDel,jdbcType=BIT},
+      </if>
+      <if test="isFrozen != null" >
+        #{isFrozen,jdbcType=BIT},
+      </if>
+      <if test="isAuthentication != null" >
+        #{isAuthentication,jdbcType=BIT},
+      </if>
+      <if test="logoPath != null and logoPath!='' ">
+        #{logoPath, jdbcType=VARCHAR},
+      </if>
+	  <if test="popStoreAddress != null and popStoreAddress!='' ">
+        #{popStoreAddress, jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreAddressDetail !=null and popStoreAddressDetail!='' ">
+      	 #{popStoreAddressDetail, jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ync365.seed.bussiness.modules.user.entity.SysPopStore" >
+    update sys_pop_store
+    <set >
+      <if test="popStoreName != null" >
+        pop_store_name = #{popStoreName,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreContact != null" >
+       pop_store_contact = #{popStoreContact,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreMobile != null" >
+        pop_store_mobile = #{popStoreMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreType != null" >
+        pop_store_type = #{popStoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreDomain != null" >
+        pop_store_domain = #{popStoreDomain,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="createTime != null" > -->
+<!--         create_time = #{createTime,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=BIT},
+      </if>
+      <if test="isFrozen != null" >
+        is_frozen = #{isFrozen,jdbcType=BIT},
+      </if>
+      <if test="isAuthentication != null" >
+        is_authentication = #{isAuthentication,jdbcType=BIT},
+      </if>
+      <if test="popStoreAddressDetail != null and popStoreAddressDetail!='' " >
+        pop_store_address_detail = #{popStoreAddressDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="popStoreAddress != null " >
+        pop_store_address = #{popStoreAddress,jdbcType=INTEGER},
+      </if>
+      <if test="logoPath != null and logoPath!='' " >
+        logo_path = #{logoPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <where>
+	    <if test=" popStoreNum!=null and popStoreNum!='' ">
+		   	and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+	    </if>
+	    <if test=" (popStoreNum!=null and popStoreNum!='')==false ">
+		    and id = #{id,jdbcType=VARCHAR}
+	    </if>
+    </where>
+  </update>
+  
+  <select id="selectPageByMap" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_pop_store
+		<where>
+			<if test="id != null">
+				and id = #{id,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreName != null" >
+		        and  pop_store_name = #{popStoreName,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreContact != null" >
+		        and pop_store_contact = #{popStoreContact,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreMobile != null" >
+		        and pop_store_mobile = #{popStoreMobile,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreType != null" >
+		        and pop_store_type = #{popStoreType,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreDomain != null" >
+		        and pop_store_domain = #{popStoreDomain,jdbcType=VARCHAR}
+		    </if>
+		    <if test="createTime != null" >
+		        and create_time = #{createTime,jdbcType=TIMESTAMP}
+		    </if>
+		    <if test="isDel != null" >
+		        and is_del = #{isDel,jdbcType=BIT}
+		    </if>
+		    <if test="isFrozen != null" >
+		        and is_frozen = #{isFrozen,jdbcType=BIT}
+		    </if>
+		    <if test="isAuthentication != null" >
+		        and is_authentication = #{isAuthentication,jdbcType=BIT}
+		    </if>
+		    <if test="popStoreAddress != null" >
+		        and pop_store_address = #{popStoreAddress,jdbcType=VARCHAR}
+		    </if>
+		</where>
+		<if test="pageIndex !=null and pageSize != null">
+			limit ${pageIndex},${pageSize}
+		</if>
+	</select>
+		<select id="selectPageCount" parameterType="map" resultType="int">
+		select
+			count(1)
+				from sys_pop_store
+		<where>
+			<if test="popStoreNum != null">
+				and pop_store_num = #{popStoreNum,jdbcType=VARCHAR}
+			</if>
+			<if test="popStoreName != null" >
+		        and pop_store_name = #{popStoreName,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreContact != null" >
+		        and pop_store_contact = #{popStoreContact,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreMobile != null" >
+		        and pop_store_mobile = #{popStoreMobile,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreType != null" >
+		        and pop_store_type = #{popStoreType,jdbcType=VARCHAR}
+		    </if>
+		    <if test="popStoreDomain != null" >
+		        and pop_store_domain = #{popStoreDomain,jdbcType=VARCHAR}
+		    </if>
+		    <if test="createTime != null" >
+		        and create_time = #{createTime,jdbcType=TIMESTAMP}
+		    </if>
+		    <if test="isDel != null" >
+		        and is_del = #{isDel,jdbcType=BIT}
+		    </if>
+		    <if test="isFrozen != null" >
+		        and is_frozen = #{isFrozen,jdbcType=BIT}
+		    </if>
+		    <if test="isAuthentication != null" >
+		        and is_authentication = #{isAuthentication,jdbcType=BIT}
+		    </if>
+		    <if test="popStoreAddress != null" >
+		        and pop_store_address = #{popStoreAddress,jdbcType=VARCHAR}
+		    </if>
+		</where>
+  	</select>
+  	
+  	<!-- 根据前台条件进行查询 -->
+  	<select id="selectPageBySearchBO" parameterType="com.ync365.seed.bussiness.modules.user.bo.PopStoreSearchBO" 
+  		resultMap="ResultMap">
+  		select s.*, a.name as popStorePrincipal ,de.pop_store_decorate,ad.admin_mobile as 'telephone'
+  		,pop.pop_login_name 
+  		from sys_pop_store s 
+			left join sys_pop_store_se_relationship r on s.pop_store_num = r.pop_store_num
+		  	left join sys_admin_info a on r.se_num = a.admin_num
+		  	left join sys_admin ad on ad.admin_num=a.admin_num
+		  	left join sys_pop_store_decorate_info de on de.pop_store_num = s.pop_store_num
+		  	left join sys_pop pop on pop.pop_store_num=s.pop_store_num
+		  	
+		  	<where>
+		  		<if test="popStoreNameSearch !=null and popStoreNameSearch !='' ">
+		  			and s.pop_store_name like CONCAT('%',#{popStoreNameSearch,jdbcType=VARCHAR},'%')
+		  		</if>
+		  		<if test="popStoreNumSearch !=null and popStoreNumSearch !='' ">
+		  			and s.pop_store_num = #{popStoreNumSearch,jdbcType=VARCHAR}
+		  		</if>
+		  		<if test="popStorePrincipalSearch !=null and popStorePrincipalSearch !='' ">
+		  			and (a.name = #{popStorePrincipalSearch,jdbcType=VARCHAR} 
+		  				or a.telephone = #{popStorePrincipalSearch,jdbcType=VARCHAR} )
+		  		</if>
+		  		<if test="popStoreTypeSearch !=null and popStoreTypeSearch !='' ">
+		  			and s.pop_store_type = #{popStoreTypeSearch,jdbcType=VARCHAR}
+		  		</if>
+		  		<if test="isFrozenSearch !=null ">
+		  			and s.is_frozen = #{isFrozenSearch,jdbcType=BIT}
+		  		</if>
+		  		<if test="beginTimeSearch !=null">
+		  			and <![CDATA[s.create_time >= #{beginTimeSearch}]]>
+		  		</if>		  		
+		  		<if test="endTimeSearch !=null">
+					and  <![CDATA[s.create_time < #{endTimeSearch}]]>
+				</if>
+		  		<if test="addressSearch !=null and addressSearch != '' ">
+					and  s.pop_store_address = #{addressSearch,jdbcType=INTEGER}
+				</if>			  	
+				<if test="contactSearch !=null and contactSearch != '' ">
+					and  s.pop_store_contact = #{contactSearch,jdbcType=INTEGER}
+				</if>
+				<if test=" seAdminNumSearch !=null and  seAdminNumSearch!= '' ">
+					and a.admin_num = #{seAdminNumSearch,jdbcType=VARCHAR}
+				</if>
+				<if test="isAuthentication !=null ">
+		  			and s.is_authentication = #{isAuthentication,jdbcType=BIT}
+		  		</if>
+		  		<if test="addressSearch !=null and addressSearch!='' ">
+		  			and s.pop_store_address = #{addressSearch,jdbcType=VARCHAR}
+		  		</if>
+		  		<if test=" popStoreDecorateSearch != null ">
+		  			<if test=" popStoreDecorateSearch ==0 ">
+		  				and de.pop_store_decorate = #{popStoreDecorateSearch,jdbcType=INTEGER}
+		  			</if>
+		  			<if test=" popStoreDecorateSearch !=0 ">
+		  				and de.pop_store_decorate > 0
+		  			</if>
+		  		</if>
+		  		<if test=" isDel!=null ">
+		  			and s.is_del = #{isDel,jdbcType=BIT}
+		  		</if>
+		  	</where>
+		  	<if test="pageIndex !=null and pageSize != null">
+				limit ${pageIndex},${pageSize}
+			</if>
+		  	
+  	</select>
+  	
+  	<!-- count -->
+  	<select id="selectPageBySearchCount" parameterType="com.ync365.seed.bussiness.modules.user.bo.PopStoreSearchBO" resultType="long">
+  		select count(1)
+  			from sys_pop_store s 
+				left join sys_pop_store_se_relationship r on s.pop_store_num = r.pop_store_num
+			  	left join sys_admin_info a on r.se_num = a.admin_num
+			  	left join sys_admin ad on ad.admin_num=a.admin_num
+			  	left join sys_pop_store_decorate_info de on de.pop_store_num = s.pop_store_num
+			  	left join sys_pop pop on pop.pop_store_num=s.pop_store_num
+			  	
+		  	<where>
+		  		<if test="popStoreNameSearch !=null and popStoreNameSearch !='' ">
+		  			and s.pop_store_name like CONCAT('%',#{popStoreNameSearch,jdbcType=VARCHAR},'%')
+		  		</if>
+		  		<if test="popStoreNumSearch !=null and popStoreNumSearch !='' ">
+		  			and s.pop_store_num = #{popStoreNumSearch,jdbcType=VARCHAR}
+		  		</if>
+		  		<if test="popStorePrincipalSearch !=null and popStorePrincipalSearch !='' ">
+		  			and (a.name = #{popStorePrincipalSearch,jdbcType=VARCHAR} 
+		  				or a.telephone = #{popStorePrincipalSearch,jdbcType=VARCHAR} )
+		  		</if>
+		  		<if test="popStoreTypeSearch !=null and popStoreTypeSearch !='' ">
+		  			and s.pop_store_type = #{popStoreTypeSearch,jdbcType=VARCHAR}
+		  		</if>
+		  		<if test="isFrozenSearch !=null ">
+		  			and s.is_frozen = #{isFrozenSearch,jdbcType=BIT}
+		  		</if>
+		  		<if test="beginTimeSearch !=null">
+		  			and <![CDATA[s.create_time >= #{beginTimeSearch}]]>
+		  		</if>		  		
+		  		<if test="endTimeSearch !=null">
+					and  <![CDATA[s.create_time < #{endTimeSearch}]]>
+				</if>
+		  		<if test="addressSearch !=null and addressSearch != '' ">
+					and  s.pop_store_address = #{addressSearch,jdbcType=INTEGER}
+				</if>			  	
+				<if test="contactSearch !=null and contactSearch != '' ">
+					and  s.pop_store_contact = #{contactSearch,jdbcType=INTEGER}
+				</if>
+				<if test=" seAdminNumSearch !=null and  seAdminNumSearch!= '' ">
+					and a.admin_num = #{seAdminNumSearch,jdbcType=VARCHAR}
+				</if>
+				<if test="isAuthentication !=null ">
+		  			and s.is_authentication = #{isAuthentication,jdbcType=BIT}
+		  		</if>
+		  		<if test="addressSearch !=null and addressSearch!='' ">
+		  			and s.pop_store_address = #{addressSearch,jdbcType=VARCHAR}
+		  		</if>
+		  		<if test=" popStoreDecorateSearch != null ">
+		  			<if test=" popStoreDecorateSearch ==0 ">
+		  				and de.pop_store_decorate = #{popStoreDecorateSearch,jdbcType=INTEGER}
+		  			</if>
+		  			<if test=" popStoreDecorateSearch !=0 ">
+		  				and de.pop_store_decorate > 0
+		  			</if>
+		  		</if>
+		  		<if test=" isDel!=null ">
+		  			and s.is_del = #{isDel,jdbcType=BIT}
+		  		</if>
+		  	</where>
+  	</select>
+
+  	
+  	<select id="selectPopStoreBySsUserNum" parameterType="java.lang.String" resultMap="ResultMap">
+		SELECT 
+			a.* ,b.id as ssPopStoreRelationshipId
+		from 
+			sys_pop_store a 
+		LEFT JOIN sys_ss_pop_store_relationship b on a.pop_store_num = b.pop_store_num
+		LEFT JOIN sys_ss_info c on b.ss_num = c.user_num
+		<where>
+			<if test="_parameter!=null and _parameter!=''">
+				c.user_num = #{_parameter,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectPopStoreByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT 
+			a.*
+		from 
+			sys_pop_store a 
+		where 
+			a.pop_store_num = #{userNumOrMobileSearch,jdbcType=VARCHAR} 
+		or 
+			a.pop_store_mobile = #{userNumOrMobileSearch,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 普通用户，se角色用户及 A+角色用户   查询DS sp fs 数量的方法     -->
+	<select id="selectPopStroeDsSpFsByByParamCount" parameterType="com.ync365.seed.bussiness.modules.user.bo.PopStoreBO" resultType="int">
+		select 
+			count(1) 
+		from 
+			sys_pop_store a 
+		LEFT JOIN sys_pop_store_se_relationship b on a.pop_store_num = b.pop_store_num
+		LEFT JOIN sys_admin c on b.se_num = c.admin_num
+		LEFT JOIN sys_se_a_relationship d on c.admin_num = d.se_num
+		LEFT JOIN sys_admin e on e.admin_num = d.a_num
+		<where>
+			<!-- popstore 类型 -->
+  			<if test="popStoreTypeSearch !=null and popStoreTypeSearch !='' ">
+		  		and a.pop_store_type = #{popStoreTypeSearch,jdbcType=VARCHAR}
+		  	</if>
+		  	<!-- se角色用户 编号  -->
+  			<if test="seAdminNumSearch !=null and seAdminNumSearch !='' ">
+		  		and c.admin_num = #{seAdminNumSearch,jdbcType=VARCHAR}
+		  	</if>
+		  	<!-- A+角色用户编号-->
+  			<if test="aAdminNumSearch !=null and aAdminNumSearch !='' ">
+		  		and e.admin_num = #{aAdminNumSearch,jdbcType=VARCHAR}
+		  	</if>
+  		</where>
+	</select>
+
+	<!--更具名字 类型查询 popstore  -->
+	<select id="selectPopStoreByStoreNamePrimary" parameterType="com.ync365.seed.bussiness.modules.user.bo.PopStoreSearchBO" resultMap="BaseResultMap">
+		select a.pop_store_name ,
+				a.pop_store_num ,
+				a.id,
+				a.pop_store_type ,
+				a.pop_store_mobile 
+		from 
+				sys_pop_store a 
+		where  
+				a.is_frozen ='false'
+			<!-- popstore 类型 -->
+  			<if test="popStoreTypeSearch !=null and popStoreTypeSearch !='' ">
+		  		and a.pop_store_type = #{popStoreTypeSearch}
+		  	</if>
+  			<if test="mobileSearch !=null and mobileSearch !='' ">
+		  		and a.pop_store_mobile = #{mobileSearch}
+		  	</if>
+		  	<!-- storename -->
+  			<if test="popStoreNameSearch !=null and popStoreNameSearch !='' ">
+		  		<!-- and ( a.pop_store_name like '%'||#{popStoreNameSearch}||'%' or a.pop_store_num like '%'||#{popStoreNameSearch}||'%' ) -->
+		  		and ( a.pop_store_name like concat('%','${popStoreNameSearch}','%' )  or a.pop_store_num like concat('%','${popStoreNameSearch}','%' ) )
+		  	</if>
+	</select>
+	
+	
+	
+	
+</mapper>
